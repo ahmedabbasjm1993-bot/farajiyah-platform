@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة ثانوية الفراجية للبنين</title>
+    <!-- مكتبة تحويل HTML إلى PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #1b4332;
+            --secondary-color: #2d6a4f;
+            --accent-color: #d8f3dc;
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --white: #ffffff;
+            --gold: #d4af37;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 40px; }
+
+        /* شاشة الترحيب */
+        #splashScreen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(135deg, #081c15 0%, #1b4332 50%, #081c15 100%);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 99999; text-align: center; padding: 20px; color: #ffffff;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #splashScreen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
+        
+        .splash-logo-box {
+            width: 220px; height: 220px; border-radius: 50%; background: #ffffff; padding: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 25px rgba(212, 175, 55, 0.7);
+            border: 4px solid var(--gold); margin-bottom: 25px; display: flex; align-items: center; justify-content: center;
+            animation: zoomPulse 2s infinite alternate;
+        }
+        .splash-logo-box svg { width: 100%; height: 100%; }
+        .splash-main-title { font-size: 1.8rem; font-weight: bold; color: #ffffff; margin-bottom: 8px; }
+        .splash-sub-title { font-size: 1.25rem; color: var(--gold); font-weight: bold; margin-bottom: 6px; }
+        .splash-year { font-size: 0.95rem; color: #e8ecd7; margin-bottom: 25px; background: rgba(255,255,255,0.12); padding: 6px 18px; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.3); }
+        .splash-btn-enter { background: linear-gradient(45deg, #d4af37, #f3e5ab); color: #1b4332; font-size: 1.1rem; font-weight: bold; padding: 13px 38px; border: none; border-radius: 30px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+
+        @keyframes zoomPulse { 0% { transform: scale(0.98); } 100% { transform: scale(1.04); } }
+
+        /* الهيدر */
+        header { background-color: var(--primary-color); color: var(--white); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .header-brand { display: flex; align-items: center; gap: 12px; }
+        .header-logo-box { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--gold); background: #fff; padding: 3px; display: flex; align-items: center; justify-content: center; }
+        .header-logo-box svg { width: 100%; height: 100%; }
+        .header-title h1 { font-size: 1.2rem; margin-bottom: 2px; }
+        .header-meta { font-size: 0.85rem; color: #ffeb3b; font-weight: bold; }
+        .developer-tag { background: rgba(255,255,255,0.15); padding: 5px 10px; border-radius: 6px; font-size: 0.8rem; text-align: center; }
+        .user-box { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 8px; }
+        .btn-logout { background-color: #ff5252; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.85rem; }
+
+        .container { max-width: 950px; margin: 20px auto; padding: 0 15px; }
+        .card { background: var(--white); padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        
+        .main-tabs { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+        .tab-main-btn { flex: 1; min-width: 140px; padding: 12px; border: none; background: #e0e0e0; color: #333; font-weight: bold; border-radius: 8px; cursor: pointer; text-align: center; font-size: 0.95rem; transition: 0.3s; }
+        .tab-main-btn.active { background: var(--primary-color); color: #fff; }
+
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 6px; font-weight: bold; color: var(--primary-color); font-size: 0.95rem; }
+        
+        select, input[type="text"], input[type="number"], input[type="file"], textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; outline: none; background: #fff; }
+
+        .msg-type-buttons { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+        .type-btn { flex: 1; padding: 12px; border: 2px solid var(--secondary-color); background: #fff; color: var(--secondary-color); font-weight: bold; border-radius: 8px; cursor: pointer; text-align: center; font-size: 0.95rem; transition: 0.3s; min-width: 110px; }
+        .type-btn.active { background: var(--secondary-color); color: #fff; }
+
+        .radio-group { display: flex; gap: 15px; margin-bottom: 12px; font-weight: bold; font-size: 0.9rem; background: #f0f4f1; padding: 12px; border-radius: 6px; flex-wrap: wrap; }
+        .radio-group label { display: flex; align-items: center; gap: 6px; cursor: pointer; color: #333; }
+
+        .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; background: #fdfdfd; border: 1px solid #ccc; padding: 12px; border-radius: 8px; }
+        .checkbox-item { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; background: #f0f4f1; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .checkbox-item input { cursor: pointer; width: 18px; height: 18px; }
+
+        .branch-box { background: #e8f5e9; border: 1px dashed var(--secondary-color); padding: 12px; border-radius: 8px; margin-top: 10px; }
+        .branch-title { font-size: 0.9rem; font-weight: bold; color: var(--primary-color); margin-bottom: 8px; }
+
+        .page-range { display: flex; gap: 10px; }
+        
+        .btn-send { width: 100%; padding: 13px; background-color: #25d366; color: white; border: none; border-radius: 8px; font-size: 1.05rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-send:hover { background-color: #1ebd59; }
+
+        .btn-save { background-color: var(--primary-color); }
+        .btn-save:hover { background-color: #123620; }
+
+        .btn-pdf { background-color: #c0392b; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; }
+        .btn-pdf:hover { background-color: #a93226; }
+
+        .alert-success { background-color: #d4edda; color: #155724; padding: 10px; border-radius: 6px; margin-bottom: 12px; text-align: center; font-weight: bold; font-size: 0.9rem; display: none; }
+
+        /* الجدول وأزرار التحكم بالروابط */
+        .group-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .group-table th, .group-table td { border: 1px solid #ddd; padding: 8px; text-align: right; font-size: 0.9rem; vertical-align: middle; }
+        .group-table th { background-color: var(--primary-color); color: white; text-align: center; }
+        
+        .student-table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #fff; }
+        .student-table th, .student-table td { border: 1px solid #ccc; padding: 10px; text-align: right; font-size: 0.88rem; vertical-align: middle; }
+        .student-table th { background-color: var(--primary-color); color: white; text-align: center; }
+
+        .action-btns { display: flex; gap: 4px; justify-content: center; }
+        .btn-action { border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: bold; transition: 0.2s; }
+        .btn-edit { background-color: #ffc107; color: #333; }
+        .btn-edit:hover { background-color: #e0a800; }
+        .btn-delete { background-color: #dc3545; color: white; }
+        .btn-delete:hover { background-color: #c82333; }
+
+        .search-box { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+        .search-box input { flex: 1; min-width: 200px; }
+
+        .pdf-export-toolbar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+
+        .hidden { display: none !important; }
+        .preview-box { background: #e9f5ec; border: 1px dashed #25d366; padding: 15px; border-radius: 8px; margin-top: 15px; white-space: pre-line; font-size: 0.95rem; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+    <!-- شاشة الترحيب -->
+    <div id="splashScreen">
+        <div class="splash-logo-box">
+            <svg viewBox="0 0 400 450" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 50 40 L 350 40 L 350 240 C 350 360 200 430 200 430 C 200 430 50 360 50 240 Z" fill="#ffffff" stroke="#1b4332" stroke-width="16" stroke-linejoin="round"/>
+                <text x="200" y="105" font-family="Segoe UI, Arial, sans-serif" font-weight="900" font-size="34" fill="#111111" text-anchor="middle">ثانوية الفراجية</text>
+                <path d="M 90 290 C 150 260 200 280 200 320 C 200 280 250 260 310 290 L 310 210 C 250 180 200 200 200 240 C 200 200 150 180 90 210 Z" fill="#ffffff" stroke="#1b4332" stroke-width="10" stroke-linejoin="round"/>
+                <path d="M 90 290 L 90 305 C 150 275 200 295 200 335 C 200 295 250 275 310 305 L 310 290" fill="none" stroke="#1b4332" stroke-width="8"/>
+                <line x1="200" y1="240" x2="200" y2="320" stroke="#1b4332" stroke-width="8"/>
+                <path d="M 200 250 L 200 195" stroke="#1b4332" stroke-width="12" stroke-linecap="round"/>
+                <path d="M 200 195 C 180 170 185 140 200 120 C 215 140 220 170 200 195 Z" fill="#104f55"/>
+                <path d="M 200 185 C 190 170 192 150 200 138 C 208 150 210 170 200 185 Z" fill="#e8f5e9"/>
+                <g transform="translate(10, -5) rotate(22, 270, 210)">
+                    <rect x="255" y="150" width="22" height="75" rx="4" fill="#104f55" stroke="#1b4332" stroke-width="4"/>
+                    <path d="M 255 225 L 266 250 L 277 225 Z" fill="#104f55" stroke="#1b4332" stroke-width="3"/>
+                    <polygon points="266,250 262,262 270,262" fill="#ffffff" stroke="#104f55" stroke-width="2"/>
+                    <line x1="266" y1="230" x2="266" y2="256" stroke="#ffffff" stroke-width="2"/>
+                    <rect x="253" y="180" width="26" height="8" fill="#ffffff"/>
+                </g>
+                <text x="200" y="380" font-family="Segoe UI, Arial, sans-serif" font-weight="900" font-size="38" fill="#111111" text-anchor="middle">للبنين</text>
+            </svg>
+        </div>
+        <div class="splash-main-title">أهلاً وسهلاً بكم</div>
+        <div class="splash-sub-title">منصة ثانوية الفراجية للبنين</div>
+        <div class="splash-year">العام الدراسي: 2026 / 2027</div>
+        <button class="splash-btn-enter" onclick="dismissSplash()">الدخول للمنصة 🚀</button>
+    </div>
+
+    <!-- الهيدر -->
+    <header>
+        <div class="header-brand">
+            <div class="header-logo-box">
+                <svg viewBox="0 0 400 450" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M 50 40 L 350 40 L 350 240 C 350 360 200 430 200 430 C 200 430 50 360 50 240 Z" fill="#ffffff" stroke="#1b4332" stroke-width="16" stroke-linejoin="round"/>
+                    <text x="200" y="105" font-family="Segoe UI, Arial, sans-serif" font-weight="900" font-size="34" fill="#111111" text-anchor="middle">ثانوية الفراجية</text>
+                    <path d="M 90 290 C 150 260 200 280 200 320 C 200 280 250 260 310 290 L 310 210 C 250 180 200 200 200 240 C 200 200 150 180 90 210 Z" fill="#ffffff" stroke="#1b4332" stroke-width="10" stroke-linejoin="round"/>
+                    <path d="M 90 290 L 90 305 C 150 275 200 295 200 335 C 200 295 250 275 310 305 L 310 290" fill="none" stroke="#1b4332" stroke-width="8"/>
+                    <line x1="200" y1="240" x2="200" y2="320" stroke="#1b4332" stroke-width="8"/>
+                    <path d="M 200 250 L 200 195" stroke="#1b4332" stroke-width="12" stroke-linecap="round"/>
+                    <path d="M 200 195 C 180 170 185 140 200 120 C 215 140 220 170 200 195 Z" fill="#104f55"/>
+                    <path d="M 200 185 C 190 170 192 150 200 138 C 208 150 210 170 200 185 Z" fill="#e8f5e9"/>
+                    <g transform="translate(10, -5) rotate(22, 270, 210)">
+                        <rect x="255" y="150" width="22" height="75" rx="4" fill="#104f55" stroke="#1b4332" stroke-width="4"/>
+                        <path d="M 255 225 L 266 250 L 277 225 Z" fill="#104f55" stroke="#1b4332" stroke-width="3"/>
+                        <polygon points="266,250 262,262 270,262" fill="#ffffff" stroke="#104f55" stroke-width="2"/>
+                        <line x1="266" y1="230" x2="266" y2="256" stroke="#ffffff" stroke-width="2"/>
+                        <rect x="253" y="180" width="26" height="8" fill="#ffffff"/>
+                    </g>
+                    <text x="200" y="380" font-family="Segoe UI, Arial, sans-serif" font-weight="900" font-size="38" fill="#111111" text-anchor="middle">للبنين</text>
+                </svg>
+            </div>
+            <div class="header-title">
+                <h1>ثانوية الفراجية للبنين</h1>
+                <div class="header-meta">العام الدراسي: 2026 / 2027</div>
+                <div style="font-size: 0.75rem; color: #d1e7dd;" id="currentDateHeader">التاريخ: جاري التحميل...</div>
+            </div>
+        </div>
+        
+        <div id="headerUserInfo" class="user-box hidden">
+            <span id="userInfoText" style="font-size: 0.85rem;"></span>
+            <button class="btn-logout" onclick="logout()">🚪 خروج</button>
+        </div>
+
+        <div class="developer-tag">
+            <div>إدارة المدرسة: د. سعدون حزين فرحان</div>
+            <div style="color: #ffeb3b; margin-top: 2px;">تطوير: د. أحمد عباس</div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- 1. شاشة تسجيل الدخول -->
+        <div id="loginCard" class="card">
+            <h3 style="color: var(--primary-color); margin-bottom: 12px; text-align: center;">تسجيل دخول الكادر التدريسي</h3>
+            <div class="form-group">
+                <label>المنصب أو الصلاحية:</label>
+                <select id="profRole">
+                    <option value="مدرس المادة">مدرس المادة</option>
+                    <option value="مدير المدرسة">مدير المدرسة</option>
+                    <option value="المرشد التربوي">المرشد التربوي</option>
+                    <option value="معاون المدير">معاون المدير</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>الاسم الثلاثي:</label>
+                <input type="text" id="profName" placeholder="أدخل اسمك الثلاثي">
+            </div>
+            <div class="form-group">
+                <label>الاختصاص أو المادة:</label>
+                <input type="text" id="profSpecialty" placeholder="مثال: الرياضيات / الكيمياء">
+            </div>
+            <div class="form-group">
+                <label>رقم هاتف التواصل:</label>
+                <input type="text" id="profPhone" placeholder="مثال: 07717905755">
+            </div>
+            <button class="btn-send btn-save" onclick="saveProfile()">دخول للمنصة وإرسال الرسائل</button>
+        </div>
+
+        <!-- 2. الشاشة الرئيسية -->
+        <div id="mainPlatform" class="hidden">
+            
+            <div class="main-tabs">
+                <button class="tab-main-btn active" id="tabBtnSend" onclick="switchMainTab('send')">📢 لوحة إرسال الرسائل</button>
+                <button class="tab-main-btn" id="tabBtnGroups" onclick="switchMainTab('groups')">⚙️ مجموعات الواتساب</button>
+                <button class="tab-main-btn" id="tabBtnStudents" onclick="switchMainTab('students')">🎓 معلومات الطلبة</button>
+            </div>
+
+            <!-- تبويب 1: لوحة إرسال الرسائل -->
+            <div id="tabContentSend" class="card">
+                <div id="msgTypeButtonsContainer">
+                    <label style="font-size: 1.05rem; margin-bottom: 10px;">أولاً: اختر نوع الرسالة للإرسال:</label>
+                    <div class="msg-type-buttons">
+                        <button type="button" class="type-btn active" id="btnType1" onclick="setMessageType('announcement')">📢 التبليغات</button>
+                        <button type="button" class="type-btn" id="btnType2" onclick="setMessageType('homework')">📚 التحضير اليومي</button>
+                        <button type="button" class="type-btn" id="btnType3" onclick="setMessageType('exams')">📊 الدرجات</button>
+                    </div>
+                </div>
+
+                <hr style="margin: 15px 0; border: none; border-top: 1px solid #eee;">
+
+                <div id="announcementClassSelection" class="form-group">
+                    <label>ثانياً: تحديد نطاق التبليغ:</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="annScope" value="all" checked onchange="toggleAnnScope()"> 🌐 الإرسال لجميع الصفوف</label>
+                        <label><input type="radio" name="annScope" value="multi" onchange="toggleAnnScope()"> ☑️ اختيار متعدد للصفوف</label>
+                    </div>
+
+                    <div id="annMultiGrid" class="checkbox-grid hidden">
+                        <label class="checkbox-item"><input type="checkbox" class="ann-grade-check" value="الأول المتوسط" onchange="updatePreview()"> الأول المتوسط</label>
+                        <label class="checkbox-item"><input type="checkbox" class="ann-grade-check" value="الثاني المتوسط" onchange="updatePreview()"> الثاني المتوسط</label>
+                        <label class="checkbox-item"><input type="checkbox" class="ann-grade-check" value="الثالث المتوسط" onchange="updatePreview()"> الثالث المتوسط</label>
+                        <label class="checkbox-item"><input type="checkbox" class="ann-grade-check" value="الرابع العلمي" onchange="updatePreview()"> الرابع العلمي</label>
+                        <label class="checkbox-item"><input type="checkbox" class="ann-grade-check" value="الرابع الأدبي" onchange="updatePreview()"> الرابع الأدبي</label>
+                        <label class="checkbox-item"><input type="checkbox" class="ann-grade-check" value="الخامس العلمي" onchange="updatePreview()"> الخامس العلمي</label>
+                        <label class="checkbox-item"><input type="checkbox" class="ann-grade-check" value="الخامس الأدبي" onchange="updatePreview()"> الخامس الأدبي</label>
+                        <label class="checkbox-item"><input type="checkbox" class="ann-grade-check" value="السادس العلمي" onchange="updatePreview()"> السادس العلمي</label>
+                        <label class="checkbox-item"><input type="checkbox" class="ann-grade-check" value="السادس الأدبي" onchange="updatePreview()"> السادس الأدبي</label>
+                    </div>
+                </div>
+
+                <div id="standardClassSelection" class="form-group hidden">
+                    <label>ثانياً: اختر الصف الدراسي (انقر على السهم بالجانب):</label>
+                    <select id="singleGradeSelect" onchange="onGradeSelectChange()">
+                        <option value="">-- اضغط هنا لاختيار الصف --</option>
+                        <option value="الأول المتوسط">الأول المتوسط</option>
+                        <option value="الثاني المتوسط">الثاني المتوسط</option>
+                        <option value="الثالث المتوسط">الثالث المتوسط</option>
+                        <option value="الرابع الإعدادي">الرابع الإعدادي</option>
+                        <option value="الخامس الإعدادي">الخامس الإعدادي</option>
+                        <option value="السادس الإعدادي">السادس الإعدادي</option>
+                    </select>
+
+                    <div id="branchSelectionBox" class="branch-box hidden">
+                        <div class="branch-title">اختر الفرع المطلوب (يمكن اختيار فرع واحد أو فرعين):</div>
+                        <div style="display: flex; gap: 20px;">
+                            <label class="checkbox-item"><input type="checkbox" id="chkScientific" value="علمي" onchange="onBranchChange()"> الفرع العلمي</label>
+                            <label class="checkbox-item"><input type="checkbox" id="chkLiterary" value="أدبي" onchange="onBranchChange()"> الفرع الأدبي</label>
+                        </div>
+                    </div>
+                </div>
+
+                <hr style="margin: 15px 0; border: none; border-top: 1px solid #eee;">
+
+                <div id="sectionAnnouncement" class="msg-section">
+                    <div class="form-group">
+                        <label>عنوان التبليغ أو الإعلان:</label>
+                        <input type="text" id="annTitle" placeholder="مثال: اجتماع مجلس الأباء / توجيه إداري..." oninput="updatePreview()">
+                    </div>
+                    <div class="form-group">
+                        <label>إرفاق ملف أو صورة للتبليغ (اختياري):</label>
+                        <input type="file" id="annFile" accept="image/*,.pdf" onchange="updatePreview()">
+                    </div>
+                </div>
+
+                <div id="sectionHomework" class="msg-section hidden">
+                    <div class="form-group">
+                        <label>اختر المادة الدراسية:</label>
+                        <select id="hwSubjectSelect" onchange="onSubjectSelectChange()">
+                            <option value="">-- يرجى اختيار الصف أولاً --</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group hidden" id="customSubjectGroup">
+                        <label>اكتب المادة يدويًا:</label>
+                        <input type="text" id="hwSubjectCustom" placeholder="مثال: الحاسوب / التربية الرياضية..." oninput="updatePreview()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>نطاق الصفحات (من إلى):</label>
+                        <div class="page-range">
+                            <input type="number" id="pageFrom" placeholder="من صفحة" oninput="updatePreview()">
+                            <input type="number" id="pageTo" placeholder="إلى صفحة" oninput="updatePreview()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>عنوان أو فقرات التحضير:</label>
+                        <input type="text" id="hwTopic" placeholder="مثال: حل التمارين / حفظ النص" oninput="updatePreview()">
+                    </div>
+                    <div class="form-group">
+                        <label>إرفاق صورة أو ملخص (اختياري):</label>
+                        <input type="file" id="hwFile" accept="image/*,.pdf" onchange="updatePreview()">
+                    </div>
+                </div>
+
+                <div id="sectionExams" class="msg-section hidden">
+                    <div class="form-group">
+                        <label>اختر مادة الامتحان:</label>
+                        <select id="examSubjectSelect" onchange="onExamSubjectSelectChange()">
+                            <option value="">-- يرجى اختيار الصف أولاً --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group hidden" id="customExamSubjectGroup">
+                        <label>اكتب مادة الامتحان يدويًا:</label>
+                        <input type="text" id="examSubjectCustom" placeholder="اكتب اسم المادة..." oninput="updatePreview()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>عنوان الامتحان أو نوعه:</label>
+                        <input type="text" id="examTitle" placeholder="مثال: امتحان الشهر الأول / الامتحان اليومي" oninput="updatePreview()">
+                    </div>
+                    <div class="form-group">
+                        <label>إرفاق كشف الدرجات (صورة أو PDF):</label>
+                        <input type="file" id="examFile" accept="image/*,.pdf" onchange="updatePreview()">
+                    </div>
+                    <div class="form-group">
+                        <label>قائمة أو تفاصيل الدرجات:</label>
+                        <textarea id="examList" rows="3" placeholder="اكتب أسماء ودرجات الطلاب أو الملاحظات هنا..." oninput="updatePreview()"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>ملاحظات إضافية (اختياري):</label>
+                    <textarea id="generalNotes" rows="2" placeholder="أضف أي ملاحظات تود إرفاقها..." oninput="updatePreview()"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>معاينة نص الرسالة النهائي:</label>
+                    <div id="messagePreview" class="preview-box">قم بإكمال البيانات للمعاينة...</div>
+                </div>
+
+                <button class="btn-send" onclick="sendToWhatsApp()">📲 إرسال عبر الواتساب</button>
+            </div>
+
+            <!-- تبويب 2: ربط مجموعات الواتساب -->
+            <div id="tabContentGroups" class="card hidden">
+                <h3 style="color: var(--primary-color); margin-bottom: 5px;">إعداد وربط روابط مجموعات الواتساب</h3>
+                <p style="font-size: 0.85rem; color: #666; margin-bottom: 12px;">أدخل رابط مجموعة الواتساب الخاص بكل صف وفرع:</p>
+
+                <div id="groupAlert" class="alert-success">✅ تم تحديث روابط المجموعات بنجاح!</div>
+
+                <table class="group-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">الصف الدراسي / الفرع</th>
+                            <th style="width: 55%;">رابط مجموعة الواتساب</th>
+                            <th style="width: 20%;">الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>الأول المتوسط</td>
+                            <td><input type="text" id="link_m1" placeholder="https://chat.whatsapp.com/..."></td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-action btn-edit" onclick="editLink('link_m1')">✏️ تعديل</button>
+                                    <button class="btn-action btn-delete" onclick="clearLink('link_m1')">🗑️ حذف</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>الثاني المتوسط</td>
+                            <td><input type="text" id="link_m2" placeholder="https://chat.whatsapp.com/..."></td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-action btn-edit" onclick="editLink('link_m2')">✏️ تعديل</button>
+                                    <button class="btn-action btn-delete" onclick="clearLink('link_m2')">🗑️ حذف</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>الثالث المتوسط</td>
+                            <td><input type="text" id="link_m3" placeholder="https://chat.whatsapp.com/..."></td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-action btn-edit" onclick="editLink('link_m3')">✏️ تعديل</button>
+                                    <button class="btn-action btn-delete" onclick="clearLink('link_m3')">🗑️ حذف</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>الرابع العلمي</td>
+                            <td><input type="text" id="link_h4_s" placeholder="https://chat.whatsapp.com/..."></td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-action btn-edit" onclick="editLink('link_h4_s')">✏️ تعديل</button>
+                                    <button class="btn-action btn-delete" onclick="clearLink('link_h4_s')">🗑️ حذف</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>الرابع الأدبي</td>
+                            <td><input type="text" id="link_h4_a" placeholder="https://chat.whatsapp.com/..."></td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-action btn-edit" onclick="editLink('link_h4_a')">✏️ تعديل</button>
+                                    <button class="btn-action btn-delete" onclick="clearLink('link_h4_a')">🗑️ حذف</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>الخامس العلمي</td>
+                            <td><input type="text" id="link_h5_s" placeholder="https://chat.whatsapp.com/..."></td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-action btn-edit" onclick="editLink('link_h5_s')">✏️ تعديل</button>
+                                    <button class="btn-action btn-delete" onclick="clearLink('link_h5_s')">🗑️ حذف</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>الخامس الأدبي</td>
+                            <td><input type="text" id="link_h5_a" placeholder="https://chat.whatsapp.com/..."></td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-action btn-edit" onclick="editLink('link_h5_a')">✏️ تعديل</button>
+                                    <button class="btn-action btn-delete" onclick="clearLink('link_h5_a')">🗑️ حذف</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>السادس العلمي</td>
+                            <td><input type="text" id="link_h6_s" placeholder="https://chat.whatsapp.com/..."></td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-action btn-edit" onclick="editLink('link_h6_s')">✏️ تعديل</button>
+                                    <button class="btn-action btn-delete" onclick="clearLink('link_h6_s')">🗑️ حذف</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>السادس الأدبي</td>
+                            <td><input type="text" id="link_h6_a" placeholder="https://chat.whatsapp.com/..."></td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-action btn-edit" onclick="editLink('link_h6_a')">✏️ تعديل</button>
+                                    <button class="btn-action btn-delete" onclick="clearLink('link_h6_a')">🗑️ حذف</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="btn-send btn-save" style="margin-top: 15px;" onclick="saveGroupLinks()">💾 حفظ جميع روابط المجموعات</button>
+            </div>
+
+            <!-- تبويب 3: معلومات وإدارة الطلبة المطور -->
+            <div id="tabContentStudents" class="card hidden">
+                <h3 style="color: var(--primary-color); margin-bottom: 12px;">🎓 قسم معلومات وإدارة الطلبة</h3>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <button class="type-btn active" id="subBtnView" onclick="switchStudentSubTab('view')">👥 عرض ومعلومات الطلبة</button>
+                    <button class="type-btn" id="subBtnAdd" onclick="switchStudentSubTab('add')">➕ إضافة طالب جديد</button>
+                </div>
+
+                <!-- نموذج عرض وبحث الطلبة -->
+                <div id="studentViewSection">
+                    
+                    <!-- حقل البحث بالاسم المباشر -->
+                    <div class="search-box">
+                        <label style="margin: 0; white-space: nowrap;">🔍 بحث بالاسم:</label>
+                        <input type="text" id="studentSearchInput" placeholder="اكتب اسم الطالب للبحث المباشر..." oninput="renderStudentsList()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>نطاق العرض والتصفية:</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="studentViewMode" value="all" checked onchange="toggleStudentFilterMode()"> عرض جميع الطلبة</label>
+                            <label><input type="radio" name="studentViewMode" value="filter" onchange="toggleStudentFilterMode()"> التصفية حسب الصف والفرع</label>
+                        </div>
+                    </div>
+
+                    <!-- خيارات التصفية التفصيلية حسب الصف والفرع -->
+                    <div id="studentFilterOptions" class="branch-box hidden" style="background: #f0f4f1; margin-bottom: 15px;">
+                        <div class="form-group" style="margin-bottom: 10px;">
+                            <label>اختر الصف الدراسي:</label>
+                            <select id="filterGradeSelect" onchange="onFilterGradeChange()">
+                                <option value="">-- اختر الصف --</option>
+                                <option value="الأول المتوسط">الأول المتوسط</option>
+                                <option value="الثاني المتوسط">الثاني المتوسط</option>
+                                <option value="الثالث المتوسط">الثالث المتوسط</option>
+                                <option value="الرابع">الرابع (إعدادي)</option>
+                                <option value="الخامس">الخامس (إعدادي)</option>
+                                <option value="السادس">السادس (إعدادي)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group hidden" id="filterBranchGroup">
+                            <label>اختر الفرع (علمي / أدبي):</label>
+                            <select id="filterBranchSelect" onchange="renderStudentsList()">
+                                <option value="">-- الكل (علمي وأدبي) --</option>
+                                <option value="العلمي">الفرع العلمي</option>
+                                <option value="الأدبي">الفرع الأدبي</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- أزرار تصدير PDF المخصصة -->
+                    <div class="pdf-export-toolbar">
+                        <button class="btn-pdf" onclick="exportStudentsPDF('all')">📄 تصدير جميع الطلبة (PDF)</button>
+                        <button class="btn-pdf" style="background-color: #2980b9;" onclick="exportStudentsPDF('current')">📑 تصدير الصف / التصفية الحالية (PDF)</button>
+                        <button class="btn-pdf" style="background-color: #27ae60;" onclick="printStudentsTable()">🖨️ طباعة المباشرة</button>
+                    </div>
+
+                    <div style="margin-top: 10px;">
+                        <label>جدول بيانات الطلاب:</label>
+                        <!-- حاوية الجدول القابلة للتصدير والطباعة -->
+                        <div id="pdfExportContainer" style="background: #fff; padding: 10px; border-radius: 6px;">
+                            <div id="pdfHeaderTitle" style="display:none; text-align: center; margin-bottom: 15px;">
+                                <h2 style="color: #1b4332;">ثانوية الفراجية للبنين</h2>
+                                <h4 id="pdfSubTitle" style="color: #555;">كشف أسماء الطلاب</h4>
+                                <hr style="margin: 8px 0;">
+                            </div>
+                            <div id="studentsListContainer" style="overflow-x: auto;">
+                                <!-- الجدول يتم توليده عبر JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- نموذج إضافة طالب جديد -->
+                <div id="studentAddSection" class="hidden">
+                    <div id="studentAlert" class="alert-success">✅ تمت إضافة الطالب بنجاح!</div>
+                    
+                    <div class="form-group">
+                        <label>اسم الطالب الثلاثي:</label>
+                        <input type="text" id="newStudentName" placeholder="أدخل اسم الطالب الثلاثي">
+                    </div>
+
+                    <div class="form-group">
+                        <label>الصف الدراسي:</label>
+                        <select id="newStudentGrade" onchange="onNewStudentGradeChange()">
+                            <option value="">-- اختر الصف --</option>
+                            <option value="الأول المتوسط">الأول المتوسط</option>
+                            <option value="الثاني المتوسط">الثاني المتوسط</option>
+                            <option value="الثالث المتوسط">الثالث المتوسط</option>
+                            <option value="الرابع">الرابع</option>
+                            <option value="الخامس">الخامس</option>
+                            <option value="السادس">السادس</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group hidden" id="newStudentBranchGroup">
+                        <label>اختر الفرع (للصفوف الإعدادية):</label>
+                        <div style="display: flex; gap: 20px;">
+                            <label class="checkbox-item"><input type="radio" name="newBranch" value="العلمي"> الفرع العلمي</label>
+                            <label class="checkbox-item"><input type="radio" name="newBranch" value="الأدبي"> الفرع الأدبي</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>رقم هاتف ولي الأمر:</label>
+                        <input type="text" id="newStudentPhone" placeholder="مثال: 07700000000">
+                    </div>
+
+                    <div class="form-group">
+                        <label>مستوى الطالب (اختياري):</label>
+                        <input type="text" id="newStudentLevel" placeholder="مثال: ممتاز / جيد جداً / متوسط">
+                    </div>
+
+                    <div class="form-group">
+                        <label>معلومات أخرى / ملاحظات:</label>
+                        <textarea id="newStudentOther" rows="2" placeholder="ملاحظات صحية، سلوكية، أو تفاصيل أخرى..."></textarea>
+                    </div>
+
+                    <button class="btn-send btn-save" onclick="saveNewStudent()">💾 حفظ بيانات الطالب</button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        const baseStandardSubjects = ["التربية الإسلامية", "اللغة العربية", "اللغة الإنكليزية", "الرياضيات"];
+        
+        const subjectsData = {
+            "الأول المتوسط": [...baseStandardSubjects, "الأحياء", "الفيزياء", "الكيمياء", "الأخلاقية", "الاجتماعيات"],
+            "الثاني المتوسط": [...baseStandardSubjects, "الأحياء", "الفيزياء", "الكيمياء", "الأخلاقية", "الاجتماعيات"],
+            "الثالث المتوسط": [...baseStandardSubjects, "الأحياء", "الفيزياء", "الكيمياء", "الاجتماعيات"],
+            "الرابع العلمي": [...baseStandardSubjects, "الأحياء", "الفيزياء", "الكيمياء"],
+            "الرابع الأدبي": [...baseStandardSubjects, "الاجتماعيات", "الجغرافية", "التاريخ"],
+            "الخامس العلمي": [...baseStandardSubjects, "الأحياء", "الفيزياء", "الكيمياء"],
+            "الخامس الأدبي": [...baseStandardSubjects, "التاريخ", "الفلسفة", "الجغرافية", "الاقتصاد"],
+            "السادس العلمي": [...baseStandardSubjects, "الأحياء", "الفيزياء", "الكيمياء"],
+            "السادس الأدبي": [...baseStandardSubjects, "التاريخ", "الجغرافية", "الاقتصاد"]
+        };
+
+        let currentUser = JSON.parse(localStorage.getItem('school_user_v2')) || null;
+        let groupLinks = JSON.parse(localStorage.getItem('school_group_links_v2')) || {};
+        let studentsDatabase = JSON.parse(localStorage.getItem('school_students_db_v3')) || [];
+        let currentType = 'announcement';
+
+        function dismissSplash() {
+            const splash = document.getElementById('splashScreen');
+            if (splash) {
+                splash.classList.add('fade-out');
+                setTimeout(() => { splash.style.display = 'none'; }, 500);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('ar-IQ', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+            document.getElementById('currentDateHeader').innerText = "التاريخ: " + dateStr;
+
+            checkLoginState();
+            loadGroupLinksToInputs();
+            renderStudentsList();
+        });
+
+        function checkLoginState() {
+            if (currentUser) {
+                document.getElementById('loginCard').classList.add('hidden');
+                document.getElementById('mainPlatform').classList.remove('hidden');
+                document.getElementById('headerUserInfo').classList.remove('hidden');
+                document.getElementById('userInfoText').innerHTML = `المستخدم: <b>${currentUser.name}</b> (${currentUser.role})`;
+                setMessageType('announcement');
+            } else {
+                document.getElementById('loginCard').classList.remove('hidden');
+                document.getElementById('mainPlatform').classList.add('hidden');
+                document.getElementById('headerUserInfo').classList.add('hidden');
+            }
+        }
+
+        function saveProfile() {
+            const role = document.getElementById('profRole').value;
+            const name = document.getElementById('profName').value.trim();
+            const specialty = document.getElementById('profSpecialty').value.trim();
+            const phone = document.getElementById('profPhone').value.trim();
+
+            if (!name) {
+                alert("يرجى إدخال الاسم الثلاثي.");
+                return;
+            }
+
+            currentUser = { role, name, specialty: specialty || role, phone };
+            localStorage.setItem('school_user_v2', JSON.stringify(currentUser));
+            checkLoginState();
+        }
+
+        function logout() {
+            if (confirm("هل أنت تأكد من تسجيل الخروج؟")) {
+                localStorage.removeItem('school_user_v2');
+                currentUser = null;
+                document.getElementById('profName').value = '';
+                document.getElementById('profPhone').value = '';
+                document.getElementById('profSpecialty').value = '';
+                checkLoginState();
+            }
+        }
+
+        function switchMainTab(tab) {
+            document.getElementById('tabBtnSend').classList.remove('active');
+            document.getElementById('tabBtnGroups').classList.remove('active');
+            document.getElementById('tabBtnStudents').classList.remove('active');
+            
+            document.getElementById('tabContentSend').classList.add('hidden');
+            document.getElementById('tabContentGroups').classList.add('hidden');
+            document.getElementById('tabContentStudents').classList.add('hidden');
+
+            if (tab === 'send') {
+                document.getElementById('tabBtnSend').classList.add('active');
+                document.getElementById('tabContentSend').classList.remove('hidden');
+            } else if (tab === 'groups') {
+                document.getElementById('tabBtnGroups').classList.add('active');
+                document.getElementById('tabContentGroups').classList.remove('hidden');
+            } else if (tab === 'students') {
+                document.getElementById('tabBtnStudents').classList.add('active');
+                document.getElementById('tabContentStudents').classList.remove('hidden');
+                renderStudentsList();
+            }
+        }
+
+        function setMessageType(type) {
+            currentType = type;
+            document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.msg-section').forEach(sec => sec.classList.add('hidden'));
+
+            if (type === 'announcement') {
+                document.getElementById('btnType1').classList.add('active');
+                document.getElementById('sectionAnnouncement').classList.remove('hidden');
+                document.getElementById('announcementClassSelection').classList.remove('hidden');
+                document.getElementById('standardClassSelection').classList.add('hidden');
+            } else if (type === 'homework') {
+                document.getElementById('btnType2').classList.add('active');
+                document.getElementById('sectionHomework').classList.remove('hidden');
+                document.getElementById('announcementClassSelection').classList.add('hidden');
+                document.getElementById('standardClassSelection').classList.remove('hidden');
+            } else if (type === 'exams') {
+                document.getElementById('btnType3').classList.add('active');
+                document.getElementById('sectionExams').classList.remove('hidden');
+                document.getElementById('announcementClassSelection').classList.add('hidden');
+                document.getElementById('standardClassSelection').classList.remove('hidden');
+            }
+            updateSubjectsDropdown();
+            updatePreview();
+        }
+
+        function toggleAnnScope() {
+            const isMulti = document.querySelector('input[name="annScope"]:checked').value === 'multi';
+            const multiGrid = document.getElementById('annMultiGrid');
+            if (isMulti) multiGrid.classList.remove('hidden');
+            else multiGrid.classList.add('hidden');
+            updatePreview();
+        }
+
+        function onGradeSelectChange() {
+            const grade = document.getElementById('singleGradeSelect').value;
+            const branchBox = document.getElementById('branchSelectionBox');
+
+            if (grade === 'الرابع الإعدادي' || grade === 'الخامس الإعدادي' || grade === 'السادس الإعدادي') {
+                branchBox.classList.remove('hidden');
+            } else {
+                branchBox.classList.add('hidden');
+                document.getElementById('chkScientific').checked = false;
+                document.getElementById('chkLiterary').checked = false;
+            }
+            updateSubjectsDropdown();
+            updatePreview();
+        }
+
+        function onBranchChange() {
+            updateSubjectsDropdown();
+            updatePreview();
+        }
+
+        function updateSubjectsDropdown() {
+            const gradeSelect = document.getElementById('singleGradeSelect').value;
+            const hwSelect = document.getElementById('hwSubjectSelect');
+            const examSelect = document.getElementById('examSubjectSelect');
+
+            hwSelect.innerHTML = '<option value="">-- اضغط لاختيار المادة --</option>';
+            examSelect.innerHTML = '<option value="">-- اضغط لاختيار المادة --</option>';
+
+            if (!gradeSelect) return;
+
+            let targetKeys = [];
+            if (gradeSelect === 'الرابع الإعدادي' || gradeSelect === 'الخامس الإعدادي' || gradeSelect === 'السادس الإعدادي') {
+                const isSci = document.getElementById('chkScientific').checked;
+                const isLit = document.getElementById('chkLiterary').checked;
+                
+                const prefix = gradeSelect.split(' ')[0];
+                if (isSci) targetKeys.push(`${prefix} العلمي`);
+                if (isLit) targetKeys.push(`${prefix} الأدبي`);
+                if (!isSci && !isLit) {
+                    targetKeys.push(`${prefix} العلمي`, `${prefix} الأدبي`);
+                }
+            } else {
+                targetKeys.push(gradeSelect);
+            }
+
+            let combinedSubjects = new Set();
+            targetKeys.forEach(key => {
+                if (subjectsData[key]) {
+                    subjectsData[key].forEach(sub => combinedSubjects.add(sub));
+                }
+            });
+
+            let sortedSubjects = Array.from(combinedSubjects);
+
+            sortedSubjects.forEach(sub => {
+                const opt1 = new Option(sub, sub);
+                const opt2 = new Option(sub, sub);
+                hwSelect.add(opt1);
+                examSelect.add(opt2);
+            });
+
+            hwSelect.add(new Option("✨ مادة أخرى...", "OTHER"));
+            examSelect.add(new Option("✨ مادة أخرى...", "OTHER"));
+
+            onSubjectSelectChange();
+            onExamSubjectSelectChange();
+        }
+
+        function onSubjectSelectChange() {
+            const val = document.getElementById('hwSubjectSelect').value;
+            const customGroup = document.getElementById('customSubjectGroup');
+            if (val === 'OTHER') {
+                customGroup.classList.remove('hidden');
+            } else {
+                customGroup.classList.add('hidden');
+            }
+            updatePreview();
+        }
+
+        function onExamSubjectSelectChange() {
+            const val = document.getElementById('examSubjectSelect').value;
+            const customGroup = document.getElementById('customExamSubjectGroup');
+            if (val === 'OTHER') {
+                customGroup.classList.remove('hidden');
+            } else {
+                customGroup.classList.add('hidden');
+            }
+            updatePreview();
+        }
+
+        function getSelectedSubject(type) {
+            if (type === 'homework') {
+                const val = document.getElementById('hwSubjectSelect').value;
+                if (val === 'OTHER') {
+                    return document.getElementById('hwSubjectCustom').value.trim() || "غير محددة";
+                }
+                return val || "غير محددة";
+            } else if (type === 'exams') {
+                const val = document.getElementById('examSubjectSelect').value;
+                if (val === 'OTHER') {
+                    return document.getElementById('examSubjectCustom').value.trim() || "غير محددة";
+                }
+                return val || "غير محددة";
+            }
+            return "";
+        }
+
+        function getTargetGradeString() {
+            if (currentType === 'announcement') {
+                const scope = document.querySelector('input[name="annScope"]:checked').value;
+                if (scope === 'all') return "جميع الصفوف الدراسية (تبليغ عام)";
+                
+                const checked = Array.from(document.querySelectorAll('.ann-grade-check:checked')).map(c => c.value);
+                return checked.length > 0 ? checked.join(' ، ') : "لم يتم اختيار صفوف";
+            } else {
+                const grade = document.getElementById('singleGradeSelect').value;
+                if (!grade) return "لم يتم اختيار صف";
+
+                if (grade === 'الرابع الإعدادي' || grade === 'الخامس الإعدادي' || grade === 'السادس الإعدادي') {
+                    const sci = document.getElementById('chkScientific').checked;
+                    const lit = document.getElementById('chkLiterary').checked;
+                    
+                    if (sci && lit) return `${grade} (علمي + أدبي)`;
+                    if (sci) return `${grade} (علمي)`;
+                    if (lit) return `${grade} (أدبي)`;
+                    return `${grade} (يرجى تحديد الفرع)`;
+                }
+                return grade;
+            }
+        }
+
+        function generateMessageText() {
+            const gradeStr = getTargetGradeString();
+            const notes = document.getElementById('generalNotes').value.trim();
+            let bodyText = "";
+
+            if (currentType === 'announcement') {
+                const title = document.getElementById('annTitle').value.trim() || "بدون عنوان";
+                const fileInput = document.getElementById('annFile');
+                let fileName = fileInput.files.length > 0 ? `\n📎 *الملف المرفق:* ${fileInput.files[0].name}` : "";
+
+                bodyText = `📢 *تبليغات هامة وإدارية*\n📌 *العنوان:* ${title}${fileName}`;
+            } 
+            else if (currentType === 'homework') {
+                const subject = getSelectedSubject('homework');
+                const pFrom = document.getElementById('pageFrom').value;
+                const pTo = document.getElementById('pageTo').value;
+                const topic = document.getElementById('hwTopic').value.trim();
+                const hwFileInput = document.getElementById('hwFile');
+                let fileName = hwFileInput.files.length > 0 ? `\n📎 *الملف المرفق:* ${hwFileInput.files[0].name}` : "";
+
+                let pagesStr = "";
+                if (pFrom && pTo) pagesStr = `📄 *التحضير اليومي:* من صفحة ${pFrom} إلى صفحة ${pTo}\n`;
+                else if (pFrom) pagesStr = `📄 *التحضير اليومي:* صفحة ${pFrom}\n`;
+
+                bodyText = `📚 *التحضير اليومي لمادة:* ${subject}\n${pagesStr}${topic ? `📝 *عنوان / فقرات التحضير:* ${topic}` : ''}${fileName}`;
+            } 
+            else if (currentType === 'exams') {
+                const subject = getSelectedSubject('exams');
+                const examTitle = document.getElementById('examTitle').value.trim() || "امتحان";
+                const examList = document.getElementById('examList').value.trim();
+                const fileInput = document.getElementById('examFile');
+                let fileName = fileInput.files.length > 0 ? `\n📎 *الملف المرفق:* ${fileInput.files[0].name}` : "";
+
+                bodyText = `📊 *درجات والنتائج الامتحانية لمادة:* ${subject}\n📌 *الموضوع / نوع الامتحان:* ${examTitle}${fileName}\n📋 *الكشف والدرجات:\n${examList || 'مراجعة المرفق'}`;
+            }
+
+            let notesBlock = notes ? `\n💡 *ملاحظات:* ${notes}` : "";
+
+            return `🏫 *ثانوية الفراجية للبنين*
+📅 *العام الدراسي:* 2026/2027
+🎓 *المستهدف:* ${gradeStr}
+----------------------------------
+${bodyText}
+${notesBlock}
+----------------------------------
+👤 *المُرسل:* ${currentUser ? currentUser.role + ' - ' + currentUser.name : ''}`;
+        }
+
+        function updatePreview() {
+            document.getElementById('messagePreview').innerText = generateMessageText();
+        }
+
+        function editLink(inputId) {
+            const inputEl = document.getElementById(inputId);
+            inputEl.focus();
+            inputEl.select();
+        }
+
+        function clearLink(inputId) {
+            if (confirm("هل أنت تأكد من حذف هذا الرابط؟")) {
+                const inputEl = document.getElementById(inputId);
+                inputEl.value = "";
+                saveGroupLinks();
+            }
+        }
+
+        function saveGroupLinks() {
+            groupLinks = {
+                'الأول المتوسط': document.getElementById('link_m1').value.trim(),
+                'الثاني المتوسط': document.getElementById('link_m2').value.trim(),
+                'الثالث المتوسط': document.getElementById('link_m3').value.trim(),
+                'الرابع العلمي': document.getElementById('link_h4_s').value.trim(),
+                'الرابع الأدبي': document.getElementById('link_h4_a').value.trim(),
+                'الخامس العلمي': document.getElementById('link_h5_s').value.trim(),
+                'الخامس الأدبي': document.getElementById('link_h5_a').value.trim(),
+                'السادس العلمي': document.getElementById('link_h6_s').value.trim(),
+                'السادس الأدبي': document.getElementById('link_h6_a').value.trim()
+            };
+
+            localStorage.setItem('school_group_links_v2', JSON.stringify(groupLinks));
+            const alertBox = document.getElementById('groupAlert');
+            alertBox.style.display = 'block';
+            setTimeout(() => { alertBox.style.display = 'none'; }, 3000);
+        }
+
+        function loadGroupLinksToInputs() {
+            if(groupLinks['الأول المتوسط']) document.getElementById('link_m1').value = groupLinks['الأول المتوسط'];
+            if(groupLinks['الثاني المتوسط']) document.getElementById('link_m2').value = groupLinks['الثاني المتوسط'];
+            if(groupLinks['الثالث المتوسط']) document.getElementById('link_m3').value = groupLinks['الثالث المتوسط'];
+            if(groupLinks['الرابع العلمي']) document.getElementById('link_h4_s').value = groupLinks['الرابع العلمي'];
+            if(groupLinks['الرابع الأدبي']) document.getElementById('link_h4_a').value = groupLinks['الرابع الأدبي'];
+            if(groupLinks['الخامس العلمي']) document.getElementById('link_h5_s').value = groupLinks['الخامس العلمي'];
+            if(groupLinks['الخامس الأدبي']) document.getElementById('link_h5_a').value = groupLinks['الخامس الأدبي'];
+            if(groupLinks['السادس العلمي']) document.getElementById('link_h6_s').value = groupLinks['السادس العلمي'];
+            if(groupLinks['السادس الأدبي']) document.getElementById('link_h6_a').value = groupLinks['السادس الأدبي'];
+        }
+
+        /* دوال إدارة وعرض الطلبة والـ PDF المحدثة */
+        function switchStudentSubTab(subTab) {
+            const btnView = document.getElementById('subBtnView');
+            const btnAdd = document.getElementById('subBtnAdd');
+            const secView = document.getElementById('studentViewSection');
+            const secAdd = document.getElementById('studentAddSection');
+
+            if (subTab === 'view') {
+                btnView.classList.add('active');
+                btnAdd.classList.remove('active');
+                secView.classList.remove('hidden');
+                secAdd.classList.add('hidden');
+                renderStudentsList();
+            } else {
+                btnAdd.classList.add('active');
+                btnView.classList.remove('active');
+                secAdd.classList.remove('hidden');
+                secView.classList.add('hidden');
+            }
+        }
+
+        function toggleStudentFilterMode() {
+            const mode = document.querySelector('input[name="studentViewMode"]:checked').value;
+            const filterOpt = document.getElementById('studentFilterOptions');
+            if (mode === 'filter') {
+                filterOpt.classList.remove('hidden');
+            } else {
+                filterOpt.classList.add('hidden');
+            }
+            renderStudentsList();
+        }
+
+        function onFilterGradeChange() {
+            const grade = document.getElementById('filterGradeSelect').value;
+            const branchGroup = document.getElementById('filterBranchGroup');
+            if (['الرابع', 'الخامس', 'السادس'].includes(grade)) {
+                branchGroup.classList.remove('hidden');
+            } else {
+                branchGroup.classList.add('hidden');
+                document.getElementById('filterBranchSelect').value = '';
+            }
+            renderStudentsList();
+        }
+
+        function onNewStudentGradeChange() {
+            const grade = document.getElementById('newStudentGrade').value;
+            const branchGroup = document.getElementById('newStudentBranchGroup');
+            if (['الرابع', 'الخامس', 'السادس'].includes(grade)) {
+                branchGroup.classList.remove('hidden');
+            } else {
+                branchGroup.classList.add('hidden');
+                document.querySelectorAll('input[name="newBranch"]').forEach(el => el.checked = false);
+            }
+        }
+
+        function saveNewStudent() {
+            const name = document.getElementById('newStudentName').value.trim();
+            const grade = document.getElementById('newStudentGrade').value;
+            let branch = "";
+            
+            if (['الرابع', 'الخامس', 'السادس'].includes(grade)) {
+                const selectedBranchEl = document.querySelector('input[name="newBranch"]:checked');
+                if (!selectedBranchEl) {
+                    alert("يرجى اختيار الفرع (علمي / أدبي) لهذا الصف!");
+                    return;
+                }
+                branch = selectedBranchEl.value;
+            }
+
+            const phone = document.getElementById('newStudentPhone').value.trim();
+            const level = document.getElementById('newStudentLevel').value.trim();
+            const other = document.getElementById('newStudentOther').value.trim();
+
+            if (!name || !grade || !phone) {
+                alert("يرجى ملء الحقول الإجبارية (الاسم الثلاثي، الصف، ورقم الهاتف).");
+                return;
+            }
+
+            const newStudent = {
+                id: Date.now(),
+                name,
+                grade,
+                branch,
+                phone,
+                level: level || "غير محدد",
+                other: other || "لا توجد"
+            };
+
+            studentsDatabase.push(newStudent);
+            localStorage.setItem('school_students_db_v3', JSON.stringify(studentsDatabase));
+
+            document.getElementById('newStudentName').value = '';
+            document.getElementById('newStudentPhone').value = '';
+            document.getElementById('newStudentLevel').value = '';
+            document.getElementById('newStudentOther').value = '';
+            document.getElementById('newStudentGrade').value = '';
+            document.getElementById('newStudentBranchGroup').classList.add('hidden');
+            document.querySelectorAll('input[name="newBranch"]').forEach(el => el.checked = false);
+
+            const alertBox = document.getElementById('studentAlert');
+            alertBox.style.display = 'block';
+            setTimeout(() => { alertBox.style.display = 'none'; }, 3000);
+        }
+
+        function deleteStudent(id) {
+            if (confirm("هل أنت متأكد من حذف بيانات هذا الطالب؟")) {
+                studentsDatabase = studentsDatabase.filter(s => s.id !== id);
+                localStorage.setItem('school_students_db_v3', JSON.stringify(studentsDatabase));
+                renderStudentsList();
+            }
+        }
+
+        function getFilteredStudentsList(forceAll = false) {
+            const searchQuery = document.getElementById('studentSearchInput').value.trim().toLowerCase();
+            const mode = document.querySelector('input[name="studentViewMode"]:checked').value;
+            
+            let filtered = [...studentsDatabase];
+
+            if (!forceAll && mode === 'filter') {
+                const selectedGrade = document.getElementById('filterGradeSelect').value;
+                const selectedBranch = document.getElementById('filterBranchSelect').value;
+
+                if (selectedGrade) {
+                    filtered = filtered.filter(s => s.grade === selectedGrade);
+                }
+                if (selectedBranch && ['الرابع', 'الخامس', 'السادس'].includes(selectedGrade)) {
+                    filtered = filtered.filter(s => s.branch === selectedBranch);
+                }
+            }
+
+            if (searchQuery) {
+                filtered = filtered.filter(s => s.name.toLowerCase().includes(searchQuery));
+            }
+
+            return filtered;
+        }
+
+        function renderStudentsList() {
+            const container = document.getElementById('studentsListContainer');
+            const filtered = getFilteredStudentsList();
+
+            if (filtered.length === 0) {
+                container.innerHTML = "<div style='text-align:center; padding: 20px; color:#777;'><i>لا توجد نتائج مطابقة للبحث أو لم يتم تسجيل طلاب بعد.</i></div>";
+                return;
+            }
+
+            let html = `<table class="student-table" id="tableToPrint">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">ت</th>
+                        <th style="width: 25%;">اسم الطالب الثلاثي</th>
+                        <th style="width: 15%;">الصف والفرع</th>
+                        <th style="width: 20%;">هاتف ولي الأمر</th>
+                        <th style="width: 15%;">المستوى</th>
+                        <th style="width: 20%;">ملاحظات / أخرى</th>
+                        <th class="no-print" style="width: 10%;">حذف</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+            filtered.forEach((s, index) => {
+                let branchStr = s.branch ? ` (${s.branch})` : '';
+                html += `<tr>
+                    <td style="text-align: center;"><b>${index + 1}</b></td>
+                    <td><b>${s.name}</b></td>
+                    <td>${s.grade}${branchStr}</td>
+                    <td>${s.phone}</td>
+                    <td>${s.level}</td>
+                    <td>${s.other}</td>
+                    <td class="no-print" style="text-align: center;">
+                        <button class="btn-action btn-delete" onclick="deleteStudent(${s.id})">🗑️</button>
+                    </td>
+                </tr>`;
+            });
+
+            html += `</tbody></table>`;
+            container.innerHTML = html;
+        }
+
+        /* تصدير PDF والمستندات */
+        function exportStudentsPDF(type) {
+            const isAll = (type === 'all');
+            const dataToExport = getFilteredStudentsList(isAll);
+
+            if (dataToExport.length === 0) {
+                alert("لا توجد بيانات طلاب للتصدير!");
+                return;
+            }
+
+            const headerTitle = document.getElementById('pdfHeaderTitle');
+            const subTitle = document.getElementById('pdfSubTitle');
+            const container = document.getElementById('pdfExportContainer');
+            const deleteButtons = document.querySelectorAll('.no-print');
+
+            // إخفاء أزرار الحذف مؤقتاً للتصدير
+            deleteButtons.forEach(el => el.style.display = 'none');
+            headerTitle.style.display = 'block';
+            
+            if (isAll) {
+                subTitle.innerText = "كشف جميع طلاب المدرسة - العام الدراسي 2026/2027";
+            } else {
+                const grade = document.getElementById('filterGradeSelect').value || 'جميع الصفوف';
+                const branch = document.getElementById('filterBranchSelect').value || '';
+                subTitle.innerText = `كشف أسماء الطلاب: ${grade} ${branch} - العام الدراسي 2026/2027`;
+            }
+
+            const fileName = isAll ? "كشف_جميع_الطلبة.pdf" : "كشف_الطلبة_المحدد.pdf";
+
+            const opt = {
+                margin:       [10, 10, 10, 10],
+                filename:     fileName,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(container).save().then(() => {
+                headerTitle.style.display = 'none';
+                deleteButtons.forEach(el => el.style.display = '');
+            });
+        }
+
+        function printStudentsTable() {
+            const filtered = getFilteredStudentsList();
+            if (filtered.length === 0) {
+                alert("لا توجد بيانات للطباعة!");
+                return;
+            }
+
+            let printWin = window.open('', '', 'width=900,height=650');
+            let tableHtml = document.getElementById('pdfExportContainer').innerHTML;
+
+            printWin.document.write(`
+                <html dir="rtl" lang="ar">
+                <head>
+                    <title>طباعة كشف الطلاب</title>
+                    <style>
+                        body { font-family: 'Segoe UI', Tahoma, sans-serif; padding: 20px; text-align: right; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+                        th, td { border: 1px solid #000; padding: 8px; font-size: 14px; text-align: right; }
+                        th { background-color: #f2f2f2; }
+                        .no-print { display: none !important; }
+                        #pdfHeaderTitle { display: block !important; text-align: center; }
+                    </style>
+                </head>
+                <body>
+                    ${tableHtml}
+                </body>
+                </html>
+            `);
+
+            printWin.document.close();
+            printWin.focus();
+            setTimeout(() => {
+                printWin.print();
+                printWin.close();
+            }, 500);
+        }
+
+        function sendToWhatsApp() {
+            const text = generateMessageText();
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text);
+            }
+
+            alert("✅ تم نسخ الرسالة بنجاح!\nسيتم فتح الواتساب الآن لتقوم بإرسالها للمجموعة المعنية.");
+            window.location.href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(text);
+        }
+    </script>
+</body>
+</html>
