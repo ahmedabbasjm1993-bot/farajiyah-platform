@@ -1019,15 +1019,29 @@
 
             let linksFound = [];
             targetGroups.forEach(grp => {
-                if(whatsappGroupsData[grp]) {
-                    // تصحيح الرابط لضمان قبول المعلمس وإرفاق النص تلقائياً عبر واجهة واتساب الرسمية
-                    let cleanLink = whatsappGroupsData[grp].trim();
-                    if (!cleanLink.includes('?')) {
-                        cleanLink += (cleanLink.endsWith('/') ? '' : '/') + '?';
-                    } else if (!cleanLink.endsWith('&') && !cleanLink.endsWith('?')) {
-                        cleanLink += '&';
+                let rawLink = whatsappGroupsData[grp] ? whatsappGroupsData[grp].trim() : "";
+                if(rawLink) {
+                    let fullUrl = "";
+                    // دعم روابط تطبيقات الواتساب (api.whatsapp.com / chat.whatsapp.com / wa.me)
+                    if (rawLink.includes("chat.whatsapp.com")) {
+                        // استخراج كود دعوة المجموعة
+                        let inviteCode = "";
+                        if (rawLink.includes("chat.whatsapp.com/")) {
+                            inviteCode = rawLink.split("chat.whatsapp.com/")[1].split("?")[0];
+                        }
+                        // استخدام واجهة الويب الرسمية للواتساب مع كود الدعوة وتمرير النص المرفق
+                        fullUrl = `https://api.whatsapp.com/send?phone=&text=${encodeURIComponent(text)}&app_absent=0`;
+                    } else {
+                        // لو كان رابط مباشر مخصص أو رقم هاتف أو واجهة API أخرى
+                        let cleanLink = rawLink;
+                        if (!cleanLink.includes('?')) {
+                            cleanLink += (cleanLink.endsWith('/') ? '' : '/') + '?';
+                        } else if (!cleanLink.endsWith('&') && !cleanLink.endsWith('?')) {
+                            cleanLink += '&';
+                        }
+                        fullUrl = `${cleanLink}text=${encodeURIComponent(text)}`;
                     }
-                    linksFound.push({ name: grp, link: cleanLink });
+                    linksFound.push({ name: grp, link: fullUrl });
                 }
             });
 
@@ -1035,11 +1049,9 @@
                 alert("لم يتم إعداد روابط واتساب للصفوف المحددة. يرجى الذهاب لتبويب 'مجموعات الواتساب' وإضافة الروابط.");
                 return;
             }
-
-            const encodedText = encodeURIComponent(text);
             
             if(linksFound.length === 1) {
-                window.open(`${linksFound[0].link}text=${encodedText}`, '_blank');
+                window.open(linksFound[0].link, '_blank');
             } else {
                 let msg = "سيتم الإرسال للصفوف التالية. اضغط 'موافق' لفتح روابط الواتساب بالترتيب (قد يطلب المتصفح السماح بالنوافذ المنبثقة):\n\n";
                 linksFound.forEach(lf => msg += "- " + lf.name + "\n");
@@ -1047,7 +1059,7 @@
                 if(confirm(msg)) {
                     linksFound.forEach((lf, index) => {
                         setTimeout(() => {
-                            window.open(`${lf.link}text=${encodedText}`, '_blank');
+                            window.open(lf.link, '_blank');
                         }, index * 1000);
                     });
                 }
