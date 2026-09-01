@@ -1020,7 +1020,15 @@
             let linksFound = [];
             targetGroups.forEach(grp => {
                 if(whatsappGroupsData[grp]) {
-                    linksFound.push({ name: grp, link: whatsappGroupsData[grp] });
+                    let cleanLink = whatsappGroupsData[grp].trim();
+                    // التأكد من دعم روابط الدردشة المباشرة للواتساب واضافة معامل النص بشكل صحيح
+                    if (cleanLink.includes("chat.whatsapp.com")) {
+                        // مجموعات واتساب القياسية لا تقبل النص المباشر عبر الرابط بنفس طريقة api
+                        // لذا نقوم بتوجيه الرابط مباشرة
+                        linksFound.push({ name: grp, link: cleanLink, isGroupInvite: true });
+                    } else {
+                        linksFound.push({ name: grp, link: cleanLink, isGroupInvite: false });
+                    }
                 }
             });
 
@@ -1029,10 +1037,13 @@
                 return;
             }
 
+            // ترميز النص بشكل كامل وآمن لتفادي الفراغ أو ضياع التنسيق
             const encodedText = encodeURIComponent(text);
             
             if(linksFound.length === 1) {
-                window.open(`${linksFound[0].link}?text=${encodedText}`, '_blank');
+                let targetItem = linksFound[0];
+                let finalUrl = targetItem.isGroupInvite ? targetItem.link : `${targetItem.link}?text=${encodedText}`;
+                window.open(finalUrl, '_blank');
             } else {
                 let msg = "سيتم الإرسال للصفوف التالية. اضغط 'موافق' لفتح روابط الواتساب بالترتيب (قد يطلب المتصفح السماح بالنوافذ المنبثقة):\n\n";
                 linksFound.forEach(lf => msg += "- " + lf.name + "\n");
@@ -1040,7 +1051,8 @@
                 if(confirm(msg)) {
                     linksFound.forEach((lf, index) => {
                         setTimeout(() => {
-                            window.open(`${lf.link}?text=${encodedText}`, '_blank');
+                            let finalUrl = lf.isGroupInvite ? lf.link : `${lf.link}?text=${encodedText}`;
+                            window.open(finalUrl, '_blank');
                         }, index * 1000);
                     });
                 }
