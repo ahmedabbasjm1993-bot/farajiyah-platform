@@ -118,7 +118,7 @@
 
         @keyframes zoomPulse { 0% { transform: scale(0.98); } 100% { transform: scale(1.04); } }
 
-        header { background-color: var(--primary-color); color: var(--white); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        header { background-color: var(--primary-color); color: var(--white); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: relative; }
         .header-brand { display: flex; align-items: center; gap: 12px; }
         .header-logo-box { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--gold); background: #fff; padding: 3px; display: flex; align-items: center; justify-content: center; }
         .header-logo-box svg { width: 100%; height: 100%; }
@@ -127,6 +127,35 @@
         .developer-tag { background: rgba(255,255,255,0.15); padding: 5px 10px; border-radius: 6px; font-size: 0.8rem; text-align: center; }
         .user-box { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 8px; }
         .btn-logout { background-color: #ff5252; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.85rem; }
+
+        /* تنسيق زر الخطوط الثلاثة والقائمة المنسدلة في أعلى الشاشة وفي الزاوية */
+        .menu-container { position: absolute; top: 15px; left: 15px; z-index: 2000; }
+        .menu-toggle-btn {
+            background: rgba(255, 255, 255, 0.15); border: 2px solid var(--gold); color: white;
+            padding: 8px 12px; border-radius: 8px; cursor: pointer; display: flex; flex-direction: column;
+            gap: 4px; align-items: center; justify-content: center; transition: 0.3s;
+        }
+        .menu-toggle-btn:hover { background: rgba(255, 255, 255, 0.3); }
+        .menu-toggle-btn span {
+            display: block; width: 22px; height: 3px; background-color: var(--gold); border-radius: 2px;
+        }
+        .top-dropdown-menu {
+            display: none; position: absolute; left: 0; right: auto; top: 110%; background-color: var(--white);
+            min-width: 250px; box-shadow: 0px 8px 16px rgba(0,0,0,0.3); z-index: 1000;
+            border-radius: 8px; border: 2px solid var(--gold); overflow: hidden;
+        }
+        .top-dropdown-menu button, .top-dropdown-menu .dropdown-sub-header {
+            color: var(--text-color); padding: 10px 14px; text-decoration: none; display: block;
+            width: 100%; text-align: right; background: none; border: none; cursor: pointer;
+            font-weight: bold; font-size: 0.9rem; border-bottom: 1px solid #eee; transition: 0.2s;
+        }
+        .top-dropdown-menu button:last-child { border-bottom: none; }
+        .top-dropdown-menu button:hover { background-color: var(--accent-color); color: var(--primary-color); }
+        .top-dropdown-menu.show { display: block; }
+        
+        .dropdown-sub-list {
+            background: #f1f8f5; padding: 5px 15px; font-size: 0.85rem; color: #333; border-bottom: 1px solid #eee;
+        }
 
         .container { max-width: 950px; margin: 20px auto; padding: 0 15px; }
         .card { background: var(--white); padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 15px; }
@@ -197,6 +226,25 @@
         }
         .dropdown-menu button:hover { background-color: #f1f1f1; border-radius: 6px; }
         .dropdown-menu.show { display: block; }
+
+        /* القوائم الإدارية وسجل النشاطات */
+        .staff-menu-only { display: block; }
+        .student-menu-hidden { display: none !important; }
+        .activity-modal { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 100010; display:flex; align-items:center; justify-content:center; padding:15px; }
+        .activity-modal.hidden { display:none !important; }
+        .activity-card { background:#fff; width:min(1100px,100%); max-height:90vh; overflow:auto; border-radius:14px; border:2px solid var(--gold); box-shadow:0 15px 40px rgba(0,0,0,.35); padding:18px; }
+        .activity-head { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:12px; }
+        .activity-filters { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:8px; margin-bottom:12px; }
+        .activity-table { width:100%; border-collapse:collapse; background:#fff; }
+        .activity-table th,.activity-table td { border:1px solid #ddd; padding:8px; font-size:.84rem; text-align:right; vertical-align:top; }
+        .activity-table th { background:var(--primary-color); color:#fff; text-align:center; position:sticky; top:0; }
+        .presence-tabs { display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+        .presence-tab { flex:1; min-width:140px; padding:10px; border:2px solid var(--secondary-color); background:#fff; color:var(--secondary-color); border-radius:8px; font-weight:bold; cursor:pointer; }
+        .presence-tab.active { background:var(--secondary-color); color:#fff; }
+        .presence-list { width:100%; border-collapse:collapse; }
+        .presence-list th,.presence-list td { border:1px solid #ddd; padding:8px; text-align:right; font-size:.88rem; }
+        .presence-list th { background:#1b4332; color:#fff; }
+        .empty-state { text-align:center; padding:18px; color:#777; font-weight:bold; }
     </style>
 </head>
 <body>
@@ -254,7 +302,7 @@
                 </div>
                 <button class="btn-save" style="width: 100%; padding: 10px;" onclick="enterAsStudent()">دخول للطالب 🚀</button>
             </div>
-            <div class="auth-footer" style="margin-top: 15px;">المطور (الدكتور أحمد عباس جمعه 2026)</div>
+            <div class="auth-footer" style="margin-top: 15px;">المطور (د. أحمد عباس جمعه 2026)</div>
         </div>
     </div>
 
@@ -285,11 +333,11 @@
             <p>املأ المعلومات للدخول كعضو كادر:</p>
             
             <div class="auth-input-group">
-                <input type="text" id="appUsername" placeholder="اسم المستخدم">
+                <input type="text" id="appUsername" placeholder="اسم المستخدم" value="AlFarajia2027">
             </div>
             
             <div class="auth-input-group">
-                <input type="password" id="appPassword" placeholder="كلمة المرور">
+                <input type="password" id="appPassword" placeholder="كلمة المرور" value="AlFarajia">
                 <span class="password-toggle-icon" id="togglePasswordBtn" onclick="togglePasswordVisibility()">👁️</span>
             </div>
 
@@ -298,7 +346,7 @@
             </label>
 
             <button onclick="loginApp()">تسجيل الدخول</button>
-            <div class="auth-footer">المطور (الدكتور أحمد عباس جمعه 2026)</div>
+            <div class="auth-footer">المطور (د. أحمد عباس جمعه 2026)</div>
         </div>
     </div>
 
@@ -330,7 +378,23 @@
     </div>
 
     <header>
-        <div class="header-brand">
+        <!-- قائمة الزاوية العلوية المطلوبة -->
+        <div class="menu-container">
+            <button class="menu-toggle-btn" onclick="toggleTopMenu(event)" title="القائمة الرئيسية">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div id="topDropdownMenu" class="top-dropdown-menu">
+                <button class="staff-menu-only" onclick="handleMenuClick('settings')">⚙️ الإعدادات</button>
+                <button class="staff-menu-only" onclick="handleMenuClick('students')">🎓 الطلبة الداخلين والخارجين</button>
+                <button class="staff-menu-only" onclick="handleMenuClick('staff')">👨‍🏫 الكادر الداخل والخارج</button>
+                <button class="staff-menu-only" onclick="handleMenuClick('staffActivities')">📝 نشاطات الكادر</button>
+                <button class="staff-menu-only" onclick="handleMenuClick('studentActivities')">🎓 نشاطات الطلبة</button>
+            </div>
+        </div>
+
+        <div class="header-brand" style="margin-right: 50px;">
             <div class="header-logo-box">
                 <svg viewBox="0 0 400 450" xmlns="http://www.w3.org/2000/svg">
                     <path d="M 50 40 L 350 40 L 350 240 C 350 360 200 430 200 430 C 200 430 50 360 50 240 Z" fill="#ffffff" stroke="#1b4332" stroke-width="16" stroke-linejoin="round"/>
@@ -361,13 +425,13 @@
         <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
             <div id="headerUserInfo" class="user-box hidden">
                 <span id="userInfoText" style="font-size: 0.85rem;"></span>
-                <button class="btn-logout" onclick="logoutProfile()">🚪 تغيير الحساب</button>
+                <button class="btn-logout" onclick="logoutProfile()">🚪 تسجيل خروج</button>
             </div>
         </div>
 
         <div class="developer-tag">
-            <div>إدارة المدرسة: الدكتور سعدون حزين فرحان</div>
-            <div style="color: #ffeb3b; margin-top: 2px;">تطوير: الدكتور أحمد عباس جمعه 2026</div>
+            <div>إدارة المدرسة: د. سعدون حزين فرحان</div>
+            <div style="color: #ffeb3b; margin-top: 2px;">تطوير: د. أحمد عباس جمعه 2026</div>
         </div>
     </header>
 
@@ -390,7 +454,7 @@
                     <option value="">-- اختر الاسم الثلاثي --</option>
                     <option value="سعدون حزين فرحان">سعدون حزين فرحان</option>
                     <option value="سفان محمد إبراهيم">سفان محمد إبراهيم</option>
-                    <option value="كريم مساهر حمد">كريم مساهر حمد</option>
+                    <option value="د. كريم مساهر حمد">د. كريم مساهر حمد</option>
                     <option value="عادل حسين محمد">عادل حسين محمد</option>
                     <option value="مخلص خالد خلف">مخلص خالد خلف</option>
                     <option value="مصطفى طيب صالح">مصطفى طيب صالح</option>
@@ -797,7 +861,8 @@
                                 <tr>
                                     <th>ت</th>
                                     <th>اسم الطالب الثلاثي</th>
-                                    <th>الصف والفرع</th>
+                                    <th>الصف</th>
+                                    <th>الشعبة</th>
                                     <th>هاتف ولي الأمر</th>
                                     <th>ملاحظات</th>
                                     <th class="no-print">الإجراءات</th>
@@ -832,6 +897,14 @@
                             </select>
                         </div>
                         <div class="form-group">
+                            <label>الشعبة:</label>
+                            <select id="addStudentSection">
+                                <option value="">-- اختر الشعبة --</option>
+                                <option value="أ">أ</option><option value="ب">ب</option><option value="ج">ج</option><option value="د">د</option>
+                                <option value="غير محددة">غير محددة</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label>رقم هاتف ولي الأمر:</label>
                             <input type="text" id="addStudentPhone" placeholder="أدخل رقم الهاتف (اختياري)">
                         </div>
@@ -857,6 +930,52 @@
 
         </div>
 
+    </div>
+
+    <!-- نافذة منبثقة للإعدادات (تغيير اسم المستخدم وكلمة المرور) -->
+    <div id="settingsModal" class="hidden" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:20000; display:flex; justify-content:center; align-items:center; padding:15px;">
+        <div style="background:var(--white); padding:25px; border-radius:12px; max-width:420px; width:100%; border:2px solid var(--gold); box-shadow:0 10px 25px rgba(0,0,0,0.5);">
+            <h3 style="color:var(--primary-color); margin-bottom:15px; text-align:center;">⚙️ إعدادات الحساب (تغيير الرمز)</h3>
+            
+            <div class="form-group">
+                <label>اسم المستخدم القديم:</label>
+                <input type="text" id="oldUsernameInput" placeholder="أدخل اسم المستخدم القديم">
+            </div>
+            
+            <div class="form-group">
+                <label>كلمة المرور القديمة:</label>
+                <div style="position:relative;">
+                    <input type="password" id="oldPasswordInput" placeholder="أدخل كلمة المرور القديمة">
+                    <span onclick="toggleModalPass('oldPasswordInput', this)" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); cursor:pointer;">👁️</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>اسم المستخدم الجديد:</label>
+                <input type="text" id="newUsernameInput" placeholder="أدخل اسم المستخدم الجديد">
+            </div>
+
+            <div class="form-group">
+                <label>كلمة المرور الجديدة:</label>
+                <div style="position:relative;">
+                    <input type="password" id="newPasswordInput" placeholder="أدخل كلمة المرور الجديدة">
+                    <span onclick="toggleModalPass('newPasswordInput', this)" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); cursor:pointer;">👁️</span>
+                </div>
+            </div>
+
+            <div class="form-group" style="background:#f9f9f9; padding:10px; border-radius:6px; border:1px solid #ddd;">
+                <label style="font-size:0.9rem; margin-bottom:5px;">هل تريد الخروج من جميع الأجهزة المسجلة؟</label>
+                <div style="display:flex; gap:20px; font-weight:bold;">
+                    <label style="cursor:pointer;"><input type="radio" name="logoutAllDevices" value="yes" checked> نعم</label>
+                    <label style="cursor:pointer;"><input type="radio" name="logoutAllDevices" value="no"> لا</label>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button class="btn-save" style="flex:1; padding:10px;" onclick="saveCredentialsChange()">حفظ التعديلات</button>
+                <button class="btn-action btn-delete" style="flex:1; padding:10px;" onclick="closeSettingsModal()">إلغاء</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -911,6 +1030,12 @@
             "السادس الإعدادي_أدبي": ["التربية الإسلامية", "اللغة العربية", "اللغة الإنجليزية", "الرياضيات", "التاريخ", "الجغرافية", "الاقتصاد"]
         };
 
+        // إدارة تتبع الداخلين والخارجين (حسب الطلب)
+        let activeStudentsList = []; // الطلبة الداخلين
+        let loggedOutStudentsList = []; // الطلبة الذين سجلوا خروج
+        let activeStaffList = []; // الكادر الداخلين
+        let loggedOutStaffList = []; // الكادر الذين سجلوا خروج
+
         document.addEventListener('DOMContentLoaded', () => {
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('currentDateHeader').textContent = 'التاريخ: ' + new Date().toLocaleDateString('ar-IQ', options);
@@ -924,20 +1049,110 @@
             const savedArchive = localStorage.getItem('schoolArchiveData');
             if (savedArchive) archiveData = JSON.parse(savedArchive);
 
+            // تحميل حالات الدخول والخروج المحفوظة إن وجدت
+            if(localStorage.getItem('activeStudentsList')) activeStudentsList = JSON.parse(localStorage.getItem('activeStudentsList'));
+            if(localStorage.getItem('loggedOutStudentsList')) loggedOutStudentsList = JSON.parse(localStorage.getItem('loggedOutStudentsList'));
+            if(localStorage.getItem('activeStaffList')) activeStaffList = JSON.parse(localStorage.getItem('activeStaffList'));
+            if(localStorage.getItem('loggedOutStaffList')) loggedOutStaffList = JSON.parse(localStorage.getItem('loggedOutStaffList'));
+
+            document.querySelectorAll('.staff-menu-only').forEach(el => el.classList.add('student-menu-hidden'));
             checkLoginState();
 
+            document.addEventListener('click', function(ev){
+                if(!currentUser) return;
+                const btn=ev.target.closest('button');
+                if(!btn) return;
+                const ignored=btn.classList.contains('menu-toggle-btn') || btn.classList.contains('btn-logout') || btn.classList.contains('presence-tab') || btn.closest('#presenceModal') || btn.closest('#activitiesModal') || btn.closest('#topDropdownMenu');
+                if(ignored) return;
+                const txt=(btn.innerText||btn.textContent||'').trim().replace(/\s+/g,' ');
+                if(!txt) return;
+                // لا نكرر العمليات التي لها سجل تفصيلي واضح.
+                const detailed=['إضافة كتاب','حذف كتاب','إضافة سجل','حذف سجل','إضافة جدول','حذف جدول','إضافة ملف','حذف ملف','حفظ بيانات الطالب','تعديل بيانات الطالب','حذف طالب','إرسال عبر الواتساب'];
+                if(detailed.some(x=>txt.includes(x))) return;
+                logActivity(isStudentMode?'student':'staff','تفاعل داخل المنصة',`تم الضغط على: ${txt}`);
+            }, true);
+
             window.onclick = function(event) {
-                if (!event.target.matches('.btn-action') && !event.target.matches('button')) {
+                if (!event.target.closest('.menu-container') && !event.target.matches('.btn-action') && !event.target.matches('button')) {
                     let dropdowns = document.getElementsByClassName("dropdown-menu");
                     for (let i = 0; i < dropdowns.length; i++) {
-                        let openDropdown = dropdowns[i];
-                        if (openDropdown.classList.contains('show')) {
-                            openDropdown.classList.remove('show');
-                        }
+                        dropdowns[i].classList.remove('show');
                     }
+                    let topDrop = document.getElementById("topDropdownMenu");
+                    if (topDrop) topDrop.classList.remove('show');
                 }
             }
         });
+
+        function toggleTopMenu(event) {
+            event.stopPropagation();
+            document.getElementById("topDropdownMenu").classList.toggle("show");
+        }
+
+        function handleMenuClick(action) {
+            document.getElementById("topDropdownMenu").classList.remove("show");
+            if(action === 'settings') {
+                // فتح نافذة الإعدادات لتغيير اسم المستخدم وكلمة المرور
+                document.getElementById('settingsModal').classList.remove('hidden');
+            } else if(action === 'staff') {
+                // عرض قائمة الكادر الداخلين والخارجين
+                let staffOnlineNames = activeStaffList.map(s => s.name).join('، ') || 'لا يوجد حالياً';
+                let staffOfflineNames = loggedOutStaffList.map(s => s.name).join('، ') || 'لا يوجد حالياً';
+                alert(`👨‍🏫 الكادر الداخل في المنصة:\n${staffOnlineNames}\n\n🚪 الكادر الذين سجلوا خروج:\n${staffOfflineNames}`);
+            } else if(action === 'students') {
+                // عرض قائمة الطلبة الداخلين والخارجين
+                let studentsOnlineNames = activeStudentsList.map(s => `${s.name} (${s.grade})`).join('\n') || 'لا يوجد طلاب داخلين حالياً';
+                let studentsOfflineNames = loggedOutStudentsList.map(s => `${s.name} (${s.grade})`).join('\n') || 'لا يوجد طلاب مسجلين خروج حالياً';
+                alert(`🎓 الطلبة الداخلين في المنصة:\n${studentsOnlineNames}\n\n🚪 الطلبة الذين سجلوا خروج:\n${studentsOfflineNames}`);
+            }
+        }
+
+        function toggleModalPass(inputId, iconElem) {
+            let input = document.getElementById(inputId);
+            if(input.type === "password") {
+                input.type = "text";
+                iconElem.textContent = "🙈";
+            } else {
+                input.type = "password";
+                iconElem.textContent = "👁️";
+            }
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').classList.add('hidden');
+        }
+
+        function saveCredentialsChange() {
+            let oldUser = document.getElementById('oldUsernameInput').value.trim();
+            let oldPass = document.getElementById('oldPasswordInput').value.trim();
+            let newUser = document.getElementById('newUsernameInput').value.trim();
+            let newPass = document.getElementById('newPasswordInput').value.trim();
+            let logoutAll = document.querySelector('input[name="logoutAllDevices"]:checked').value;
+
+            let currentSavedUser = localStorage.getItem('customAppUser') || 'AlFarajia2027';
+            let currentSavedPass = localStorage.getItem('customAppPass') || 'AlFarajia';
+
+            if(oldUser !== currentSavedUser || oldPass !== currentSavedPass) {
+                alert("اسم المستخدم القديم أو كلمة المرور القديمة غير صحيحة!");
+                return;
+            }
+
+            if(!newUser || !newPass) {
+                alert("يرجى إدخال اسم المستخدم الجديد وكلمة المرور الجديدة.");
+                return;
+            }
+
+            localStorage.setItem('customAppUser', newUser);
+            localStorage.setItem('customAppPass', newPass);
+            logActivity('staff','تعديل إعدادات الدخول',`تم تغيير بيانات دخول المنصة. اسم المستخدم الجديد: ${newUser}`);
+            alert("تم تغيير اسم المستخدم وكلمة المرور بنجاح!");
+            if(logoutAll === 'yes') {
+                localStorage.removeItem('appRemembered');
+                location.reload();
+            } else {
+                closeSettingsModal();
+            }
+        }
 
         function selectRole(role) {
             if(role === 'staff') {
@@ -956,8 +1171,19 @@
                 return;
             }
             isStudentMode = true;
-            currentUser = { name: name, specialty: `طالب - ${grade}`, phone: '', role: 'طالب' };
+            const matchedStudent = studentsData.find(s => s.name === name);
+            const studentSection = (matchedStudent && matchedStudent.section) || 'غير محددة';
+            currentUser = { name: name, specialty: `طالب - ${grade}`, phone: '', role: 'طالب', grade: grade, section: studentSection };
+            
+            // تسجيل الطالب في قائمة الداخلين وإزالته من قائمة الخروج إن وجد
+            activeStudentsList = activeStudentsList.filter(s => s.name !== name);
+            loggedOutStudentsList = loggedOutStudentsList.filter(s => s.name !== name);
+            activeStudentsList.push({ name: name, grade: grade, section: studentSection, loginTime: nowDetails().time, loginDate: nowDetails().date });
+            localStorage.setItem('activeStudentsList', JSON.stringify(activeStudentsList));
+            localStorage.setItem('loggedOutStudentsList', JSON.stringify(loggedOutStudentsList));
+
             document.getElementById('roleSelectionScreen').classList.add('hidden');
+            logActivity('student','دخول إلى المنصة',`سجّل الطالب الدخول إلى المنصة. الصف: ${grade}، الشعبة: ${studentSection}`);
             showMainPlatformForStudent();
         }
 
@@ -984,17 +1210,20 @@
         }
 
         function loginApp() {
-            const user = document.getElementById('appUsername').value;
-            const pass = document.getElementById('appPassword').value;
+            const user = document.getElementById('appUsername').value.trim();
+            const pass = document.getElementById('appPassword').value.trim();
             
-            if (user && pass) {
+            let validUser = localStorage.getItem('customAppUser') || 'AlFarajia2027';
+            let validPass = localStorage.getItem('customAppPass') || 'AlFarajia';
+
+            if (user === validUser && pass === validPass) {
                 if (document.getElementById('rememberMeCheck').checked) {
                     localStorage.setItem('appRemembered', 'true');
                 }
                 document.getElementById('appAuthScreen').classList.add('hidden');
                 showSplashScreen();
             } else {
-                alert("يرجى إدخال اسم المستخدم وكلمة المرور");
+                alert("اسم المستخدم أو كلمة المرور غير صحيحة!");
             }
         }
 
@@ -1031,6 +1260,14 @@
             const savedProfile = localStorage.getItem('teacherProfile');
             if (savedProfile) {
                 currentUser = JSON.parse(savedProfile);
+                
+                // تسجيل الكادر في الداخلين
+                activeStaffList = activeStaffList.filter(s => s.name !== currentUser.name);
+                loggedOutStaffList = loggedOutStaffList.filter(s => s.name !== currentUser.name);
+                activeStaffList.push({ name: currentUser.name, role: currentUser.role, specialty: currentUser.specialty, loginTime: nowDetails().time, loginDate: nowDetails().date });
+                localStorage.setItem('activeStaffList', JSON.stringify(activeStaffList));
+                localStorage.setItem('loggedOutStaffList', JSON.stringify(loggedOutStaffList));
+
                 showMainPlatform();
             } else {
                 document.getElementById('loginCard').classList.remove('hidden');
@@ -1068,12 +1305,37 @@
             currentUser = { role: role, name: name, specialty: spec, phone: phone };
             localStorage.setItem('teacherProfile', JSON.stringify(currentUser));
             
+            // تسجيل الكادر في الداخلين
+            activeStaffList = activeStaffList.filter(s => s.name !== name);
+            loggedOutStaffList = loggedOutStaffList.filter(s => s.name !== name);
+            activeStaffList.push({ name: name, role: role, specialty: spec, loginTime: nowDetails().time, loginDate: nowDetails().date });
+            localStorage.setItem('activeStaffList', JSON.stringify(activeStaffList));
+            localStorage.setItem('loggedOutStaffList', JSON.stringify(loggedOutStaffList));
+
             document.getElementById('loginCard').classList.add('hidden');
+            logActivity('staff','دخول إلى المنصة',`تم تسجيل دخول الكادر. الصفة: ${role}، الاختصاص: ${spec}`);
             showMainPlatform();
         }
 
         function logoutProfile() {
-            if(confirm("هل أنت متأكد من تغيير الحساب الحالي؟")) {
+            if(confirm("هل أنت متأكد من تسجيل الخروج؟")) {
+                if(isStudentMode && currentUser) {
+                    // نقل الطالب من الداخلين إلى الخارجين
+                    activeStudentsList = activeStudentsList.filter(s => s.name !== currentUser.name);
+                    loggedOutStudentsList = loggedOutStudentsList.filter(s => s.name !== currentUser.name);
+                    loggedOutStudentsList.push({ name: currentUser.name, grade: currentUser.grade, section: currentUser.section || 'غير محددة', loginTime: '', logoutTime: nowDetails().time, logoutDate: nowDetails().date });
+                    localStorage.setItem('activeStudentsList', JSON.stringify(activeStudentsList));
+                    localStorage.setItem('loggedOutStudentsList', JSON.stringify(loggedOutStudentsList));
+                } else if(currentUser) {
+                    // نقل الكادر من الداخلين إلى الخارجين
+                    activeStaffList = activeStaffList.filter(s => s.name !== currentUser.name);
+                    loggedOutStaffList = loggedOutStaffList.filter(s => s.name !== currentUser.name);
+                    loggedOutStaffList.push({ name: currentUser.name, role: currentUser.role, specialty: currentUser.specialty, loginTime: '', logoutTime: nowDetails().time, logoutDate: nowDetails().date });
+                    localStorage.setItem('activeStaffList', JSON.stringify(activeStaffList));
+                    localStorage.setItem('loggedOutStaffList', JSON.stringify(loggedOutStaffList));
+                }
+
+                logActivity(isStudentMode?'student':'staff','تسجيل الخروج من المنصة','تم تسجيل خروج المستخدم من المنصة.');
                 localStorage.removeItem('teacherProfile');
                 currentUser = null;
                 isStudentMode = false;
@@ -1084,10 +1346,11 @@
         function showMainPlatform() {
             document.getElementById('mainPlatform').classList.remove('hidden');
             document.getElementById('headerUserInfo').classList.remove('hidden');
-            document.getElementById('userInfoText').innerHTML = `👤 <b>الدكتور ${currentUser.name}</b> (${currentUser.specialty})`;
+            document.getElementById('userInfoText').innerHTML = `👤 <b>د. ${currentUser.name}</b> (${currentUser.specialty})`;
             
             document.querySelectorAll('.staff-only-item').forEach(el => el.classList.remove('hidden'));
             document.querySelectorAll('.student-hide-item').forEach(el => el.classList.remove('hidden'));
+            document.querySelectorAll('.staff-menu-only').forEach(el => el.classList.remove('student-menu-hidden'));
 
             renderGroupsTable();
             updatePreview();
@@ -1100,6 +1363,8 @@
             
             document.querySelectorAll('.staff-only-item').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.student-hide-item').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.staff-menu-only').forEach(el => el.classList.add('student-menu-hidden'));
+            document.getElementById('topDropdownMenu').classList.remove('show');
 
             switchMainTab('archive');
         }
@@ -1182,6 +1447,7 @@
 
         function openBookGrade(gradeName) {
             currentSelectedBookGrade = gradeName;
+            if(isStudentMode) logActivity('student','فتح قسم الكتب',`فتح الطالب قسم الكتب المنهجية للصف: ${gradeName}`);
             document.getElementById('booksHomeView').classList.add('hidden');
             document.getElementById('booksDetailView').classList.remove('hidden');
             document.getElementById('booksGradeTitle').textContent = `الكتب المنهجية الخاصة بـ: ${gradeName}`;
@@ -1239,7 +1505,8 @@
                 return;
             }
 
-            const staffFullName = currentUser ? `الدكتور ${currentUser.name}` : "الإدارة";
+            logActivity('staff','إضافة كتاب إلى الأرشيف',`الصف: ${currentSelectedBookGrade || 'غير محدد'}، اسم الكتاب: ${name}، الملف: ${tempBookFilePayload.fileName || 'رابط'}`);
+            const staffFullName = currentUser ? `د. ${currentUser.name}` : "الإدارة";
             const fileData = {
                 id: generateId(),
                 title: name,
@@ -1327,10 +1594,11 @@
         }
 
         function addRecordItem() {
+            logActivity(isStudentMode?'student':'staff','إضافة سجل مدرسي',`تمت إضافة سجل مدرسي إلى الأرشيف.`);
             const name = document.getElementById('newRecordName').value.trim();
             if(!name) { alert("أدخل اسم السجل."); return; }
             if(!tempRecordPayload) { alert("أرفق ملفاً أو رابطاً."); return; }
-            const staffFullName = currentUser ? `الدكتور ${currentUser.name}` : "الإدارة";
+            const staffFullName = currentUser ? `د. ${currentUser.name}` : "الإدارة";
             archiveData.records.push({ id: generateId(), title: name, uploader: staffFullName, ...tempRecordPayload, date: new Date().toLocaleDateString('ar-IQ') });
             localStorage.setItem('schoolArchiveData', JSON.stringify(archiveData));
             document.getElementById('newRecordName').value = '';
@@ -1341,10 +1609,11 @@
         }
 
         function addScheduleItem() {
+            logActivity(isStudentMode?'student':'staff','إضافة جدول أسبوعي',`تمت إضافة جدول أسبوعي إلى الأرشيف.`);
             const name = document.getElementById('newScheduleName').value.trim();
             if(!name) { alert("أدخل عنوان الجدول."); return; }
             if(!tempSchedulePayload) { alert("أرفق ملفاً أو رابطاً."); return; }
-            const staffFullName = currentUser ? `الدكتور ${currentUser.name}` : "الإدارة";
+            const staffFullName = currentUser ? `د. ${currentUser.name}` : "الإدارة";
             archiveData.schedule.push({ id: generateId(), title: name, uploader: staffFullName, ...tempSchedulePayload, date: new Date().toLocaleDateString('ar-IQ') });
             localStorage.setItem('schoolArchiveData', JSON.stringify(archiveData));
             document.getElementById('newScheduleName').value = '';
@@ -1355,11 +1624,12 @@
         }
 
         function addOtherItem() {
+            logActivity(isStudentMode?'student':'staff','إضافة ملف آخر',`تمت إضافة ملف آخر إلى الأرشيف.`);
             const name = document.getElementById('newOtherName').value.trim();
             if(!name) { alert("أدخل عنوان الملف."); return; }
             if(!tempOtherPayload) { alert("أرفق ملفاً أو رابطاً."); return; }
-            const staffFullName = currentUser ? `الدكتور ${currentUser.name}` : "الإدارة";
-            archiveData.others.push({ id: generateId(), title: name, uploader: staffFullName, ...tempSchedulePayload, ...tempOtherPayload, date: new Date().toLocaleDateString('ar-IQ') });
+            const staffFullName = currentUser ? `د. ${currentUser.name}` : "الإدارة";
+            archiveData.others.push({ id: generateId(), title: name, uploader: staffFullName, ...tempOtherPayload, date: new Date().toLocaleDateString('ar-IQ') });
             localStorage.setItem('schoolArchiveData', JSON.stringify(archiveData));
             document.getElementById('newOtherName').value = '';
             tempOtherPayload = null;
@@ -1418,233 +1688,281 @@
             const list = (archiveData.books && archiveData.books[currentSelectedBookGrade]) ? archiveData.books[currentSelectedBookGrade] : [];
             renderGenericTable(list, 'booksTableBody', 'deleteBookItem', currentBookTypeTab);
         }
+        function renderRecordsTable() {
+            renderGenericTable(archiveData.records, 'recordsTableBody', 'deleteRecordItem', currentRecordTypeTab);
+        }
+        function renderScheduleTable() {
+            renderGenericTable(archiveData.schedule, 'scheduleTableBody', 'deleteScheduleItem', currentScheduleTypeTab);
+        }
+        function renderOthersTable() {
+            renderGenericTable(archiveData.others, 'othersTableBody', 'deleteOtherItem', currentOtherTypeTab);
+        }
 
         function deleteBookItem(id) {
             if(confirm('هل أنت متأكد من حذف هذا الكتاب؟')) {
-                archiveData.books[currentSelectedBookGrade] = archiveData.books[currentSelectedBookGrade].filter(i => i.id !== id);
+                const deletedBook = archiveData.books[currentSelectedBookGrade].find(x => x.id === id);
+                archiveData.books[currentSelectedBookGrade] = archiveData.books[currentSelectedBookGrade].filter(x => x.id !== id);
+                logActivity('staff','حذف كتاب من الأرشيف',`الصف: ${currentSelectedBookGrade}، الكتاب: ${deletedBook?.title || id}`);
                 localStorage.setItem('schoolArchiveData', JSON.stringify(archiveData));
                 renderBooksTable();
             }
         }
-
-        function renderRecordsTable() {
-            renderGenericTable(archiveData.records, 'recordsTableBody', 'deleteRecordItem', currentRecordTypeTab);
-        }
         function deleteRecordItem(id) {
             if(confirm('هل أنت متأكد من حذف هذا السجل؟')) {
-                archiveData.records = archiveData.records.filter(i => i.id !== id);
+                logActivity('staff','حذف سجل مدرسي','تم حذف سجل من الأرشيف.');
+                archiveData.records = archiveData.records.filter(x => x.id !== id);
                 localStorage.setItem('schoolArchiveData', JSON.stringify(archiveData));
                 renderRecordsTable();
             }
         }
-
-        function renderScheduleTable() {
-            renderGenericTable(archiveData.schedule, 'scheduleTableBody', 'deleteScheduleItem', currentScheduleTypeTab);
-        }
         function deleteScheduleItem(id) {
             if(confirm('هل أنت متأكد من حذف هذا الجدول؟')) {
-                archiveData.schedule = archiveData.schedule.filter(i => i.id !== id);
+                logActivity('staff','حذف جدول أسبوعي','تم حذف جدول من الأرشيف.');
+                archiveData.schedule = archiveData.schedule.filter(x => x.id !== id);
                 localStorage.setItem('schoolArchiveData', JSON.stringify(archiveData));
                 renderScheduleTable();
             }
         }
-
-        function renderOthersTable() {
-            renderGenericTable(archiveData.others, 'othersTableBody', 'deleteOtherItem', currentOtherTypeTab);
-        }
         function deleteOtherItem(id) {
             if(confirm('هل أنت متأكد من حذف هذا الملف؟')) {
-                archiveData.others = archiveData.others.filter(i => i.id !== id);
+                logActivity('staff','حذف ملف من الأرشيف','تم حذف ملف من قسم الملفات الأخرى.');
+                archiveData.others = archiveData.others.filter(x => x.id !== id);
                 localStorage.setItem('schoolArchiveData', JSON.stringify(archiveData));
                 renderOthersTable();
             }
         }
 
+        function generateId() {
+            return '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function renderGroupsTable() {
+            const tbody = document.getElementById('whatsappGroupsTableBody');
+            tbody.innerHTML = '';
+            const grades = Object.keys(whatsappGroupsData);
+            grades.forEach(grade => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: bold;">${grade}</td>
+                    <td><input type="text" id="grp_${grade}" value="${whatsappGroupsData[grade]}" placeholder="أدخل رابط مجموعة الواتساب..." dir="ltr" style="text-align: right;"></td>
+                    <td style="text-align: center;"><button class="btn-action btn-save" style="padding: 6px 15px;" onclick="saveGroupLink('${grade}')">حفظ</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function saveGroupLink(grade) {
+            const val = document.getElementById(`grp_${grade}`).value.trim();
+            whatsappGroupsData[grade] = val;
+            localStorage.setItem('schoolWhatsappGroups', JSON.stringify(whatsappGroupsData));
+            alert(`تم حفظ رابط مجموعة ${grade} بنجاح.`);
+        }
+
         function setMessageType(type) {
             currentMsgType = type;
             document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('sectionAnnouncement').classList.add('hidden');
-            document.getElementById('sectionHomework').classList.add('hidden');
-            document.getElementById('sectionExams').classList.add('hidden');
-            document.getElementById('announcementClassSelection').classList.add('hidden');
-            document.getElementById('standardClassSelection').classList.add('hidden');
+            if(type === 'announcement') document.getElementById('btnType1').classList.add('active');
+            else if(type === 'homework') document.getElementById('btnType2').classList.add('active');
+            else if(type === 'exams') document.getElementById('btnType3').classList.add('active');
 
-            if (type === 'announcement') {
-                document.getElementById('btnType1').classList.add('active');
-                document.getElementById('sectionAnnouncement').classList.remove('hidden');
-                document.getElementById('announcementClassSelection').classList.remove('hidden');
-            } else if (type === 'homework') {
-                document.getElementById('btnType2').classList.add('active');
-                document.getElementById('sectionHomework').classList.remove('hidden');
-                document.getElementById('standardClassSelection').classList.remove('hidden');
-                populateSubjectsDropdown('hwSubjectSelect');
-            } else if (type === 'exams') {
-                document.getElementById('btnType3').classList.add('active');
-                document.getElementById('sectionExams').classList.remove('hidden');
-                document.getElementById('standardClassSelection').classList.remove('hidden');
-                populateSubjectsDropdown('examSubjectSelect');
+            document.getElementById('sectionAnnouncement').classList.toggle('hidden', type !== 'announcement');
+            document.getElementById('sectionHomework').classList.toggle('hidden', type !== 'homework');
+            document.getElementById('sectionExams').classList.toggle('hidden', type !== 'exams');
+
+            const annSel = document.getElementById('announcementClassSelection');
+            const stdSel = document.getElementById('standardClassSelection');
+
+            if(type === 'announcement') {
+                annSel.classList.remove('hidden');
+                stdSel.classList.add('hidden');
+            } else {
+                annSel.classList.add('hidden');
+                stdSel.classList.remove('hidden');
             }
             updatePreview();
         }
 
         function toggleAnnScope() {
             const scope = document.querySelector('input[name="annScope"]:checked').value;
-            if(scope === 'multi') document.getElementById('annMultiGrid').classList.remove('hidden');
-            else document.getElementById('annMultiGrid').classList.add('hidden');
+            const multiGrid = document.getElementById('annMultiGrid');
+            if(scope === 'multi') multiGrid.classList.remove('hidden');
+            else multiGrid.classList.add('hidden');
             updatePreview();
         }
 
         function onGradeSelectChange() {
-            const val = document.getElementById('singleGradeSelect').value;
-            if(val === 'الرابع الإعدادي' || val === 'الخامس الإعدادي' || val === 'السادس الإعدادي') {
-                document.getElementById('branchSelectionBox').classList.remove('hidden');
-                currentGrade = val;
+            const grade = document.getElementById('singleGradeSelect').value;
+            const branchBox = document.getElementById('branchSelectionBox');
+            
+            if(grade.includes('الإعدادي')) {
+                branchBox.classList.remove('hidden');
                 document.getElementById('chkScientific').checked = false;
                 document.getElementById('chkLiterary').checked = false;
+                currentGrade = grade;
                 currentBranch = '';
             } else {
-                document.getElementById('branchSelectionBox').classList.add('hidden');
-                currentGrade = val;
+                branchBox.classList.add('hidden');
+                currentGrade = grade;
                 currentBranch = '';
             }
-            if(currentMsgType === 'homework') populateSubjectsDropdown('hwSubjectSelect');
-            if(currentMsgType === 'exams') populateSubjectsDropdown('examSubjectSelect');
+            populateSubjects(grade, currentBranch);
             updatePreview();
         }
 
         function onBranchChange() {
-            currentBranch = document.querySelector('input[name="prepBranch"]:checked').value;
-            if(currentMsgType === 'homework') populateSubjectsDropdown('hwSubjectSelect');
-            if(currentMsgType === 'exams') populateSubjectsDropdown('examSubjectSelect');
+            const branch = document.querySelector('input[name="prepBranch"]:checked').value;
+            currentBranch = branch;
+            populateSubjects(currentGrade, branch);
             updatePreview();
         }
 
-        function populateSubjectsDropdown(selectId) {
-            const select = document.getElementById(selectId);
-            select.innerHTML = '<option value="">-- اختر المادة --</option>';
-            if(!currentGrade) return;
-            let key = currentGrade;
-            if (currentBranch) key += "_" + currentBranch;
-            if (subjectsByGrade[key]) {
-                subjectsByGrade[key].forEach(sub => {
-                    select.innerHTML += `<option value="${sub}">${sub}</option>`;
-                });
+        function populateSubjects(grade, branch) {
+            let key = grade;
+            if(grade.includes('الإعدادي') && branch) {
+                key = grade + '_' + (branch === 'علمي' ? 'علمي' : 'أدبي');
             }
-            select.innerHTML += '<option value="MANUAL_OTHER">➕ مادة أخرى (كتابة يدوية)</option>';
+            const subs = subjectsByGrade[key] || [];
+
+            ['hwSubjectSelect', 'examSubjectSelect'].forEach(selId => {
+                const sel = document.getElementById(selId);
+                sel.innerHTML = '<option value="">-- اختر المادة الدراسية --</option>';
+                subs.forEach(sub => {
+                    const opt = document.createElement('option');
+                    opt.value = sub;
+                    opt.textContent = sub;
+                    sel.appendChild(opt);
+                });
+                const manOpt = document.createElement('option');
+                manOpt.value = 'MANUAL_OTHER';
+                manOpt.textContent = '➕ أضف مادة أخرى يدوياً';
+                sel.appendChild(manOpt);
+            });
         }
 
         function checkManualSubject(type) {
-            let selId = type === 'hw' ? 'hwSubjectSelect' : 'examSubjectSelect';
-            let manId = type === 'hw' ? 'hwManualSubject' : 'examManualSubject';
-            if(document.getElementById(selId).value === 'MANUAL_OTHER') document.getElementById(manId).classList.remove('hidden');
-            else document.getElementById(manId).classList.add('hidden');
+            const selId = type === 'hw' ? 'hwSubjectSelect' : 'examSubjectSelect';
+            const manId = type === 'hw' ? 'hwManualSubject' : 'examManualSubject';
+            const sel = document.getElementById(selId);
+            const man = document.getElementById(manId);
+
+            if(sel.value === 'MANUAL_OTHER') man.classList.remove('hidden');
+            else man.classList.add('hidden');
             updatePreview();
         }
 
         function handleFileSelected(input, typeName) {
             if(input.files && input.files[0]) {
-                attachedFileName = input.files[0].name;
+                const file = input.files[0];
+                attachedFileName = file.name;
                 attachedFileType = typeName;
-                document.getElementById('attachedFileInfo').innerText = `✅ تم إرفاق ${typeName}: ${attachedFileName}`;
-            } else {
-                attachedFileName = '';
-                document.getElementById('attachedFileInfo').innerText = '';
+                document.getElementById('attachedFileInfo').innerText = `✅ تم إرفاق الـ ${typeName}: ${file.name}`;
+                updatePreview();
             }
-            updatePreview();
         }
 
         function updatePreview() {
-            let text = "🏫 *منصة ثانوية الفراجية للبنين*\n";
-            text += `📅 العام الدراسي: 2026 / 2027\n\n`;
-            
+            let msg = `🏫 *ثانوية الفراجية للبنين*\n`;
+            msg += `📅 العام الدراسي: 2026/2027\n`;
             if(currentUser) {
-                text += `👤 المرسل: الدكتور ${currentUser.name} (${currentUser.specialty})\n`;
-                if(currentUser.phone) {
-                    text += `📞 ${currentUser.phone}\n`;
+                msg += `👨‍🏫 الإرسال بواسطة: د. ${currentUser.name} (${currentUser.specialty})\n`;
+            }
+            msg += `-------------------------\n`;
+
+            if(currentMsgType === 'announcement') {
+                const scope = document.querySelector('input[name="annScope"]:checked').value;
+                let targetText = "جميع الصفوف الدراسية";
+                if(scope === 'multi') {
+                    const checkedGrades = Array.from(document.querySelectorAll('.ann-grade-check:checked')).map(cb => cb.value);
+                    if(checkedGrades.length > 0) targetText = checkedGrades.join('، ');
+                    else targetText = "لم يتم تحديد صفوف";
                 }
+                const title = document.getElementById('annTitle').value.trim();
+                msg += `📢 *تبليغ إداري هام*\n`;
+                msg += `🎯 موجه إلى: ${targetText}\n`;
+                if(title) msg += `📌 العنوان: ${title}\n`;
+            } else if(currentMsgType === 'homework') {
+                const subSel = document.getElementById('hwSubjectSelect').value;
+                const sub = subSel === 'MANUAL_OTHER' ? document.getElementById('hwManualSubject').value.trim() : subSel;
+                const pFrom = document.getElementById('pageFrom').value;
+                const pTo = document.getElementById('pageTo').value;
+                const topic = document.getElementById('hwTopic').value.trim();
+
+                msg += `📚 *التحضير اليومي*\n`;
+                msg += `📌 الصف: ${currentGrade} ${currentBranch ? '(' + currentBranch + ')' : ''}\n`;
+                if(sub) msg += `📖 المادة: ${sub}\n`;
+                if(pFrom || pTo) msg += `📄 الصفحات: من ( ${pFrom || '...'} ) إلى ( ${pTo || '...'} )\n`;
+                if(topic) msg += `📝 فقرات التحضير: ${topic}\n`;
+            } else if(currentMsgType === 'exams') {
+                const subSel = document.getElementById('examSubjectSelect').value;
+                const sub = subSel === 'MANUAL_OTHER' ? document.getElementById('examManualSubject').value.trim() : subSel;
+                const title = document.getElementById('examTitle').value.trim();
+                const list = document.getElementById('examList').value.trim();
+
+                msg += `📊 *نتائج وامتحانات*\n`;
+                msg += `📌 الصف: ${currentGrade} ${currentBranch ? '(' + currentBranch + ')' : ''}\n`;
+                if(sub) msg += `📖 المادة: ${sub}\n`;
+                if(title) msg += `📋 العنوان: ${title}\n`;
+                if(list) msg += `✍️ التفاصيل:\n${list}\n`;
             }
 
-            if (currentMsgType === 'announcement') {
-                let title = document.getElementById('annTitle').value.trim();
-                text += `📢 *تبليغ إداري هام*\n`;
-                if(title) text += `📌 العنوان: *${title}*\n`;
-            } else if (currentMsgType === 'homework') {
-                let subSel = document.getElementById('hwSubjectSelect').value;
-                let sub = subSel === 'MANUAL_OTHER' ? document.getElementById('hwManualSubject').value : subSel;
-                let pFrom = document.getElementById('pageFrom').value;
-                let pTo = document.getElementById('pageTo').value;
-                let topic = document.getElementById('hwTopic').value.trim();
-
-                text += `📚 *التحضير اليومي لمادة: ${sub || '...'}*\n`;
-                text += `📖 الصف: ${currentGrade || '...'} ${currentBranch ? '(' + currentBranch + ')' : ''}\n`;
-                if(pFrom || pTo) text += `📄 الصفحات: من (${pFrom || '...'}) إلى (${pTo || '...'})\n`;
-                if(topic) text += `📝 التفاصيل: ${topic}\n`;
-            } else if (currentMsgType === 'exams') {
-                let subSel = document.getElementById('examSubjectSelect').value;
-                let sub = subSel === 'MANUAL_OTHER' ? document.getElementById('examManualSubject').value : subSel;
-                let examTitle = document.getElementById('examTitle').value.trim();
-                let examList = document.getElementById('examList').value.trim();
-
-                text += `📊 *إعلان نتائج الامتحان*\n`;
-                text += `📖 الصف: ${currentGrade || '...'} ${currentBranch ? '(' + currentBranch + ')' : ''}\n`;
-                text += `📌 المادة: ${sub || '...'}\n`;
-                if(examTitle) text += `🏷️ العنوان: ${examTitle}\n`;
-                if(examList) text += `📋 التفاصيل:\n${examList}\n`;
+            const notes = document.getElementById('generalNotes').value.trim();
+            if(notes) {
+                msg += `\n💬 *ملاحظات إضافية:*\n${notes}\n`;
             }
-
-            let notes = document.getElementById('generalNotes').value.trim();
-            if(notes) text += `\n💬 ملاحظات: ${notes}\n`;
 
             if(attachedFileName) {
-                text += `\n📎 مرفق مع الرسالة: ${attachedFileName} (${attachedFileType})`;
+                msg += `\n📎 *ملف مرفق:* ${attachedFileName} (${attachedFileType})\n`;
             }
 
-            document.getElementById('messagePreview').innerText = text;
+            document.getElementById('messagePreview').textContent = msg;
         }
 
         function sendToWhatsApp() {
-            let text = document.getElementById('messagePreview').innerText;
-            let encoded = encodeURIComponent(text);
-            window.open(`https://api.whatsapp.com/send?text=${encoded}`, '_blank');
-        }
-
-        function renderGroupsTable() {
-            const tbody = document.getElementById('whatsappGroupsTableBody');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            for (let grade in whatsappGroupsData) {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="font-weight: bold;">${grade}</td>
-                    <td><input type="text" id="grp_${grade}" value="${whatsappGroupsData[grade]}" placeholder="أدخل رابط مجموعة الواتساب..." dir="ltr" style="text-align: right;"></td>
-                    <td style="text-align: center;"><button class="btn-action btn-save" onclick="saveWhatsappGroup('${grade}')">💾 حفظ</button></td>
-                `;
-                tbody.appendChild(tr);
+            logActivity(isStudentMode?'student':'staff','إرسال رسالة',`تم إرسال/فتح رسالة عبر الواتساب. نص الرسالة: ${document.getElementById("messagePreview")?.textContent || ""}`);
+            const previewText = document.getElementById('messagePreview').textContent;
+            if(!previewText || previewText.includes('قم بإكمال البيانات')) {
+                alert("يرجى إكمال تفاصيل الرسالة أولاً.");
+                return;
             }
+
+            let targetUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(previewText);
+
+            if(currentMsgType !== 'announcement' && currentGrade) {
+                let groupKey = currentGrade;
+                if(currentGrade.includes('الإعدادي') && currentBranch) {
+                    groupKey = currentGrade + ' - ' + currentBranch;
+                }
+                // البحث المرن في روابط المجموعات
+                let foundLink = '';
+                for(let key in whatsappGroupsData) {
+                    if(groupKey.includes(key) && whatsappGroupsData[key]) {
+                        foundLink = whatsappGroupsData[key];
+                        break;
+                    }
+                }
+                if(foundLink) {
+                    targetUrl = foundLink;
+                }
+            }
+
+            window.open(targetUrl, '_blank');
         }
 
-        function saveWhatsappGroup(grade) {
-            const val = document.getElementById(`grp_${grade}`).value.trim();
-            whatsappGroupsData[grade] = val;
-            localStorage.setItem('schoolWhatsappGroups', JSON.stringify(whatsappGroupsData));
-            alert("تم حفظ رابط مجموعة " + grade + " بنجاح!");
-        }
+        function switchSubTab(subName) {
+            document.querySelectorAll('#tabContentStudents .sub-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.sub-section').forEach(sec => sec.classList.add('hidden'));
 
-        function switchSubTab(subTab) {
-            document.querySelectorAll('#tabContentStudents .sub-tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.sub-section').forEach(s => s.classList.add('hidden'));
-
-            if(subTab === 'list') {
+            if(subName === 'list') {
                 document.getElementById('subBtnList').classList.add('active');
                 document.getElementById('subContentList').classList.remove('hidden');
                 loadStudents();
-            } else if(subTab === 'add') {
+            } else if(subName === 'add') {
                 document.getElementById('subBtnAdd').classList.add('active');
                 document.getElementById('subContentAdd').classList.remove('hidden');
                 document.getElementById('addStudentForm').reset();
                 document.getElementById('editStudentId').value = '';
                 document.getElementById('saveStudentBtn').textContent = 'حفظ بيانات الطالب';
-            } else if(subTab === 'search') {
+            } else if(subName === 'search') {
                 document.getElementById('subBtnSearch').classList.add('active');
                 document.getElementById('subContentSearch').classList.remove('hidden');
             }
@@ -1655,13 +1973,10 @@
             const tbody = document.getElementById('studentsTableBody');
             tbody.innerHTML = '';
 
-            let filtered = studentsData;
-            if(filterGrade) {
-                filtered = studentsData.filter(s => s.grade === filterGrade);
-            }
+            const filtered = sortStudentsPresence(filterGrade ? studentsData.filter(s => s.grade === filterGrade) : studentsData);
 
             if(filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #666; padding: 15px;">لا توجد بيانات طلاب مسجلة حالياً.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #666; padding: 15px;">لا يوجد طلاب مسجلين حالياً.</td></tr>`;
                 return;
             }
 
@@ -1671,22 +1986,26 @@
                     <td>${idx + 1}</td>
                     <td style="font-weight: bold;">${st.name}</td>
                     <td>${st.grade}</td>
-                    <td>${st.phone || '-'}</td>
+                    <td>${st.section || 'غير محددة'}</td>
+                    <td dir="ltr" style="text-align: right;">${st.phone || '-'}</td>
                     <td>${st.notes || '-'}</td>
-                    <td class="no-print action-btns">
-                        <button class="btn-action btn-edit" onclick="editStudent('${st.id}')">✏️ تعديل</button>
-                        <button class="btn-action btn-delete" onclick="deleteStudent('${st.id}')">🗑️ حذف</button>
+                    <td class="no-print">
+                        <div class="action-btns">
+                            <button class="btn-action btn-edit" onclick="editStudent('${st.id}')">✏️ تعديل</button>
+                            <button class="btn-action btn-delete" onclick="deleteStudent('${st.id}')">🗑️ حذف</button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function handleAddStudent(e) {
-            e.preventDefault();
+        function handleAddStudent(event) {
+            event.preventDefault();
             const id = document.getElementById('editStudentId').value;
             const name = document.getElementById('addStudentName').value.trim();
             const grade = document.getElementById('addStudentGrade').value;
+            const section = document.getElementById('addStudentSection').value || 'غير محددة';
             const phone = document.getElementById('addStudentPhone').value.trim();
             const notes = document.getElementById('addStudentNotes').value.trim();
 
@@ -1696,21 +2015,18 @@
             }
 
             if(id) {
-                let st = studentsData.find(s => s.id === id);
-                if(st) {
-                    st.name = name;
-                    st.grade = grade;
-                    st.phone = phone;
-                    st.notes = notes;
+                const idx = studentsData.findIndex(s => s.id === id);
+                if(idx !== -1) {
+                    studentsData[idx] = { ...studentsData[idx], id, name, grade, section, phone, notes };
                 }
-                alert("تم تحديث بيانات الطالب بنجاح!");
             } else {
-                const newSt = { id: generateId(), name, grade, phone, notes };
+                const newSt = { id: generateId(), name, grade, section, phone, notes };
                 studentsData.push(newSt);
-                alert("تم إضافة الطالب بنجاح!");
             }
 
             localStorage.setItem('schoolStudentsData', JSON.stringify(studentsData));
+            logActivity('staff', id ? 'تعديل بيانات طالب' : 'إضافة طالب', `اسم الطالب: ${name}، الصف: ${grade}، الشعبة: ${section}، هاتف ولي الأمر: ${phone||'غير مدخل'}، الملاحظات: ${notes||'لا توجد'}`);
+            alert("تم حفظ بيانات الطالب بنجاح!");
             switchSubTab('list');
         }
 
@@ -1721,6 +2037,7 @@
             document.getElementById('editStudentId').value = st.id;
             document.getElementById('addStudentName').value = st.name;
             document.getElementById('addStudentGrade').value = st.grade;
+            document.getElementById('addStudentSection').value = st.section || 'غير محددة';
             document.getElementById('addStudentPhone').value = st.phone || '';
             document.getElementById('addStudentNotes').value = st.notes || '';
             document.getElementById('saveStudentBtn').textContent = 'تعديل بيانات الطالب';
@@ -1728,80 +2045,87 @@
 
         function deleteStudent(id) {
             if(confirm("هل أنت متأكد من حذف هذا الطالب؟")) {
+                const deletedStudent = studentsData.find(s => s.id === id);
                 studentsData = studentsData.filter(s => s.id !== id);
                 localStorage.setItem('schoolStudentsData', JSON.stringify(studentsData));
+                if(deletedStudent) logActivity('staff','حذف طالب',`تم حذف الطالب: ${deletedStudent.name}، الصف: ${deletedStudent.grade}، الشعبة: ${deletedStudent.section || 'غير محددة'}`);
                 loadStudents();
             }
         }
 
         function handleSearch() {
             const query = document.getElementById('searchInput').value.trim().toLowerCase();
-            const resDiv = document.getElementById('searchResults');
+            const resultsDiv = document.getElementById('searchResults');
+            resultsDiv.innerHTML = '';
+
             if(!query) {
-                resDiv.innerHTML = `<p style="text-align: center; color: #666;">ابدأ الكتابة للبحث عن الطلاب.</p>`;
+                resultsDiv.innerHTML = `<p style="text-align: center; color: #666;">ابدأ الكتابة للبحث عن الطلاب.</p>`;
                 return;
             }
 
             const matched = studentsData.filter(s => s.name.toLowerCase().includes(query));
             if(matched.length === 0) {
-                resDiv.innerHTML = `<p style="text-align: center; color: #d9534f;">لم يتم العثور على أي طالب بهذا الاسم.</p>`;
+                resultsDiv.innerHTML = `<p style="text-align: center; color: #ff5252;">لم يتم العثور على أي طالب بهذا الاسم.</p>`;
                 return;
             }
 
-            let html = `<table class="student-table"><thead><tr><th>ت</th><th>اسم الطالب</th><th>الصف</th><th>الهاتف</th><th>ملاحظات</th></tr></thead><tbody>`;
+            const table = document.createElement('table');
+            table.className = 'student-table';
+            table.innerHTML = `<thead><tr><th>ت</th><th>اسم الطالب</th><th>الصف</th><th>الشعبة</th><th>هاتف ولي الأمر</th><th>ملاحظات</th></tr></thead><tbody></tbody>`;
+            const tbody = table.querySelector('tbody');
+
             matched.forEach((st, idx) => {
-                html += `<tr><td>${idx + 1}</td><td style="font-weight: bold;">${st.name}</td><td>${st.grade}</td><td>${st.phone || '-'}</td><td>${st.notes || '-'}</td></tr>`;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${idx + 1}</td><td style="font-weight:bold;">${st.name}</td><td>${st.grade}</td><td>${st.section || 'غير محددة'}</td><td dir="ltr">${st.phone || '-'}</td><td>${st.notes || '-'}</td>`;
+                tbody.appendChild(tr);
             });
-            html += `</tbody></table>`;
-            resDiv.innerHTML = html;
+            resultsDiv.appendChild(table);
         }
 
         function downloadStudentsFile(type) {
             const grade = document.getElementById('downloadGradeSelect').value;
-            let list = studentsData;
-            if(grade !== 'all') {
-                list = studentsData.filter(s => s.grade === grade);
-            }
+            let list = grade === 'all' ? studentsData : studentsData.filter(s => s.grade === grade);
 
             if(list.length === 0) {
-                alert("لا توجد بيانات طلاب للتحميل ضمن الفئة المحددة.");
+                alert("لا توجد بيانات طلاب للتحميل في هذا الصف.");
                 return;
             }
 
             if(type === 'excel') {
-                let wsData = [["ت", "اسم الطالب الثلاثي", "الصف والفرع", "هاتف ولي الأمر", "ملاحظات"]];
-                list.forEach((s, i) => {
-                    wsData.push([i + 1, s.name, s.grade, s.phone || '', s.notes || '']);
-                });
-                const wb = XLSX.utils.book_new();
-                const ws = XLSX.utils.aoa_to_sheet(wsData);
-                XLSX.utils.book_append_sheet(wb, ws, "الطلاب");
-                XLSX.writeFile(wb, `قائمة_الطلاب_${grade}.xlsx`);
+                let excelData = list.map((st, i) => ({
+                    "ت": i + 1,
+                    "اسم الطالب الثلاثي": st.name,
+                    "الصف الدراسي": st.grade,
+                    "هاتف ولي الأمر": st.phone || '',
+                    "ملاحظات": st.notes || ''
+                }));
+                const worksheet = XLSX.utils.json_to_sheet(excelData);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "الطلاب");
+                XLSX.writeFile(workbook, `قائمة_الطلاب_${grade}.xlsx`);
             } else if(type === 'pdf') {
-                const element = document.createElement('div');
-                element.dir = 'rtl';
-                element.style.padding = '20px';
-                let html = `<h2 style="text-align:center; color:#1b4332; margin-bottom:15px;">قائمة طلاب ثانوية الفراجية للبنين (${grade})</h2>`;
-                html += `<table border="1" cellspacing="0" cellpadding="8" style="width:100%; border-collapse:collapse; text-align:right;">`;
-                html += `<tr style="background:#1b4332; color:#fff;"><th>ت</th><th>اسم الطالب الثلاثي</th><th>الصف</th><th>هاتف ولي الأمر</th><th>ملاحظات</th></tr>`;
-                list.forEach((s, i) => {
-                    html += `<tr><td>${i+1}</td><td>${s.name}</td><td>${s.grade}</td><td>${s.phone || '-'}</td><td>${s.notes || '-'}</td></tr>`;
-                });
-                html += `</table>`;
-                element.innerHTML = html;
-                html2pdf().from(element).save(`قائمة_الطلاب_${grade}.pdf`);
+                const element = document.getElementById('printableStudentTable');
+                let opt = {
+                    margin: 10,
+                    filename: `قائمة_الطلاب_${grade}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+                html2pdf().from(element).set(opt).save();
             } else if(type === 'word') {
-                let html = `<html dir="rtl"><head><meta charset="utf-8"></head><body>`;
-                html += `<h2 style="text-align:center; color:#1b4332;">قائمة طلاب ثانوية الفراجية للبنين (${grade})</h2>`;
-                html += `<table border="1" cellspacing="0" cellpadding="8" style="width:100%; border-collapse:collapse; text-align:right;">`;
-                html += `<tr style="background:#1b4332; color:#fff;"><th>ت</th><th>اسم الطالب الثلاثي</th><th>الصف</th><th>هاتف ولي الأمر</th><th>ملاحظات</th></tr>`;
-                list.forEach((s, i) => {
-                    html += `<tr><td>${i+1}</td><td>${s.name}</td><td>${s.grade}</td><td>${s.phone || '-'}</td><td>${s.notes || '-'}</td></tr>`;
+                let htmlContent = `<html dir="rtl"><head><meta charset="UTF-8"><title>قائمة الطلاب</title></head><body style="font-family: Arial, sans-serif;">`;
+                htmlContent += `<h2 style="text-align:center; color:#1b4332;">ثانوية الفراجية للبنين - قائمة طلاب (${grade})</h2>`;
+                htmlContent += `<table border="1" style="width:100%; border-collapse:collapse; text-align:right;">`;
+                htmlContent += `<tr style="background:#1b4332; color:white;"><th>ت</th><th>اسم الطالب الثلاثي</th><th>الصف</th><th>الهاتف</th><th>ملاحظات</th></tr>`;
+                list.forEach((st, i) => {
+                    htmlContent += `<tr><td>${i+1}</td><td>${st.name}</td><td>${st.grade}</td><td>${st.phone || ''}</td><td>${st.notes || ''}</td></tr>`;
                 });
-                html += `</table></body></html>`;
-                const blob = new Blob(['\ufeff' + html], { type: 'application/msword' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
+                htmlContent += `</table></body></html>`;
+
+                let blob = new Blob(['\ufeff' + htmlContent], { type: 'application/msword' });
+                let url = URL.createObjectURL(blob);
+                let a = document.createElement('a');
                 a.href = url;
                 a.download = `قائمة_الطلاب_${grade}.doc`;
                 document.body.appendChild(a);
@@ -1809,10 +2133,102 @@
                 document.body.removeChild(a);
             }
         }
-
-        function generateId() {
-            return '_' + Math.random().toString(36).substr(2, 9);
+        // ===== سجل الحضور والنشاطات =====
+        function loadActivityData() {
+            try { return JSON.parse(localStorage.getItem('schoolActivityLog') || '[]'); } catch(e) { return []; }
         }
+        function saveActivityData(list) { localStorage.setItem('schoolActivityLog', JSON.stringify(list.slice(-2000))); }
+        function nowDetails() {
+            const d=new Date();
+            return { iso:d.toISOString(), date:d.toLocaleDateString('ar-IQ'), time:d.toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit',second:'2-digit'}) };
+        }
+        function getBranchFromGrade(grade){ if(!grade) return ''; if(String(grade).includes('علمي')) return 'علمي'; if(String(grade).includes('أدبي')) return 'أدبي'; return 'متوسط'; }
+        function logActivity(type, action, details, targetUser=null) {
+            const t=nowDetails();
+            const u=currentUser || {name:'غير معروف', role:isStudentMode?'طالب':'كادر', grade:'', specialty:''};
+            const item={id:generateId(), type, action, details:details||'', name:u.name||'', role:u.role||'', specialty:u.specialty||'', phone:u.phone||'', grade:u.grade||'', branch:getBranchFromGrade(u.grade||''), section:u.section||'', date:t.date, time:t.time, timestamp:t.iso, targetUser:targetUser||''};
+            const list=loadActivityData(); list.push(item); saveActivityData(list);
+        }
+        function savePresence(key,list){ localStorage.setItem(key,JSON.stringify(list)); }
+        function sortStudentsPresence(list){
+            const gradeOrder=['الأول المتوسط','الثاني المتوسط','الثالث المتوسط','الرابع العلمي','الرابع الأدبي','الخامس العلمي','الخامس الأدبي','السادس العلمي','السادس الأدبي'];
+            return [...list].sort((a,b)=>{ const g=(gradeOrder.indexOf(a.grade)+1||999)-(gradeOrder.indexOf(b.grade)+1||999); if(g) return g; const sec=String(a.section||'غير محددة').localeCompare(String(b.section||'غير محددة'),'ar'); if(sec) return sec; return String(a.name||'').localeCompare(String(b.name||''),'ar'); });
+        }
+        function openPresenceModal(kind){
+            if(!isStaffMode()) return;
+            const modal=document.getElementById('presenceModal'); modal.classList.remove('hidden');
+            document.getElementById('presenceModalTitle').textContent=kind==='students'?'🎓 الطلبة: الداخلون والخارجون':'👨‍🏫 الكادر: الداخلون والخارجون';
+            modal.dataset.kind=kind; showPresenceTab('online');
+        }
+        function isStaffMode(){ return !!currentUser && !isStudentMode; }
+        function closeAdminModal(id){ document.getElementById(id).classList.add('hidden'); }
+        function showPresenceTab(tab){
+            const modal=document.getElementById('presenceModal'), kind=modal.dataset.kind||'students';
+            document.querySelectorAll('#presenceModal .presence-tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+            const isStudent=kind==='students';
+            let list=tab==='online'?(isStudent?activeStudentsList:activeStaffList):(isStudent?loggedOutStudentsList:loggedOutStaffList);
+            list=isStudent?sortStudentsPresence(list):[...list].sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'ar'));
+            const body=document.getElementById('presenceTableBody'); body.innerHTML='';
+            if(!list.length){ body.innerHTML='<tr><td colspan="6" class="empty-state">لا توجد بيانات حالياً.</td></tr>'; return; }
+            list.forEach((x,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=isStudent?`<td>${i+1}</td><td><b>${x.name||'-'}</b></td><td>${x.grade||'-'}</td><td>${x.section||'غير محددة'}</td><td>${x.loginTime||'-'}</td><td>${x.logoutTime||'-'}</td>`:`<td>${i+1}</td><td><b>${x.name||'-'}</b></td><td>${x.role||'-'}</td><td>${x.specialty||'-'}</td><td>${x.loginTime||'-'}</td><td>${x.logoutTime||'-'}</td>`; body.appendChild(tr); });
+        }
+        function openActivitiesModal(type){
+            if(!isStaffMode()) return;
+            const modal=document.getElementById('activitiesModal'); modal.classList.remove('hidden'); modal.dataset.type=type;
+            document.getElementById('activitiesModalTitle').textContent=type==='staff'?'📝 نشاطات الكادر':'🎓 نشاطات الطلبة';
+            populateActivityFilters(type); renderActivities();
+        }
+        function populateActivityFilters(type){
+            const grade=document.getElementById('activityGradeFilter');
+            const section=document.getElementById('activitySectionFilter');
+            const branch=document.getElementById('activityBranchFilter');
+            grade.innerHTML='<option value="">كل الصفوف</option>'; section.innerHTML='<option value="">كل الشعب</option>';
+            const grades=[...new Set(studentsData.map(s=>s.grade).filter(Boolean))];
+            grades.forEach(g=>grade.insertAdjacentHTML('beforeend',`<option value="${g}">${g}</option>`));
+            ['أ','ب','ج','د','غير محددة'].forEach(x=>section.insertAdjacentHTML('beforeend',`<option value="${x}">${x}</option>`));
+            branch.innerHTML='<option value="">كل الفروع</option><option value="علمي">علمي</option><option value="أدبي">أدبي</option><option value="متوسط">متوسط</option>';
+            grade.classList.toggle('hidden',type==='staff'); section.classList.toggle('hidden',type==='staff'); branch.classList.toggle('hidden',type==='staff');
+        }
+        function renderActivities(){
+            const modal=document.getElementById('activitiesModal'), type=modal.dataset.type||'staff';
+            let list=loadActivityData().filter(x=>type==='staff'?x.type==='staff':x.type==='student');
+            const gf=document.getElementById('activityGradeFilter').value, sf=document.getElementById('activitySectionFilter').value, bf=document.getElementById('activityBranchFilter').value;
+            if(gf) list=list.filter(x=>x.grade===gf); if(sf) list=list.filter(x=>(x.section||'غير محددة')===sf); if(bf) list=list.filter(x=>x.branch===bf);
+            list.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+            const body=document.getElementById('activitiesTableBody'); body.innerHTML='';
+            if(!list.length){body.innerHTML='<tr><td colspan="10" class="empty-state">لا توجد نشاطات مسجلة.</td></tr>';return;}
+            list.forEach((x,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${i+1}</td><td>${x.date}<br>${x.time}</td><td><b>${x.name||'-'}</b></td><td>${x.grade||'-'}</td><td>${x.branch||'-'}</td><td>${x.section||'-'}</td><td>${x.phone||'-'}</td><td>${x.action||'-'}</td><td>${x.details||'-'}</td><td>${x.specialty||x.role||'-'}</td>`; body.appendChild(tr); });
+        }
+
+        // استبدال القائمة المنسدلة بنوافذ إدارية حقيقية للكادر فقط
+        const _oldHandleMenuClick = handleMenuClick;
+        handleMenuClick = function(action){
+            document.getElementById('topDropdownMenu').classList.remove('show');
+            if(!isStaffMode()) return;
+            if(action==='settings') document.getElementById('settingsModal').classList.remove('hidden');
+            else if(action==='staff') openPresenceModal('staff');
+            else if(action==='students') openPresenceModal('students');
+            else if(action==='staffActivities') openActivitiesModal('staff');
+            else if(action==='studentActivities') openActivitiesModal('student');
+        };
+
+        // ===== نهاية سجل الحضور والنشاطات =====
     </script>
+
+    <div id="presenceModal" class="activity-modal hidden">
+        <div class="activity-card">
+            <div class="activity-head"><h3 id="presenceModalTitle">الحضور</h3><button class="btn-action btn-delete" onclick="closeAdminModal('presenceModal')">✕ إغلاق</button></div>
+            <div class="presence-tabs"><button class="presence-tab active" data-tab="online" onclick="showPresenceTab('online')">🟢 الداخلون</button><button class="presence-tab" data-tab="offline" onclick="showPresenceTab('offline')">🚪 الذين سجلوا الخروج</button></div>
+            <table class="presence-list"><thead><tr><th>ت</th><th>الاسم</th><th>الصف/الصلاحية</th><th>الشعبة/الاختصاص</th><th>وقت الدخول</th><th>وقت الخروج</th></tr></thead><tbody id="presenceTableBody"></tbody></table>
+        </div>
+    </div>
+
+    <div id="activitiesModal" class="activity-modal hidden">
+        <div class="activity-card">
+            <div class="activity-head"><h3 id="activitiesModalTitle">النشاطات</h3><button class="btn-action btn-delete" onclick="closeAdminModal('activitiesModal')">✕ إغلاق</button></div>
+            <div class="activity-filters"><select id="activityGradeFilter" onchange="renderActivities()"><option value="">كل الصفوف</option></select><select id="activityBranchFilter" onchange="renderActivities()"><option value="">كل الفروع</option></select><select id="activitySectionFilter" onchange="renderActivities()"><option value="">كل الشعب</option></select><button class="btn-action btn-save" onclick="renderActivities()">🔄 تحديث</button></div>
+            <div style="overflow:auto;"><table class="activity-table"><thead><tr><th>ت</th><th>التاريخ والوقت</th><th>الاسم</th><th>الصف</th><th>الفرع</th><th>الشعبة</th><th>هاتف الطالب</th><th>النشاط</th><th>كامل التفاصيل</th><th>الصفة/الاختصاص</th></tr></thead><tbody id="activitiesTableBody"></tbody></table></div>
+        </div>
+    </div>
 </body>
 </html>
