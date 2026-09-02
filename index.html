@@ -18,6 +18,37 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 40px; }
+        
+        #roleSelectionScreen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(135deg, #081c15 0%, #1b4332 50%, #081c15 100%);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 100002; padding: 15px;
+        }
+        .role-card {
+            background: var(--white); padding: 30px 20px; border-radius: 16px;
+            text-align: center; max-width: 420px; width: 100%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 20px rgba(212, 175, 55, 0.4);
+            border: 2px solid var(--gold);
+        }
+        .role-logo-box {
+            width: 80px; height: 80px; border-radius: 50%; background: #fff; padding: 5px;
+            margin: 0 auto 10px auto; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .role-logo-box svg { width: 100%; height: 100%; }
+        .role-card h2 { color: var(--primary-color); font-size: 1.25rem; margin-bottom: 5px; font-weight: 900; }
+        .role-card .auth-year { color: var(--gold); font-size: 0.9rem; font-weight: bold; margin-bottom: 15px; background: #081c15; padding: 4px 10px; border-radius: 20px; display: inline-block; }
+        .role-card p { color: #333; font-weight: bold; margin-bottom: 15px; font-size: 0.95rem; }
+        .role-buttons { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; }
+        .role-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .role-btn-staff { background: var(--primary-color); color: white; }
+        .role-btn-staff:hover { background: #123620; }
+        .role-btn-student { background: var(--gold); color: #1b4332; }
+        .role-btn-student:hover { background: #c29f31; }
+
+        #studentLoginForm { margin-top: 15px; border-top: 1px dashed #ddd; padding-top: 15px; text-align: right; }
+
         #appAuthScreen {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: linear-gradient(135deg, #081c15 0%, #1b4332 50%, #081c15 100%);
@@ -136,10 +167,11 @@
         .group-table th, .group-table td, .student-table th, .student-table td, .archive-table th, .archive-table td { border: 1px solid #ccc; padding: 8px; text-align: right; font-size: 0.9rem; vertical-align: middle; }
         .group-table th, .student-table th, .archive-table th { background-color: var(--primary-color); color: white; text-align: center; }
 
-        .action-btns { display: flex; gap: 4px; justify-content: center; }
+        .action-btns { display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; }
         .btn-action { border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
         .btn-edit { background-color: #ffc107; color: #333; }
         .btn-delete { background-color: #dc3545; color: white; }
+        .btn-view { background-color: #17a2b8; color: white; text-decoration: none; padding: 6px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; display: inline-block; }
         .btn-download { background-color: #28a745; color: white; text-decoration: none; padding: 6px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; display: inline-block; }
         
         .search-box { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
@@ -169,6 +201,63 @@
 </head>
 <body>
 
+    <div id="roleSelectionScreen">
+        <div class="role-card">
+            <div class="role-logo-box">
+                <svg viewBox="0 0 400 450" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M 50 40 L 350 40 L 350 240 C 350 360 200 430 200 430 C 200 430 50 360 50 240 Z" fill="#ffffff" stroke="#1b4332" stroke-width="16" stroke-linejoin="round"/>
+                    <text x="200" y="105" font-family="Segoe UI, Arial, sans-serif" font-weight="900" font-size="34" fill="#111111" text-anchor="middle">ثانوية الفراجية</text>
+                    <path d="M 90 290 C 150 260 200 280 200 320 C 200 280 250 260 310 290 L 310 210 C 250 180 200 200 200 240 C 200 200 150 180 90 210 Z" fill="#ffffff" stroke="#1b4332" stroke-width="10" stroke-linejoin="round"/>
+                    <path d="M 90 290 L 90 305 C 150 275 200 295 200 335 C 200 295 250 275 310 305 L 310 290" fill="none" stroke="#1b4332" stroke-width="8"/>
+                    <line x1="200" y1="240" x2="200" y2="320" stroke="#1b4332" stroke-width="8"/>
+                    <path d="M 200 250 L 200 195" stroke="#1b4332" stroke-width="12" stroke-linecap="round"/>
+                    <path d="M 200 195 C 180 170 185 140 200 120 C 215 140 220 170 200 195 Z" fill="#104f55"/>
+                    <path d="M 200 185 C 190 170 192 150 200 138 C 208 150 210 170 200 185 Z" fill="#e8f5e9"/>
+                    <g transform="translate(10, -5) rotate(22, 270, 210)">
+                        <rect x="255" y="150" width="22" height="75" rx="4" fill="#104f55" stroke="#1b4332" stroke-width="4"/>
+                        <path d="M 255 225 L 266 250 L 277 225 Z" fill="#104f55" stroke="#1b4332" stroke-width="3"/>
+                        <polygon points="266,250 262,262 270,262" fill="#ffffff" stroke="#104f55" stroke-width="2"/>
+                        <line x1="266" y1="230" x2="266" y2="256" stroke="#ffffff" stroke-width="2"/>
+                        <rect x="253" y="180" width="26" height="8" fill="#ffffff"/>
+                    </g>
+                    <text x="200" y="380" font-family="Segoe UI, Arial, sans-serif" font-weight="900" font-size="38" fill="#111111" text-anchor="middle">للبنين</text>
+                </svg>
+            </div>
+            <h2>ثانوية الفراجية للبنين</h2>
+            <div class="auth-year">العام الدراسي: 2026 / 2027</div>
+            <p>أهلاً بك، هل أنت من كادر المدرسة أم طالب؟</p>
+            
+            <div class="role-buttons">
+                <button class="role-btn role-btn-staff" onclick="selectRole('staff')">👨‍🏫 كادر المدرسة</button>
+                <button class="role-btn role-btn-student" onclick="selectRole('student')">👨‍🎓 طالب</button>
+            </div>
+
+            <div id="studentLoginForm" class="hidden">
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 0.9rem;">اسم الطالب الثلاثي:</label>
+                    <input type="text" id="visitorStudentName" placeholder="أدخل اسمك الثلاثي...">
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label style="font-size: 0.9rem;">الصف:</label>
+                    <select id="visitorStudentGrade">
+                        <option value="">-- اختر صفك الدراسي --</option>
+                        <option value="الأول المتوسط">الأول المتوسط</option>
+                        <option value="الثاني المتوسط">الثاني المتوسط</option>
+                        <option value="الثالث المتوسط">الثالث المتوسط</option>
+                        <option value="الرابع العلمي">الرابع العلمي</option>
+                        <option value="الرابع الأدبي">الرابع الأدبي</option>
+                        <option value="الخامس العلمي">الخامس العلمي</option>
+                        <option value="الخامس الأدبي">الخامس الأدبي</option>
+                        <option value="السادس العلمي">السادس العلمي</option>
+                        <option value="السادس الأدبي">السادس الأدبي</option>
+                    </select>
+                </div>
+                <button class="btn-save" style="width: 100%; padding: 10px;" onclick="enterAsStudent()">دخول للطالب 🚀</button>
+            </div>
+            <div class="auth-footer" style="margin-top: 15px;">المطور (الدكتور أحمد عباس جمعه 2026)</div>
+        </div>
+    </div>
+
     <div id="appAuthScreen" class="hidden">
         <div class="auth-card">
             <div class="auth-logo-box">
@@ -193,7 +282,7 @@
             </div>
             <h2>ثانوية الفراجية للبنين</h2>
             <div class="auth-year">للعام الدراسي 2026ـ2027</div>
-            <p>املأ المعلومات للدخول لأول مرة:</p>
+            <p>املأ المعلومات للدخول كعضو كادر:</p>
             
             <div class="auth-input-group">
                 <input type="text" id="appUsername" placeholder="اسم المستخدم">
@@ -209,7 +298,7 @@
             </label>
 
             <button onclick="loginApp()">تسجيل الدخول</button>
-            <div class="auth-footer">المطور (د. احمد عباس 2026)</div>
+            <div class="auth-footer">المطور (الدكتور أحمد عباس جمعه 2026)</div>
         </div>
     </div>
 
@@ -270,12 +359,6 @@
         </div>
         
         <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-            <div style="background: rgba(255,255,255,0.15); padding: 5px 10px; border-radius: 8px; display: flex; gap: 6px; align-items: center;">
-                <button onclick="exportPlatformData()" class="btn-action" style="background: #28a745; color: white; padding: 5px 8px; font-size: 0.75rem;" title="تصدير نسخة احتياطية من الطلاب وروابط الواتساب والأرشيف لكي لا تضيع عند تحديث المنصة في GitHub">💾 تصدير البيانات</button>
-                <button onclick="document.getElementById('importDataFile').click()" class="btn-action" style="background: #e67e22; color: white; padding: 5px 8px; font-size: 0.75rem;" title="استعادة البيانات بعد تحديث GitHub">📥 استعادة البيانات</button>
-                <input type="file" id="importDataFile" accept=".json" class="hidden" onchange="importPlatformData(this)">
-            </div>
-
             <div id="headerUserInfo" class="user-box hidden">
                 <span id="userInfoText" style="font-size: 0.85rem;"></span>
                 <button class="btn-logout" onclick="logoutProfile()">🚪 تغيير الحساب</button>
@@ -283,14 +366,13 @@
         </div>
 
         <div class="developer-tag">
-            <div>إدارة المدرسة: د. سعدون حزين فرحان</div>
-            <div style="color: #ffeb3b; margin-top: 2px;">تطوير: د. أحمد عباس</div>
+            <div>إدارة المدرسة: الدكتور سعدون حزين فرحان</div>
+            <div style="color: #ffeb3b; margin-top: 2px;">تطوير: الدكتور أحمد عباس جمعه 2026</div>
         </div>
     </header>
 
     <div class="container">
 
-        <!-- تسجيل دخول الكادر التدريسي -->
         <div id="loginCard" class="card hidden">
             <h3 style="color: var(--primary-color); margin-bottom: 12px; text-align: center;">تسجيل دخول الكادر التدريسي</h3>
             <div class="form-group">
@@ -355,16 +437,14 @@
             <button class="btn-send btn-save" onclick="saveProfile()" style="width: 100%; padding: 13px;">دخول للمنصة وإرسال الرسائل</button>
         </div>
 
-        <!-- المنصة الرئيسية -->
         <div id="mainPlatform" class="hidden">
-            <div class="main-tabs">
-                <button class="tab-main-btn active" id="tabBtnSend" onclick="switchMainTab('send')">📢 لوحة إرسال الرسائل</button>
+            <div class="main-tabs" id="mainTabsContainer">
+                <button class="tab-main-btn active student-hide-item" id="tabBtnSend" onclick="switchMainTab('send')">📢 لوحة إرسال الرسائل</button>
                 <button class="tab-main-btn" id="tabBtnArchive" onclick="switchMainTab('archive')">📁 أرشيف المدرسة</button>
-                <button class="tab-main-btn" id="tabBtnGroups" onclick="switchMainTab('groups')">⚙️ مجموعات الواتساب</button>
-                <button class="tab-main-btn" id="tabBtnStudents" onclick="switchMainTab('students')">🎓 معلومات الطلبة</button>
+                <button class="tab-main-btn student-hide-item" id="tabBtnGroups" onclick="switchMainTab('groups')">⚙️ مجموعات الواتساب</button>
+                <button class="tab-main-btn student-hide-item" id="tabBtnStudents" onclick="switchMainTab('students')">🎓 معلومات الطلبة</button>
             </div>
 
-            <!-- تبويب إرسال الرسائل -->
             <div id="tabContentSend" class="card">
                 <div id="msgTypeButtonsContainer">
                     <label style="font-size: 1.05rem; margin-bottom: 10px;">أولاً: اختر نوع الرسالة للإرسال:</label>
@@ -492,7 +572,6 @@
                 <button class="btn-send" onclick="sendToWhatsApp()">📲 إرسال عبر الواتساب</button>
             </div>
 
-            <!-- تبويب أرشيف المدرسة -->
             <div id="tabContentArchive" class="card hidden">
                 <h3 style="color: var(--primary-color); margin-bottom: 15px;">📁 أرشيف المدرسة المركزي</h3>
 
@@ -503,10 +582,9 @@
                     <button class="sub-tab-btn" id="archTab4" onclick="switchArchiveTab('others')">📎 ملفات أخرى</button>
                 </div>
 
-                <!-- 1) قسم الكتب المنهجية -->
                 <div id="archContentBooks" class="archive-section">
                     <div id="booksHomeView">
-                        <p style="color: #555; margin-bottom: 10px; font-weight: bold;">اختر الصف الدراسي لعرض أو إضافة الكتب:</p>
+                        <p style="color: #555; margin-bottom: 10px; font-weight: bold;">اختر الصف الدراسي لعرض الكتب:</p>
                         <div class="grade-cards-grid">
                             <div class="grade-card" onclick="openBookGrade('الأول المتوسط')">الأول المتوسط</div>
                             <div class="grade-card" onclick="openBookGrade('الثاني المتوسط')">الثاني المتوسط</div>
@@ -524,7 +602,12 @@
                         <button class="btn-action btn-edit" style="margin-bottom: 12px; padding: 8px 12px;" onclick="backToBooksHome()">⬅️ رجوع لاختيار الصفوف</button>
                         <h4 id="booksGradeTitle" style="color: var(--secondary-color); margin-bottom: 15px;"></h4>
 
-                        <div class="card" style="background: #f8f9fa; border: 1px solid #ddd; margin-bottom: 15px;">
+                        <div class="sub-tabs" style="margin-bottom: 15px;">
+                            <button class="sub-tab-btn active" id="bookSubImg" onclick="switchBookTypeTab('images')">🖼️ صور</button>
+                            <button class="sub-tab-btn" id="bookSubDoc" onclick="switchBookTypeTab('files')">📄 ملفات</button>
+                        </div>
+
+                        <div id="staffBookAddBox" class="card staff-only-item" style="background: #f8f9fa; border: 1px solid #ddd; margin-bottom: 15px;">
                             <h5 style="margin-bottom: 10px; color: var(--primary-color);">➕ أضف كتاب آخر لهذا الصف:</h5>
                             <div class="form-group">
                                 <label>اسم الكتاب:</label>
@@ -549,17 +632,21 @@
                             <button class="btn-save" style="padding: 10px 20px; margin-top: 10px; width: 100%;" onclick="addBookItem()">حفظ الكتاب في الأرشيف</button>
                         </div>
 
-                        <h5 style="margin-bottom: 10px;">عرض الكتب المضافة:</h5>
+                        <h5 style="margin-bottom: 10px;" id="booksTableTitleHeading">عرض الملفات المضافة:</h5>
                         <table class="archive-table">
-                            <thead><tr><th>ت</th><th>اسم الكتاب</th><th>اسم المضيف</th><th>الملف أو الرابط</th><th>إجراء</th></tr></thead>
+                            <thead><tr><th>ت</th><th>اسم الكتاب</th><th>اسم المضيف</th><th>الملف أو الرابط</th><th>إجراءات</th></tr></thead>
                             <tbody id="booksTableBody"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- 2) سجلات مدرسية -->
                 <div id="archContentRecords" class="archive-section hidden">
-                    <div class="card" style="background: #f8f9fa; border: 1px solid #ddd; margin-bottom: 15px;">
+                    <div class="sub-tabs" style="margin-bottom: 15px;">
+                        <button class="sub-tab-btn active" id="recordSubImg" onclick="switchRecordTypeTab('images')">🖼️ صور</button>
+                        <button class="sub-tab-btn" id="recordSubDoc" onclick="switchRecordTypeTab('files')">📄 ملفات</button>
+                    </div>
+
+                    <div id="staffRecordAddBox" class="card staff-only-item" style="background: #f8f9fa; border: 1px solid #ddd; margin-bottom: 15px;">
                         <h5 style="margin-bottom: 10px; color: var(--primary-color);">➕ أضف سجل آخر:</h5>
                         <div class="form-group">
                             <label>اسم السجل (مثل: سجل نموذج للدرجات):</label>
@@ -579,14 +666,18 @@
 
                     <h5 style="margin-bottom: 10px;">عرض السجلات المدرسية:</h5>
                     <table class="archive-table">
-                        <thead><tr><th>ت</th><th>اسم السجل</th><th>اسم المضيف</th><th>الملف المرفق</th><th>إجراء</th></tr></thead>
+                        <thead><tr><th>ت</th><th>اسم السجل</th><th>اسم المضيف</th><th>الملف المرفق</th><th>إجراءات</th></tr></thead>
                         <tbody id="recordsTableBody"></tbody>
                     </table>
                 </div>
 
-                <!-- 3) الجدول الاسبوعي -->
                 <div id="archContentSchedule" class="archive-section hidden">
-                    <div class="card" style="background: #f8f9fa; border: 1px solid #ddd; margin-bottom: 15px;">
+                    <div class="sub-tabs" style="margin-bottom: 15px;">
+                        <button class="sub-tab-btn active" id="scheduleSubImg" onclick="switchScheduleTypeTab('images')">🖼️ صور</button>
+                        <button class="sub-tab-btn" id="scheduleSubDoc" onclick="switchScheduleTypeTab('files')">📄 ملفات</button>
+                    </div>
+
+                    <div id="staffScheduleAddBox" class="card staff-only-item" style="background: #f8f9fa; border: 1px solid #ddd; margin-bottom: 15px;">
                         <h5 style="margin-bottom: 10px; color: var(--primary-color);">➕ أضف جدولاً أسبوعياً آخر:</h5>
                         <div class="form-group">
                             <label>عنوان الجدول أو الصف:</label>
@@ -606,14 +697,18 @@
 
                     <h5 style="margin-bottom: 10px;">عرض الجداول الأسبوعية:</h5>
                     <table class="archive-table">
-                        <thead><tr><th>ت</th><th>عنوان الجدول</th><th>اسم المضيف</th><th>الملف المرفق</th><th>إجراء</th></tr></thead>
+                        <thead><tr><th>ت</th><th>عنوان الجدول</th><th>اسم المضيف</th><th>الملف المرفق</th><th>إجراءات</th></tr></thead>
                         <tbody id="scheduleTableBody"></tbody>
                     </table>
                 </div>
 
-                <!-- 4) ملفات اخرى -->
                 <div id="archContentOthers" class="archive-section hidden">
-                    <div class="card" style="background: #f8f9fa; border: 1px solid #ddd; margin-bottom: 15px;">
+                    <div class="sub-tabs" style="margin-bottom: 15px;">
+                        <button class="sub-tab-btn active" id="otherSubImg" onclick="switchOtherTypeTab('images')">🖼️ صور</button>
+                        <button class="sub-tab-btn" id="otherSubDoc" onclick="switchOtherTypeTab('files')">📄 ملفات</button>
+                    </div>
+
+                    <div id="staffOtherAddBox" class="card staff-only-item" style="background: #f8f9fa; border: 1px solid #ddd; margin-bottom: 15px;">
                         <h5 style="margin-bottom: 10px; color: var(--primary-color);">➕ أضف ملفاً آخر:</h5>
                         <div class="form-group">
                             <label>عنوان الملف أو وصفه:</label>
@@ -633,14 +728,13 @@
 
                     <h5 style="margin-bottom: 10px;">عرض الملفات الأخرى:</h5>
                     <table class="archive-table">
-                        <thead><tr><th>ت</th><th>عنوان الملف</th><th>اسم المضيف</th><th>الملف المرفق</th><th>إجراء</th></tr></thead>
+                        <thead><tr><th>ت</th><th>عنوان الملف</th><th>اسم المضيف</th><th>الملف المرفق</th><th>إجراءات</th></tr></thead>
                         <tbody id="othersTableBody"></tbody>
                     </table>
                 </div>
 
             </div>
 
-            <!-- تبويب مجموعات الواتساب -->
             <div id="tabContentGroups" class="card hidden">
                 <h3 style="color: var(--primary-color); margin-bottom: 12px;">إعداد روابط مجموعات الواتساب</h3>
                 <table class="group-table">
@@ -649,7 +743,6 @@
                 </table>
             </div>
 
-            <!-- تبويب معلومات الطلبة -->
             <div id="tabContentStudents" class="card hidden">
                 <h3 style="color: var(--primary-color); margin-bottom: 15px;">🎓 إدارة معلومات الطلبة</h3>
 
@@ -768,6 +861,7 @@
 
     <script>
         let currentUser = null;
+        let isStudentMode = false;
         let currentMsgType = 'announcement';
         let currentGrade = '';
         let currentBranch = '';
@@ -778,6 +872,11 @@
         let tempRecordPayload = null;
         let tempSchedulePayload = null;
         let tempOtherPayload = null;
+
+        let currentBookTypeTab = 'images';
+        let currentRecordTypeTab = 'images';
+        let currentScheduleTypeTab = 'images';
+        let currentOtherTypeTab = 'images';
 
         let whatsappGroupsData = {
             "الأول المتوسط": "",
@@ -840,47 +939,26 @@
             }
         });
 
-        function exportPlatformData() {
-            const backupData = {
-                whatsappGroupsData: whatsappGroupsData,
-                studentsData: studentsData,
-                archiveData: archiveData
-            };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `Farajiyya_Backup_${new Date().toISOString().slice(0,10)}.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
+        function selectRole(role) {
+            if(role === 'staff') {
+                document.getElementById('roleSelectionScreen').classList.add('hidden');
+                checkLoginState();
+            } else {
+                document.getElementById('studentLoginForm').classList.remove('hidden');
+            }
         }
 
-        function importPlatformData(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const imported = JSON.parse(e.target.result);
-                        if(imported.whatsappGroupsData) {
-                            whatsappGroupsData = imported.whatsappGroupsData;
-                            localStorage.setItem('schoolWhatsappGroups', JSON.stringify(whatsappGroupsData));
-                        }
-                        if(imported.studentsData) {
-                            studentsData = imported.studentsData;
-                            localStorage.setItem('schoolStudentsData', JSON.stringify(studentsData));
-                        }
-                        if(imported.archiveData) {
-                            archiveData = imported.archiveData;
-                            localStorage.setItem('schoolArchiveData', JSON.stringify(archiveData));
-                        }
-                        alert("✅ تم استعادة جميع بيانات الطلاب وروابط الواتساب والأرشيف بنجاح تام!");
-                        location.reload();
-                    } catch (err) {
-                        alert("❌ خطأ في قراءة ملف النسخة الاحتياطية. تأكد من صحة الملف.");
-                    }
-                };
-                reader.readAsDataURL(input.files[0]);
+        function enterAsStudent() {
+            const name = document.getElementById('visitorStudentName').value.trim();
+            const grade = document.getElementById('visitorStudentGrade').value;
+            if(!name || !grade) {
+                alert("يرجى إدخال اسم الطالب الثلاثي واختيار الصف الدراسي.");
+                return;
             }
+            isStudentMode = true;
+            currentUser = { name: name, specialty: `طالب - ${grade}`, phone: '', role: 'طالب' };
+            document.getElementById('roleSelectionScreen').classList.add('hidden');
+            showMainPlatformForStudent();
         }
 
         function toggleAddBookDropdown(event) {
@@ -897,7 +975,11 @@
             if (isRemembered === 'true') {
                 showSplashScreen();
             } else {
-                document.getElementById('appAuthScreen').classList.remove('hidden');
+                if(!isStudentMode && !currentUser) {
+                    document.getElementById('roleSelectionScreen').classList.remove('hidden');
+                } else {
+                    document.getElementById('appAuthScreen').classList.remove('hidden');
+                }
             }
         }
 
@@ -937,7 +1019,11 @@
             splash.classList.add('fade-out');
             setTimeout(() => {
                 splash.classList.add('hidden');
-                checkTeacherProfile();
+                if(isStudentMode) {
+                    showMainPlatformForStudent();
+                } else {
+                    checkTeacherProfile();
+                }
             }, 500);
         }
 
@@ -990,21 +1076,38 @@
             if(confirm("هل أنت متأكد من تغيير الحساب الحالي؟")) {
                 localStorage.removeItem('teacherProfile');
                 currentUser = null;
-                document.getElementById('mainPlatform').classList.add('hidden');
-                document.getElementById('headerUserInfo').classList.add('hidden');
-                document.getElementById('loginCard').classList.remove('hidden');
+                isStudentMode = false;
+                location.reload();
             }
         }
 
         function showMainPlatform() {
             document.getElementById('mainPlatform').classList.remove('hidden');
             document.getElementById('headerUserInfo').classList.remove('hidden');
-            document.getElementById('userInfoText').innerHTML = `👤 <b>${currentUser.name}</b> (${currentUser.specialty})`;
+            document.getElementById('userInfoText').innerHTML = `👤 <b>الدكتور ${currentUser.name}</b> (${currentUser.specialty})`;
+            
+            document.querySelectorAll('.staff-only-item').forEach(el => el.classList.remove('hidden'));
+            document.querySelectorAll('.student-hide-item').forEach(el => el.classList.remove('hidden'));
+
             renderGroupsTable();
             updatePreview();
         }
 
+        function showMainPlatformForStudent() {
+            document.getElementById('mainPlatform').classList.remove('hidden');
+            document.getElementById('headerUserInfo').classList.remove('hidden');
+            document.getElementById('userInfoText').innerHTML = `👤 <b>${currentUser.name}</b> (${currentUser.specialty})`;
+            
+            document.querySelectorAll('.staff-only-item').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.student-hide-item').forEach(el => el.classList.add('hidden'));
+
+            switchMainTab('archive');
+        }
+
         function switchMainTab(tabName) {
+            if(isStudentMode && (tabName === 'send' || tabName === 'groups' || tabName === 'students')) {
+                return;
+            }
             document.querySelectorAll('.tab-main-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('#mainPlatform > .card').forEach(card => card.classList.add('hidden'));
 
@@ -1037,16 +1140,44 @@
             } else if(section === 'records') {
                 document.getElementById('archTab2').classList.add('active');
                 document.getElementById('archContentRecords').classList.remove('hidden');
-                renderRecordsTable();
+                switchRecordTypeTab('images');
             } else if(section === 'schedule') {
                 document.getElementById('archTab3').classList.add('active');
                 document.getElementById('archContentSchedule').classList.remove('hidden');
-                renderScheduleTable();
+                switchScheduleTypeTab('images');
             } else if(section === 'others') {
                 document.getElementById('archTab4').classList.add('active');
                 document.getElementById('archContentOthers').classList.remove('hidden');
-                renderOthersTable();
+                switchOtherTypeTab('images');
             }
+        }
+
+        function switchBookTypeTab(type) {
+            currentBookTypeTab = type;
+            document.getElementById('bookSubImg').classList.toggle('active', type === 'images');
+            document.getElementById('bookSubDoc').classList.toggle('active', type === 'files');
+            renderBooksTable();
+        }
+
+        function switchRecordTypeTab(type) {
+            currentRecordTypeTab = type;
+            document.getElementById('recordSubImg').classList.toggle('active', type === 'images');
+            document.getElementById('recordSubDoc').classList.toggle('active', type === 'files');
+            renderRecordsTable();
+        }
+
+        function switchScheduleTypeTab(type) {
+            currentScheduleTypeTab = type;
+            document.getElementById('scheduleSubImg').classList.toggle('active', type === 'images');
+            document.getElementById('scheduleSubDoc').classList.toggle('active', type === 'files');
+            renderScheduleTable();
+        }
+
+        function switchOtherTypeTab(type) {
+            currentOtherTypeTab = type;
+            document.getElementById('otherSubImg').classList.toggle('active', type === 'images');
+            document.getElementById('otherSubDoc').classList.toggle('active', type === 'files');
+            renderOthersTable();
         }
 
         function openBookGrade(gradeName) {
@@ -1055,8 +1186,8 @@
             document.getElementById('booksDetailView').classList.remove('hidden');
             document.getElementById('booksGradeTitle').textContent = `الكتب المنهجية الخاصة بـ: ${gradeName}`;
             tempBookFilePayload = null;
-            document.getElementById('bookAttachedFileInfo').innerText = '';
-            renderBooksTable();
+            if(document.getElementById('bookAttachedFileInfo')) document.getElementById('bookAttachedFileInfo').innerText = '';
+            switchBookTypeTab('images');
         }
 
         function backToBooksHome() {
@@ -1071,9 +1202,10 @@
                 const file = input.files[0];
                 const reader = new FileReader();
                 reader.onload = function(e) {
+                    const isImg = file.type && file.type.startsWith('image/');
                     tempBookFilePayload = {
                         fileName: file.name,
-                        fileType: file.type || fileTypeName,
+                        fileType: isImg ? 'images' : 'files',
                         fileUrl: e.target.result,
                         isLink: false
                     };
@@ -1088,7 +1220,7 @@
             if(link && link.trim() !== "") {
                 tempBookFilePayload = {
                     fileName: "رابط خارجي / درايف",
-                    fileType: "link",
+                    fileType: "files",
                     fileUrl: link.trim(),
                     isLink: true
                 };
@@ -1107,10 +1239,11 @@
                 return;
             }
 
+            const staffFullName = currentUser ? `الدكتور ${currentUser.name}` : "الإدارة";
             const fileData = {
                 id: generateId(),
                 title: name,
-                uploader: currentUser ? currentUser.name : "الإدارة",
+                uploader: staffFullName,
                 fileName: tempBookFilePayload.fileName,
                 fileType: tempBookFilePayload.fileType,
                 fileUrl: tempBookFilePayload.fileUrl,
@@ -1138,7 +1271,8 @@
                 const file = input.files[0];
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    tempRecordPayload = { fileName: file.name, fileType: file.type, fileUrl: e.target.result, isLink: false };
+                    const isImg = file.type && file.type.startsWith('image/');
+                    tempRecordPayload = { fileName: file.name, fileType: isImg ? 'images' : 'files', fileUrl: e.target.result, isLink: false };
                     document.getElementById('recordAttachedFileInfo').innerText = `✅ تم إرفاق الملف: ${file.name}`;
                 };
                 reader.readAsDataURL(file);
@@ -1147,7 +1281,7 @@
         function promptRecordDriveLink() {
             let link = prompt("أدخل رابط الدرايف للسجل:");
             if(link) {
-                tempRecordPayload = { fileName: "رابط درايف", fileType: "link", fileUrl: link.trim(), isLink: true };
+                tempRecordPayload = { fileName: "رابط درايف", fileType: "files", fileUrl: link.trim(), isLink: true };
                 document.getElementById('recordAttachedFileInfo').innerText = `✅ تم ربط السجل برابط خارجي بنجاح.`;
             }
         }
@@ -1157,7 +1291,8 @@
                 const file = input.files[0];
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    tempSchedulePayload = { fileName: file.name, fileType: file.type, fileUrl: e.target.result, isLink: false };
+                    const isImg = file.type && file.type.startsWith('image/');
+                    tempSchedulePayload = { fileName: file.name, fileType: isImg ? 'images' : 'files', fileUrl: e.target.result, isLink: false };
                     document.getElementById('scheduleAttachedFileInfo').innerText = `✅ تم إرفاق الملف: ${file.name}`;
                 };
                 reader.readAsDataURL(file);
@@ -1166,7 +1301,7 @@
         function promptScheduleDriveLink() {
             let link = prompt("أدخل رابط الدرايف للجدول:");
             if(link) {
-                tempSchedulePayload = { fileName: "رابط درايف", fileType: "link", fileUrl: link.trim(), isLink: true };
+                tempSchedulePayload = { fileName: "رابط درايف", fileType: "files", fileUrl: link.trim(), isLink: true };
                 document.getElementById('scheduleAttachedFileInfo').innerText = `✅ تم ربط الجدول برابط خارجي بنجاح.`;
             }
         }
@@ -1176,7 +1311,8 @@
                 const file = input.files[0];
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    tempOtherPayload = { fileName: file.name, fileType: file.type, fileUrl: e.target.result, isLink: false };
+                    const isImg = file.type && file.type.startsWith('image/');
+                    tempOtherPayload = { fileName: file.name, fileType: isImg ? 'images' : 'files', fileUrl: e.target.result, isLink: false };
                     document.getElementById('otherAttachedFileInfo').innerText = `✅ تم إرفاق الملف: ${file.name}`;
                 };
                 reader.readAsDataURL(file);
@@ -1185,7 +1321,7 @@
         function promptOtherDriveLink() {
             let link = prompt("أدخل رابط الدرايف للملف:");
             if(link) {
-                tempOtherPayload = { fileName: "رابط درايف", fileType: "link", fileUrl: link.trim(), isLink: true };
+                tempOtherPayload = { fileName: "رابط درايف", fileType: "files", fileUrl: link.trim(), isLink: true };
                 document.getElementById('otherAttachedFileInfo').innerText = `✅ تم ربط الملف برابط خارجي بنجاح.`;
             }
         }
@@ -1194,7 +1330,8 @@
             const name = document.getElementById('newRecordName').value.trim();
             if(!name) { alert("أدخل اسم السجل."); return; }
             if(!tempRecordPayload) { alert("أرفق ملفاً أو رابطاً."); return; }
-            archiveData.records.push({ id: generateId(), title: name, uploader: currentUser ? currentUser.name : "الإدارة", ...tempRecordPayload, date: new Date().toLocaleDateString('ar-IQ') });
+            const staffFullName = currentUser ? `الدكتور ${currentUser.name}` : "الإدارة";
+            archiveData.records.push({ id: generateId(), title: name, uploader: staffFullName, ...tempRecordPayload, date: new Date().toLocaleDateString('ar-IQ') });
             localStorage.setItem('schoolArchiveData', JSON.stringify(archiveData));
             document.getElementById('newRecordName').value = '';
             tempRecordPayload = null;
@@ -1207,7 +1344,8 @@
             const name = document.getElementById('newScheduleName').value.trim();
             if(!name) { alert("أدخل عنوان الجدول."); return; }
             if(!tempSchedulePayload) { alert("أرفق ملفاً أو رابطاً."); return; }
-            archiveData.schedule.push({ id: generateId(), title: name, uploader: currentUser ? currentUser.name : "الإدارة", ...tempSchedulePayload, date: new Date().toLocaleDateString('ar-IQ') });
+            const staffFullName = currentUser ? `الدكتور ${currentUser.name}` : "الإدارة";
+            archiveData.schedule.push({ id: generateId(), title: name, uploader: staffFullName, ...tempSchedulePayload, date: new Date().toLocaleDateString('ar-IQ') });
             localStorage.setItem('schoolArchiveData', JSON.stringify(archiveData));
             document.getElementById('newScheduleName').value = '';
             tempSchedulePayload = null;
@@ -1220,7 +1358,8 @@
             const name = document.getElementById('newOtherName').value.trim();
             if(!name) { alert("أدخل عنوان الملف."); return; }
             if(!tempOtherPayload) { alert("أرفق ملفاً أو رابطاً."); return; }
-            archiveData.others.push({ id: generateId(), title: name, uploader: currentUser ? currentUser.name : "الإدارة", ...tempOtherPayload, date: new Date().toLocaleDateString('ar-IQ') });
+            const staffFullName = currentUser ? `الدكتور ${currentUser.name}` : "الإدارة";
+            archiveData.others.push({ id: generateId(), title: name, uploader: staffFullName, ...tempSchedulePayload, ...tempOtherPayload, date: new Date().toLocaleDateString('ar-IQ') });
             localStorage.setItem('schoolArchiveData', JSON.stringify(archiveData));
             document.getElementById('newOtherName').value = '';
             tempOtherPayload = null;
@@ -1229,33 +1368,47 @@
             alert("تم الحفظ بنجاح!");
         }
 
-        function renderGenericTable(dataList, tbodyId, deleteCallbackName) {
+        function renderGenericTable(dataList, tbodyId, deleteCallbackName, activeTypeTab) {
             const tbody = document.getElementById(tbodyId);
             tbody.innerHTML = '';
-            if(!dataList || dataList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #666; padding: 15px;">لا توجد ملفات مرفوعة حالياً.</td></tr>`;
+            
+            const filteredList = (dataList || []).filter(item => {
+                if(activeTypeTab === 'images') {
+                    return item.fileType === 'images' || (item.fileName && /\.(jpg|jpeg|png|gif|webp)$/i.test(item.fileName));
+                } else {
+                    return item.fileType !== 'images' && (!item.fileName || !/\.(jpg|jpeg|png|gif|webp)$/i.test(item.fileName));
+                }
+            });
+
+            if(filteredList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #666; padding: 15px;">لا توجد ملفات مرفوعة في هذا القسم حالياً.</td></tr>`;
                 return;
             }
 
-            dataList.forEach((item, index) => {
-                let actionBtnHtml = '';
+            filteredList.forEach((item, index) => {
+                let viewBtnHtml = `<a href="${item.fileUrl}" target="_blank" class="btn-view">👁️ عرض</a>`;
+                let downloadBtnHtml = '';
                 if(item.isLink) {
-                    actionBtnHtml = `<a href="${item.fileUrl}" target="_blank" class="btn-download" style="background-color: #e67e22;">🔗 فتح الرابط/درايف</a>`;
+                    downloadBtnHtml = `<a href="${item.fileUrl}" target="_blank" class="btn-download" style="background-color: #e67e22;">🔗 فتح الرابط</a>`;
                 } else {
-                    const isImage = item.fileType && (item.fileType.startsWith('image/') || item.fileType === 'صورة');
-                    const btnLabel = isImage ? '💾 حفظ الصورة' : '📥 تحميل الملف';
-                    actionBtnHtml = `<a href="${item.fileUrl}" download="${item.fileName}" class="btn-download">${btnLabel} (${item.fileName})</a>`;
+                    downloadBtnHtml = `<a href="${item.fileUrl}" download="${item.fileName}" class="btn-download">📥 تحميل</a>`;
+                }
+
+                const tr = document.createElement('tr');
+                let actionsHtml = '';
+                if(isStudentMode) {
+                    actionsHtml = `<div class="action-btns">${viewBtnHtml} ${downloadBtnHtml}</div>`;
+                } else {
+                    let deleteBtnHtml = `<button class="btn-action btn-delete" onclick="${deleteCallbackName}('${item.id}')">🗑️ حذف</button>`;
+                    actionsHtml = `<div class="action-btns">${deleteBtnHtml} ${viewBtnHtml} ${downloadBtnHtml}</div>`;
                 }
                 
-                const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${index + 1}</td>
                     <td style="font-weight: bold;">${item.title}</td>
                     <td>${item.uploader}</td>
-                    <td>${actionBtnHtml}</td>
-                    <td class="action-btns">
-                        <button class="btn-action btn-delete" onclick="${deleteCallbackName}('${item.id}')">🗑️ حذف</button>
-                    </td>
+                    <td>${item.fileName || 'ملف مرفق'}</td>
+                    <td>${actionsHtml}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -1263,7 +1416,7 @@
 
         function renderBooksTable() {
             const list = (archiveData.books && archiveData.books[currentSelectedBookGrade]) ? archiveData.books[currentSelectedBookGrade] : [];
-            renderGenericTable(list, 'booksTableBody', 'deleteBookItem');
+            renderGenericTable(list, 'booksTableBody', 'deleteBookItem', currentBookTypeTab);
         }
 
         function deleteBookItem(id) {
@@ -1275,7 +1428,7 @@
         }
 
         function renderRecordsTable() {
-            renderGenericTable(archiveData.records, 'recordsTableBody', 'deleteRecordItem');
+            renderGenericTable(archiveData.records, 'recordsTableBody', 'deleteRecordItem', currentRecordTypeTab);
         }
         function deleteRecordItem(id) {
             if(confirm('هل أنت متأكد من حذف هذا السجل؟')) {
@@ -1286,7 +1439,7 @@
         }
 
         function renderScheduleTable() {
-            renderGenericTable(archiveData.schedule, 'scheduleTableBody', 'deleteScheduleItem');
+            renderGenericTable(archiveData.schedule, 'scheduleTableBody', 'deleteScheduleItem', currentScheduleTypeTab);
         }
         function deleteScheduleItem(id) {
             if(confirm('هل أنت متأكد من حذف هذا الجدول؟')) {
@@ -1297,7 +1450,7 @@
         }
 
         function renderOthersTable() {
-            renderGenericTable(archiveData.others, 'othersTableBody', 'deleteOtherItem');
+            renderGenericTable(archiveData.others, 'othersTableBody', 'deleteOtherItem', currentOtherTypeTab);
         }
         function deleteOtherItem(id) {
             if(confirm('هل أنت متأكد من حذف هذا الملف؟')) {
@@ -1405,7 +1558,10 @@
             text += `📅 العام الدراسي: 2026 / 2027\n\n`;
             
             if(currentUser) {
-                text += `👤 المرسل: ${currentUser.name} (${currentUser.specialty})\n`;
+                text += `👤 المرسل: الدكتور ${currentUser.name} (${currentUser.specialty})\n`;
+                if(currentUser.phone) {
+                    text += `📞 ${currentUser.phone}\n`;
+                }
             }
 
             if (currentMsgType === 'announcement') {
@@ -1454,40 +1610,41 @@
 
         function renderGroupsTable() {
             const tbody = document.getElementById('whatsappGroupsTableBody');
+            if(!tbody) return;
             tbody.innerHTML = '';
             for (let grade in whatsappGroupsData) {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td style="font-weight: bold; text-align: center;">${grade}</td>
-                    <td><input type="text" id="grp_${grade}" value="${whatsappGroupsData[grade]}" placeholder="ضع رابط مجموعة الواتساب هنا..." dir="ltr" style="text-align: right;"></td>
-                    <td style="text-align: center;"><button class="btn-action btn-save" onclick="saveGroupLink('${grade}')">حفظ</button></td>
+                    <td style="font-weight: bold;">${grade}</td>
+                    <td><input type="text" id="grp_${grade}" value="${whatsappGroupsData[grade]}" placeholder="أدخل رابط مجموعة الواتساب..." dir="ltr" style="text-align: right;"></td>
+                    <td style="text-align: center;"><button class="btn-action btn-save" onclick="saveWhatsappGroup('${grade}')">💾 حفظ</button></td>
                 `;
                 tbody.appendChild(tr);
             }
         }
 
-        function saveGroupLink(grade) {
+        function saveWhatsappGroup(grade) {
             const val = document.getElementById(`grp_${grade}`).value.trim();
             whatsappGroupsData[grade] = val;
             localStorage.setItem('schoolWhatsappGroups', JSON.stringify(whatsappGroupsData));
-            alert(`✅ تم حفظ رابط مجموعة (${grade}) بنجاح!`);
+            alert("تم حفظ رابط مجموعة " + grade + " بنجاح!");
         }
 
-        function switchSubTab(tab) {
+        function switchSubTab(subTab) {
             document.querySelectorAll('#tabContentStudents .sub-tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.sub-section').forEach(s => s.classList.add('hidden'));
 
-            if(tab === 'list') {
+            if(subTab === 'list') {
                 document.getElementById('subBtnList').classList.add('active');
                 document.getElementById('subContentList').classList.remove('hidden');
                 loadStudents();
-            } else if(tab === 'add') {
+            } else if(subTab === 'add') {
                 document.getElementById('subBtnAdd').classList.add('active');
                 document.getElementById('subContentAdd').classList.remove('hidden');
                 document.getElementById('addStudentForm').reset();
                 document.getElementById('editStudentId').value = '';
                 document.getElementById('saveStudentBtn').textContent = 'حفظ بيانات الطالب';
-            } else if(tab === 'search') {
+            } else if(subTab === 'search') {
                 document.getElementById('subBtnSearch').classList.add('active');
                 document.getElementById('subContentSearch').classList.remove('hidden');
             }
@@ -1504,19 +1661,19 @@
             }
 
             if(filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #666; padding: 15px;">لا توجد بيانات للطلاب مسجلة حالياً.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #666; padding: 15px;">لا توجد بيانات طلاب مسجلة حالياً.</td></tr>`;
                 return;
             }
 
             filtered.forEach((st, idx) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td style="text-align: center;">${idx + 1}</td>
+                    <td>${idx + 1}</td>
                     <td style="font-weight: bold;">${st.name}</td>
                     <td>${st.grade}</td>
-                    <td dir="ltr" style="text-align: right;">${st.phone || '---'}</td>
-                    <td>${st.notes || '---'}</td>
-                    <td class="action-btns no-print">
+                    <td>${st.phone || '-'}</td>
+                    <td>${st.notes || '-'}</td>
+                    <td class="no-print action-btns">
                         <button class="btn-action btn-edit" onclick="editStudent('${st.id}')">✏️ تعديل</button>
                         <button class="btn-action btn-delete" onclick="deleteStudent('${st.id}')">🗑️ حذف</button>
                     </td>
@@ -1533,6 +1690,11 @@
             const phone = document.getElementById('addStudentPhone').value.trim();
             const notes = document.getElementById('addStudentNotes').value.trim();
 
+            if(!name || !grade) {
+                alert("يرجى إدخال اسم الطالب واختيار الصف.");
+                return;
+            }
+
             if(id) {
                 let st = studentsData.find(s => s.id === id);
                 if(st) {
@@ -1541,37 +1703,31 @@
                     st.phone = phone;
                     st.notes = notes;
                 }
-                alert('✅ تم تحديث بيانات الطالب بنجاح!');
+                alert("تم تحديث بيانات الطالب بنجاح!");
             } else {
                 const newSt = { id: generateId(), name, grade, phone, notes };
                 studentsData.push(newSt);
-                alert('✅ تم إضافة الطالب بنجاح!');
+                alert("تم إضافة الطالب بنجاح!");
             }
 
             localStorage.setItem('schoolStudentsData', JSON.stringify(studentsData));
-            document.getElementById('addStudentForm').reset();
             switchSubTab('list');
         }
 
         function editStudent(id) {
             const st = studentsData.find(s => s.id === id);
-            if(st) {
-                document.getElementById('editStudentId').value = st.id;
-                document.getElementById('addStudentName').value = st.name;
-                document.getElementById('addStudentGrade').value = st.grade;
-                document.getElementById('addStudentPhone').value = st.phone || '';
-                document.getElementById('addStudentNotes').value = st.notes || '';
-                document.getElementById('saveStudentBtn').textContent = 'تعديل بيانات الطالب';
-                
-                document.querySelectorAll('#tabContentStudents .sub-tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.sub-section').forEach(s => s.classList.add('hidden'));
-                document.getElementById('subBtnAdd').classList.add('active');
-                document.getElementById('subContentAdd').classList.remove('hidden');
-            }
+            if(!st) return;
+            switchSubTab('add');
+            document.getElementById('editStudentId').value = st.id;
+            document.getElementById('addStudentName').value = st.name;
+            document.getElementById('addStudentGrade').value = st.grade;
+            document.getElementById('addStudentPhone').value = st.phone || '';
+            document.getElementById('addStudentNotes').value = st.notes || '';
+            document.getElementById('saveStudentBtn').textContent = 'تعديل بيانات الطالب';
         }
 
         function deleteStudent(id) {
-            if(confirm('هل أنت متأكد من حذف هذا الطالب؟')) {
+            if(confirm("هل أنت متأكد من حذف هذا الطالب؟")) {
                 studentsData = studentsData.filter(s => s.id !== id);
                 localStorage.setItem('schoolStudentsData', JSON.stringify(studentsData));
                 loadStudents();
@@ -1580,79 +1736,77 @@
 
         function handleSearch() {
             const query = document.getElementById('searchInput').value.trim().toLowerCase();
-            const resultsBox = document.getElementById('searchResults');
-            resultsBox.innerHTML = '';
-
+            const resDiv = document.getElementById('searchResults');
             if(!query) {
-                resultsBox.innerHTML = `<p style="text-align: center; color: #666;">ابدأ الكتابة للبحث عن الطلاب.</p>`;
+                resDiv.innerHTML = `<p style="text-align: center; color: #666;">ابدأ الكتابة للبحث عن الطلاب.</p>`;
                 return;
             }
 
-            const found = studentsData.filter(s => s.name.toLowerCase().includes(query));
-            if(found.length === 0) {
-                resultsBox.innerHTML = `<p style="text-align: center; color: #d9534f;">لم يتم العثور على أي طالب بهذا الاسم.</p>`;
+            const matched = studentsData.filter(s => s.name.toLowerCase().includes(query));
+            if(matched.length === 0) {
+                resDiv.innerHTML = `<p style="text-align: center; color: #d9534f;">لم يتم العثور على أي طالب بهذا الاسم.</p>`;
                 return;
             }
 
-            let html = `<table class="student-table"><thead><tr><th>ت</th><th>اسم الطالب</th><th>الصف</th><th>هاتف ولي الأمر</th><th>ملاحظات</th></tr></thead><tbody>`;
-            found.forEach((st, idx) => {
-                html += `<tr><td>${idx+1}</td><td style="font-weight:bold;">${st.name}</td><td>${st.grade}</td><td>${st.phone || '---'}</td><td>${st.notes || '---'}</td></tr>`;
+            let html = `<table class="student-table"><thead><tr><th>ت</th><th>اسم الطالب</th><th>الصف</th><th>الهاتف</th><th>ملاحظات</th></tr></thead><tbody>`;
+            matched.forEach((st, idx) => {
+                html += `<tr><td>${idx + 1}</td><td style="font-weight: bold;">${st.name}</td><td>${st.grade}</td><td>${st.phone || '-'}</td><td>${st.notes || '-'}</td></tr>`;
             });
             html += `</tbody></table>`;
-            resultsBox.innerHTML = html;
+            resDiv.innerHTML = html;
         }
 
         function downloadStudentsFile(type) {
-            const gradeVal = document.getElementById('downloadGradeSelect').value;
+            const grade = document.getElementById('downloadGradeSelect').value;
             let list = studentsData;
-            if(gradeVal !== 'all') {
-                list = studentsData.filter(s => s.grade === gradeVal);
+            if(grade !== 'all') {
+                list = studentsData.filter(s => s.grade === grade);
             }
 
             if(list.length === 0) {
-                alert("لا توجد بيانات طلاب للتحميل في هذا الصف.");
+                alert("لا توجد بيانات طلاب للتحميل ضمن الفئة المحددة.");
                 return;
             }
 
             if(type === 'excel') {
-                let dataToExport = list.map((s, idx) => ({
-                    "ت": idx + 1,
-                    "اسم الطالب الثلاثي": s.name,
-                    "الصف الدراسي": s.grade,
-                    "هاتف ولي الأمر": s.phone || '',
-                    "ملاحظات": s.notes || ''
-                }));
-                const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-                const workbook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workbook, worksheet, "الطلاب");
-                XLSX.writeFile(workbook, `Students_${gradeVal}_${new Date().toISOString().slice(0,10)}.xlsx`);
-            } else if(type === 'pdf') {
-                const element = document.getElementById('printableStudentTable');
-                let opt = {
-                    margin: 10,
-                    filename: `Students_${gradeVal}.pdf`,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2 },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                };
-                html2pdf().from(element).set(opt).save();
-            } else if(type === 'word') {
-                let htmlContent = `<html dir="rtl"><head><meta charset="utf-8"><title>قائمة الطلاب</title></head><body>`;
-                htmlContent += `<h2 style="text-align:center;">قائمة طلبة ثانوية الفراجية للبنين (${gradeVal})</h2>`;
-                htmlContent += `<table border="1" style="width:100%; border-collapse:collapse; text-align:right;"><thead><tr style="background:#1b4332; color:white;"><th>ت</th><th>اسم الطالب الثلاثي</th><th>الصف</th><th>الهاتف</th><th>ملاحظات</th></tr></thead><tbody>`;
+                let wsData = [["ت", "اسم الطالب الثلاثي", "الصف والفرع", "هاتف ولي الأمر", "ملاحظات"]];
                 list.forEach((s, i) => {
-                    htmlContent += `<tr><td>${i+1}</td><td>${s.name}</td><td>${s.grade}</td><td>${s.phone||''}</td><td>${s.notes||''}</td></tr>`;
+                    wsData.push([i + 1, s.name, s.grade, s.phone || '', s.notes || '']);
                 });
-                htmlContent += `</tbody></table></body></html>`;
-
-                let blob = new Blob(['\ufeff' + htmlContent], { type: 'application/msword' });
-                let url = URL.createObjectURL(blob);
-                let a = document.createElement('a');
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.aoa_to_sheet(wsData);
+                XLSX.utils.book_append_sheet(wb, ws, "الطلاب");
+                XLSX.writeFile(wb, `قائمة_الطلاب_${grade}.xlsx`);
+            } else if(type === 'pdf') {
+                const element = document.createElement('div');
+                element.dir = 'rtl';
+                element.style.padding = '20px';
+                let html = `<h2 style="text-align:center; color:#1b4332; margin-bottom:15px;">قائمة طلاب ثانوية الفراجية للبنين (${grade})</h2>`;
+                html += `<table border="1" cellspacing="0" cellpadding="8" style="width:100%; border-collapse:collapse; text-align:right;">`;
+                html += `<tr style="background:#1b4332; color:#fff;"><th>ت</th><th>اسم الطالب الثلاثي</th><th>الصف</th><th>هاتف ولي الأمر</th><th>ملاحظات</th></tr>`;
+                list.forEach((s, i) => {
+                    html += `<tr><td>${i+1}</td><td>${s.name}</td><td>${s.grade}</td><td>${s.phone || '-'}</td><td>${s.notes || '-'}</td></tr>`;
+                });
+                html += `</table>`;
+                element.innerHTML = html;
+                html2pdf().from(element).save(`قائمة_الطلاب_${grade}.pdf`);
+            } else if(type === 'word') {
+                let html = `<html dir="rtl"><head><meta charset="utf-8"></head><body>`;
+                html += `<h2 style="text-align:center; color:#1b4332;">قائمة طلاب ثانوية الفراجية للبنين (${grade})</h2>`;
+                html += `<table border="1" cellspacing="0" cellpadding="8" style="width:100%; border-collapse:collapse; text-align:right;">`;
+                html += `<tr style="background:#1b4332; color:#fff;"><th>ت</th><th>اسم الطالب الثلاثي</th><th>الصف</th><th>هاتف ولي الأمر</th><th>ملاحظات</th></tr>`;
+                list.forEach((s, i) => {
+                    html += `<tr><td>${i+1}</td><td>${s.name}</td><td>${s.grade}</td><td>${s.phone || '-'}</td><td>${s.notes || '-'}</td></tr>`;
+                });
+                html += `</table></body></html>`;
+                const blob = new Blob(['\ufeff' + html], { type: 'application/msword' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
                 a.href = url;
-                a.download = `Students_${gradeVal}.doc`;
+                a.download = `قائمة_الطلاب_${grade}.doc`;
                 document.body.appendChild(a);
                 a.click();
-                a.remove();
+                document.body.removeChild(a);
             }
         }
 
