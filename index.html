@@ -306,6 +306,9 @@
         
         .search-box { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
         .search-box input { flex: 1; min-width: 200px; }
+        #printableStudentTable, #studentsList > div:last-child { overflow-x: auto; width: 100%; }
+        .student-table th, .student-table td { white-space: nowrap; }
+        .student-table td:last-child { white-space: normal; min-width: 120px; }
 
         .download-box { background: #f1f8f5; border: 1px solid #d8f3dc; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
         .download-options { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
@@ -314,6 +317,62 @@
         .grade-card { background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; padding: 20px; border-radius: 10px; text-align: center; cursor: pointer; font-weight: bold; font-size: 1.05rem; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: 0.3s; }
         .grade-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
 
+
+        /* جداول قوائم الطلبة المطابقة لنموذج المدرسة */
+        .student-roster-controls { display:flex; flex-direction:column; gap:8px; margin-top:12px; }
+        .student-roster-control-row { display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:8px; align-items:center; background:#fff; border:1px solid #d5d5d5; border-radius:8px; padding:8px; }
+        .student-roster-control-title { font-weight:800; color:#111; text-align:right; padding:8px 10px; }
+        .student-roster-control-btn { border:1px solid #222; background:#fff; color:#111; border-radius:5px; padding:8px 16px; font-weight:800; cursor:pointer; min-width:82px; }
+        .student-roster-control-btn:hover { background:#f0f0f0; }
+        .student-roster-download { position:relative; }
+        .student-roster-download-menu { display:none; position:absolute; right:0; top:calc(100% + 4px); z-index:1200; background:#fff; border:1px solid #aaa; border-radius:6px; box-shadow:0 5px 16px rgba(0,0,0,.18); min-width:150px; overflow:hidden; }
+        .student-roster-download-menu.show { display:block; }
+        .student-roster-download-menu button { display:block; width:100%; border:0; background:#fff; padding:10px 12px; text-align:right; cursor:pointer; font-weight:700; color:#222; }
+        .student-roster-download-menu button:hover { background:#f3f3f3; }
+        .student-roster-overlay { position:fixed; inset:0; z-index:5000; background:rgba(0,0,0,.72); overflow:auto; padding:20px 10px 40px; }
+        .student-roster-viewer { max-width:1100px; margin:0 auto; }
+        .student-roster-viewer-head { position:sticky; top:0; z-index:10; display:flex; justify-content:space-between; align-items:center; gap:10px; background:#fff; border-radius:8px; padding:10px 12px; margin-bottom:12px; box-shadow:0 3px 10px rgba(0,0,0,.18); }
+        .student-roster-viewer-head h3 { margin:0; color:#111; font-size:1rem; }
+        .student-roster-pages { display:flex; flex-direction:column; gap:22px; align-items:center; }
+        .student-roster-page { width:210mm; min-height:297mm; box-sizing:border-box; background:#fff; color:#111; padding:10mm 8mm 8mm; box-shadow:0 4px 18px rgba(0,0,0,.3); direction:rtl; page-break-after:always; }
+        .student-roster-page:last-child { page-break-after:auto; }
+        .student-roster-page-header { display:grid; grid-template-columns:1fr 120px 1fr; align-items:center; min-height:42mm; direction:ltr; }
+        .student-roster-header-side { direction:rtl; font-family:Tahoma,Arial,sans-serif; font-size:18px; line-height:1.9; }
+        .student-roster-header-side.right { text-align:right; }
+        .student-roster-header-side.left { text-align:left; }
+        .student-roster-logo { width:92px; height:105px; display:flex; align-items:center; justify-content:center; justify-self:center; }
+        .student-roster-logo svg { width:100%; height:100%; }
+        .student-roster-school-title { font-size:21px; font-weight:800; }
+        .student-roster-platform-title { font-size:19px; font-weight:700; }
+        .student-roster-year { font-size:19px; font-weight:700; text-align:center; margin-top:4px; }
+        .student-roster-grade-line { font-weight:800; white-space:nowrap; }
+        .student-roster-table { width:100%; border-collapse:collapse; table-layout:fixed; font-family:Tahoma,Arial,sans-serif; direction:rtl; background:#fff; }
+        .student-roster-table th, .student-roster-table td { border:1.25px solid #555; color:#111; padding:4px 5px; text-align:center; vertical-align:middle; font-size:12px; height:6.2mm; }
+        .student-roster-table th { background:#fff; font-weight:800; }
+        .student-roster-table .name-cell { text-align:right; font-weight:700; }
+        .student-roster-table .notes-cell { text-align:right; }
+        .student-roster-table .face-ok { color:#16803a; font-weight:800; }
+        .student-roster-table .action-cell { font-size:11px; }
+        .student-roster-footer { display:grid; grid-template-columns:1fr 1fr; direction:ltr; margin-top:5mm; font-family:Tahoma,Arial,sans-serif; font-size:17px; line-height:1.8; font-weight:700; }
+        .student-roster-footer .footer-left { direction:rtl; text-align:left; }
+        .student-roster-footer .footer-right { direction:rtl; text-align:right; }
+        .student-roster-empty { color:#777; font-weight:400; }
+        @media (max-width: 900px) {
+            .student-roster-page { transform-origin:top center; width:min(210mm, calc(100vw - 20px)); min-height:auto; padding:5mm; }
+            .student-roster-page-header { min-height:38mm; grid-template-columns:1fr 85px 1fr; }
+            .student-roster-logo { width:78px; height:90px; }
+            .student-roster-header-side { font-size:11px; }
+            .student-roster-school-title,.student-roster-platform-title,.student-roster-year { font-size:12px; }
+            .student-roster-table th,.student-roster-table td { font-size:8px; padding:2px; height:6mm; }
+            .student-roster-footer { font-size:10px; }
+        }
+        @media print {
+            body > *:not(.student-roster-overlay) { display:none !important; }
+            .student-roster-overlay { position:static; background:#fff; padding:0; overflow:visible; }
+            .student-roster-viewer-head { display:none !important; }
+            .student-roster-pages { gap:0; }
+            .student-roster-page { box-shadow:none; margin:0; }
+        }
         .hidden { display: none !important; }
         .preview-box { background: #e9f5ec; border: 1px dashed #25d366; padding: 15px; border-radius: 8px; margin-top: 15px; white-space: pre-line; font-size: 0.95rem; line-height: 1.6; }
 
@@ -924,7 +983,7 @@
 .staff-attendance-app .sa-header{background:linear-gradient(135deg,#1b4332,#2d6a4f);color:#fff;border-radius:14px;padding:18px;text-align:center;margin-bottom:14px}
 .staff-attendance-app .sa-header h2{margin:0 0 7px;font-size:1.35rem}.staff-attendance-app .sa-header p{margin:0;font-size:.92rem;opacity:.94}
 .staff-attendance-app .sa-status,.staff-attendance-app .sa-location-card,.staff-attendance-app .sa-panel{background:#fff;border:1px solid #e4e9e6;border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 3px 12px rgba(0,0,0,.05)}
-.staff-attendance-app .sa-status{text-align:center;font-weight:700}.staff-attendance-app .sa-location-card h3,.staff-attendance-app .sa-panel h3{margin:0 0 12px}.staff-attendance-app .sa-location-status{padding:10px;border-radius:10px;background:#f1f5f3;margin-bottom:10px}.staff-attendance-app .sa-location-actions,.staff-attendance-app .sa-actions,.staff-attendance-app .sa-panel-actions,.staff-attendance-app .sa-camera-buttons{display:flex;gap:10px;flex-wrap:wrap}.staff-attendance-app .sa-actions{margin-bottom:14px}.staff-attendance-app .sa-main-btn,.staff-attendance-app .sa-btn{border:0;border-radius:10px;padding:12px 16px;cursor:pointer;font-weight:700;font-size:.95rem}.staff-attendance-app .sa-main-btn{flex:1;min-width:190px;color:#fff}.staff-attendance-app .sa-register-btn{background:#2d6a4f}.staff-attendance-app .sa-attendance-btn{background:#0d6efd}.staff-attendance-app .sa-btn-primary{background:#0d6efd;color:#fff}.staff-attendance-app .sa-btn-success{background:#198754;color:#fff}.staff-attendance-app .sa-btn-danger{background:#dc3545;color:#fff}.staff-attendance-app .sa-btn-location{background:#6f42c1;color:#fff}.staff-attendance-app .sa-btn-secondary{background:#6c757d;color:#fff}.staff-attendance-app .sa-field{margin-bottom:12px}.staff-attendance-app .sa-field label{display:block;font-weight:700;margin-bottom:7px}.staff-attendance-app .sa-field select,.staff-attendance-app .sa-field input{width:100%;padding:12px;border:1px solid #cfd8d3;border-radius:10px;font-size:1rem;background:#fff}.staff-attendance-app .sa-camera-wrap{border:1px solid #d9e1dc;border-radius:14px;padding:12px;background:#101820;margin-top:12px}.staff-attendance-app .sa-camera-label{color:#fff;text-align:center;font-weight:700;margin-bottom:9px}.staff-attendance-app video{width:100%;max-height:390px;display:block;border-radius:10px;object-fit:cover;transform:scaleX(-1);background:#000}.staff-attendance-app .sa-camera-buttons{margin-top:10px;justify-content:center}.staff-attendance-app .sa-message{margin-top:10px;min-height:22px;font-weight:700}.staff-attendance-app .sa-attendance-info{background:#eef6ff;border-radius:10px;padding:11px;margin-bottom:10px}.staff-attendance-app .sa-small-note{font-size:.84rem;color:#667085;margin-top:8px;line-height:1.6}.staff-attendance-app .sa-detected{margin-top:12px;padding:14px;border-radius:12px;background:#e9f7ef;border:1px solid #b8e0c6;text-align:center;font-weight:700}.staff-attendance-app .sa-detected div{margin:5px 0}.staff-attendance-app .sa-list .sa-record{padding:11px;border-bottom:1px solid #eee}.staff-attendance-app .sa-list .sa-record:last-child{border-bottom:0}.staff-attendance-app .hidden{display:none!important}
+.staff-attendance-app .sa-status{text-align:center;font-weight:700}.staff-attendance-app .sa-location-card h3,.staff-attendance-app .sa-panel h3{margin:0 0 12px}.staff-attendance-app .sa-location-status{padding:10px;border-radius:10px;background:#f1f5f3;margin-bottom:10px}.staff-attendance-app .sa-location-actions,.staff-attendance-app .sa-actions,.staff-attendance-app .sa-panel-actions,.staff-attendance-app .sa-camera-buttons{display:flex;gap:10px;flex-wrap:wrap}.staff-attendance-app .sa-actions{margin-bottom:14px}.staff-attendance-app .sa-main-btn,.staff-attendance-app .sa-btn{border:0;border-radius:10px;padding:12px 16px;cursor:pointer;font-weight:700;font-size:.95rem}.staff-attendance-app .sa-main-btn{flex:1;min-width:190px;color:#fff}.staff-attendance-app .sa-register-btn{background:#2d6a4f}.staff-attendance-app .sa-attendance-btn{background:#0d6efd}.staff-attendance-app .sa-btn-primary{background:#0d6efd;color:#fff}.staff-attendance-app .sa-btn-success{background:#198754;color:#fff}.staff-attendance-app .sa-btn-danger{background:#dc3545;color:#fff}.staff-attendance-app .sa-btn-location{background:#6f42c1;color:#fff}.staff-attendance-app .sa-btn-secondary{background:#6c757d;color:#fff}.staff-attendance-app .sa-field{margin-bottom:12px}.staff-attendance-app .sa-field label{display:block;font-weight:700;margin-bottom:7px}.staff-attendance-app .sa-field select,.staff-attendance-app .sa-field input{width:100%;padding:12px;border:1px solid #cfd8d3;border-radius:10px;font-size:1rem;background:#fff}.staff-attendance-app .sa-camera-wrap{border:1px solid #d9e1dc;border-radius:14px;padding:12px;background:#101820;margin-top:12px}.staff-attendance-app .sa-camera-topbar{position:relative;display:flex;align-items:center;justify-content:center;min-height:46px;margin-bottom:8px}.staff-attendance-app .sa-camera-label{color:#fff;text-align:center;font-weight:700;margin:0;padding:8px 58px 8px 12px}.staff-attendance-app .sa-camera-switch{position:absolute;right:4px;top:0;width:46px;height:46px;border:0;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25)}.staff-attendance-app .sa-camera-switch:hover{background:rgba(255,255,255,.28)}.staff-attendance-app .sa-camera-switch:disabled{opacity:.55;cursor:not-allowed}.staff-attendance-app video{width:100%;max-height:390px;display:block;border-radius:10px;object-fit:cover;background:#000}.staff-attendance-app .sa-camera-buttons{margin-top:10px;justify-content:center}.staff-attendance-app .sa-message{margin-top:10px;min-height:22px;font-weight:700}.staff-attendance-app .sa-attendance-info{background:#eef6ff;border-radius:10px;padding:11px;margin-bottom:10px}.staff-attendance-app .sa-small-note{font-size:.84rem;color:#667085;margin-top:8px;line-height:1.6}.staff-attendance-app .sa-detected{margin-top:12px;padding:14px;border-radius:12px;background:#e9f7ef;border:1px solid #b8e0c6;text-align:center;font-weight:700}.staff-attendance-app .sa-detected div{margin:5px 0}.staff-attendance-app .sa-list .sa-record{padding:11px;border-bottom:1px solid #eee}.staff-attendance-app .sa-list .sa-record:last-child{border-bottom:0}.staff-attendance-app .hidden{display:none!important}
 </style>
 </head>
 <body>
@@ -1470,14 +1529,23 @@
 <option value="الثالث المتوسط">
                 الثالث المتوسط
             </option>
-<option value="الرابع الإعدادي">
-                الرابع الإعدادي
+<option value="الرابع العلمي">
+                الرابع العلمي
+            </option>
+<option value="الرابع الأدبي">
+                الرابع الأدبي
             </option>
 <option value="الخامس العلمي">
                 الخامس العلمي
             </option>
+<option value="الخامس الأدبي">
+                الخامس الأدبي
+            </option>
 <option value="السادس العلمي">
                 السادس العلمي
+            </option>
+<option value="السادس الأدبي">
+                السادس الأدبي
             </option>
 </select>
 </div>
@@ -1699,58 +1767,11 @@
 <button class="sub-tab-btn" id="subBtnSearch" onclick="switchSubTab('search')">🔍 البحث عن طالب</button>
 </div>
 <div class="sub-section" id="subContentList">
-<div class="download-box">
-<label style="color: var(--primary-color);">📥 تحميل قوائم الأسماء:</label>
-<div class="form-group" style="margin-top: 8px; margin-bottom: 8px;">
-<select id="downloadGradeSelect" style="max-width: 300px;">
-<option value="all">جميع طلاب المدرسة</option>
-<option value="الأول المتوسط">الأول المتوسط</option>
-<option value="الثاني المتوسط">الثاني المتوسط</option>
-<option value="الثالث المتوسط">الثالث المتوسط</option>
-<option value="الرابع العلمي">الرابع العلمي</option>
-<option value="الرابع الأدبي">الرابع الأدبي</option>
-<option value="الخامس العلمي">الخامس العلمي</option>
-<option value="الخامس الأدبي">الخامس الأدبي</option>
-<option value="السادس العلمي">السادس العلمي</option>
-<option value="السادس الأدبي">السادس الأدبي</option>
-</select>
+<div style="background:#f7f7f7;border:1px solid #ddd;border-radius:8px;padding:12px;margin-bottom:12px;text-align:center;">
+<strong style="font-size:1.05rem;color:#111;">📋 قوائم معلومات الطلبة</strong>
+<div style="margin-top:5px;color:#555;font-size:.9rem;">اختر «عرض» لفتح الجدول كما في نموذج المدرسة، أو «تحميل» لاختيار PDF أو Excel أو Word.</div>
 </div>
-<div class="download-options">
-<button class="btn-action btn-save" onclick="downloadStudentsFile('word')" style="padding: 10px 15px;">📄 تحميل ملف وورد (Word)</button>
-<button class="btn-action btn-delete" onclick="downloadStudentsFile('pdf')" style="padding: 10px 15px; background-color: #d9534f;">📑 تحميل ملف (PDF)</button>
-<button class="btn-action" onclick="downloadStudentsFile('excel')" style="padding: 10px 15px; background-color: #28a745; color: white;">📊 تحميل كملف إكسل (Excel)</button>
-</div>
-</div>
-<div class="search-box">
-<select id="studentFilterGrade" onchange="loadStudents()" style="flex: 1; min-width: 150px;">
-<option value="">عرض حسب الصف (الكل)</option>
-<option value="الأول المتوسط">الأول المتوسط</option>
-<option value="الثاني المتوسط">الثاني المتوسط</option>
-<option value="الثالث المتوسط">الثالث المتوسط</option>
-<option value="الرابع العلمي">الرابع العلمي</option>
-<option value="الرابع الأدبي">الرابع الأدبي</option>
-<option value="الخامس العلمي">الخامس العلمي</option>
-<option value="الخامس الأدبي">الخامس الأدبي</option>
-<option value="السادس العلمي">السادس العلمي</option>
-<option value="السادس الأدبي">السادس الأدبي</option>
-</select>
-</div>
-<div id="printableStudentTable">
-<table class="student-table" id="studentsTable">
-<thead>
-<tr>
-<th>ت</th>
-<th>اسم الطالب الثلاثي</th>
-<th>الصف والفرع</th>
-<th>هاتف ولي الأمر</th>
-<th>ملاحظات</th>
-<th class="no-print">الإجراءات</th>
-</tr>
-</thead>
-<tbody id="studentsTableBody">
-</tbody>
-</table>
-</div>
+<div class="student-roster-controls" id="schoolStudentRosterControls"></div>
 </div>
 <div class="sub-section hidden" id="subContentAdd">
 <form id="addStudentForm" onsubmit="handleAddStudent(event)">
@@ -1803,6 +1824,15 @@
 </div>
 </div>
 </div>
+<div class="student-roster-overlay hidden" id="studentRosterOverlay" onclick="closeStudentRosterViewer(event)">
+  <div class="student-roster-viewer" onclick="event.stopPropagation()">
+    <div class="student-roster-viewer-head">
+      <h3 id="studentRosterViewerTitle">📋 جدول الطلبة</h3>
+      <button type="button" class="btn-action btn-delete" onclick="closeStudentRosterViewer()">✖ إغلاق</button>
+    </div>
+    <div class="student-roster-pages" id="studentRosterPages"></div>
+  </div>
+</div>
 <div class="card hidden" id="tabContentStaffAttendance"><div class="staff-attendance-app" id="staffAttendanceApp">
 <div class="sa-header">
 <h2>👨‍🏫 تسجيل حضور الكادر</h2>
@@ -1833,7 +1863,10 @@
 <input autocomplete="off" id="staffFaceNameManual" placeholder="اكتب اسم المدرس الجديد" type="text"/>
 </div>
 <div class="sa-camera-wrap hidden" id="staffRegisterCameraBox">
-<div class="sa-camera-label">📷 الكاميرا الأمامية</div>
+<div class="sa-camera-topbar">
+<div class="sa-camera-label" id="staffRegisterCameraLabel">📷 الكاميرا الأمامية</div>
+<button class="sa-camera-switch" id="switchStaffRegisterCamera" title="تبديل الكاميرا" type="button" aria-label="تبديل الكاميرا">🔄</button>
+</div>
 <video autoplay="" id="staffRegisterVideo" muted="" playsinline=""></video>
 <div class="sa-camera-buttons">
 <button class="sa-btn sa-btn-primary" id="captureStaffFaceBtn" type="button">📸 التقاط الوجه</button>
@@ -1850,7 +1883,10 @@
 <h3>📷 تسجيل حضور الكادر</h3>
 <div class="sa-attendance-info" id="staffAttendanceLocationInfo">سيتم التحقق من موقع الجهاز قبل تشغيل الكاميرا.</div>
 <div class="sa-camera-wrap hidden" id="staffAttendanceCameraBox">
-<div class="sa-camera-label">📷 الكاميرا الأمامية — وجّه وجهك أمام الكاميرا</div>
+<div class="sa-camera-topbar">
+<div class="sa-camera-label" id="staffAttendanceCameraLabel">📷 الكاميرا الأمامية — وجّه وجهك أمام الكاميرا</div>
+<button class="sa-camera-switch" id="switchStaffAttendanceCamera" title="تبديل الكاميرا" type="button" aria-label="تبديل الكاميرا">🔄</button>
+</div>
 <video autoplay="" id="staffAttendanceVideo" muted="" playsinline=""></video>
 <div class="sa-camera-buttons">
 <button class="sa-btn sa-btn-danger" id="stopStaffAttendanceBtn" type="button">✖ إيقاف الكاميرا</button>
@@ -1902,9 +1938,12 @@ const CLASS_NAMES = [
     "الأول المتوسط",
     "الثاني المتوسط",
     "الثالث المتوسط",
-    "الرابع الإعدادي",
+    "الرابع العلمي",
+    "الرابع الأدبي",
     "الخامس العلمي",
-    "السادس العلمي"
+    "الخامس الأدبي",
+    "السادس العلمي",
+    "السادس الأدبي"
 
 ];
 
@@ -1939,6 +1978,8 @@ let currentAttendanceTeacher = "";
 let pendingConfirmAction = null;
 
 let editingFaceStudentId = null;
+
+let pendingPlatformStudentId = null;
 
 /* =========================================================
    الصوت
@@ -3274,6 +3315,10 @@ async function() {
                     students
                 );
 
+                if (typeof window.__updateSchoolStudentFromFace === 'function') {
+                    window.__updateSchoolStudentFromFace(existing);
+                }
+
                 editingFaceStudentId =
                 null;
 
@@ -3282,6 +3327,8 @@ async function() {
                     "✅ تم تحديث بيانات الطالب وبصمة وجهه بنجاح.",
                     "success"
                 );
+
+                speakStudentFaceSaved(name);
 
                 stopRegisterCamera();
 
@@ -3380,6 +3427,8 @@ async function() {
             .toString(36)
             .substring(2,8),
 
+            studentId: pendingPlatformStudentId || "",
+
             name:name,
 
             className:className,
@@ -3391,6 +3440,10 @@ async function() {
 
         };
 
+        if (typeof window.__registerFaceStudentInSchoolInfo === 'function') {
+            window.__registerFaceStudentInSchoolInfo(newStudent, pendingPlatformStudentId || '');
+        }
+
         students.push(
             newStudent
         );
@@ -3399,11 +3452,15 @@ async function() {
             students
         );
 
+        pendingPlatformStudentId = null;
+
         showMessage(
             registerMessage,
             "✅ تم تسجيل الطالب وبصمة وجهه بنجاح.",
             "success"
         );
+
+        speakStudentFaceSaved(name);
 
         registerStatus.textContent =
         `تم تسجيل الطالب: ${name} — ${className}`;
@@ -3458,6 +3515,8 @@ function() {
     editingFaceStudentId =
     null;
 
+    pendingPlatformStudentId = null;
+
     showMessage(
         registerMessage,
         "تم إغلاق كاميرا تسجيل الطالب.",
@@ -3470,7 +3529,7 @@ function() {
    تعديل طالب
 ========================================================= */
 
-function editStudent(id) {
+function editFaceStudent(id) {
 
     const students =
     getStudents();
@@ -3540,6 +3599,10 @@ function editStudent(id) {
         students
     );
 
+    if (typeof window.__updateSchoolStudentFromFace === 'function') {
+        window.__updateSchoolStudentFromFace(student);
+    }
+
     renderStudents();
 
     showToast(
@@ -3547,6 +3610,38 @@ function editStudent(id) {
     );
 
 }
+
+/* =========================================================
+   فتح تسجيل بصمة لطالب من «معلومات الطلبة»
+========================================================= */
+
+window.openStudentFaceRegistration = function(schoolStudentId) {
+    try {
+        const list = typeof window.__getSchoolStudentsData === 'function' ? window.__getSchoolStudentsData() : [];
+        const schoolStudent = list.find(s => s.id === schoolStudentId);
+        if (!schoolStudent) {
+            alert('لم يتم العثور على بيانات الطالب.');
+            return;
+        }
+
+        pendingPlatformStudentId = schoolStudent.id;
+        editingFaceStudentId = null;
+        studentName.value = schoolStudent.name || '';
+        studentClass.value = schoolStudent.grade || '';
+
+        hideAllSections();
+        registerSection.classList.add('active');
+        attendanceSubMenu.style.display = 'none';
+        registerMessage.textContent = '';
+        registerStatus.textContent = `الطالب المحدد: ${schoolStudent.name} — ${schoolStudent.grade}. افتح الكاميرا لتسجيل بصمة الوجه.`;
+
+        const platformTab = document.getElementById('tabContentStudentAttendance');
+        if (platformTab) platformTab.scrollIntoView({ behavior:'smooth', block:'start' });
+    } catch(e) {
+        console.error('Open student face registration:', e);
+        alert('تعذر فتح نظام تسجيل بصمة الوجه.');
+    }
+};
 
 /* =========================================================
    إعادة تسجيل بصمة
@@ -3574,6 +3669,8 @@ function reRegisterFace(id) {
     editingFaceStudentId =
     id;
 
+    pendingPlatformStudentId = null;
+
     hideAllSections();
 
     registerSection.classList.add(
@@ -3592,7 +3689,7 @@ function reRegisterFace(id) {
    حذف طالب
 ========================================================= */
 
-function deleteStudent(id) {
+function deleteFaceStudent(id) {
 
     const students =
     getStudents();
@@ -3631,6 +3728,10 @@ function deleteStudent(id) {
                 attendance
             );
 
+            if (typeof window.__removeSchoolStudentForFace === 'function') {
+                window.__removeSchoolStudentForFace(student);
+            }
+
             renderStudents();
 
             renderTodayAttendance();
@@ -3649,143 +3750,341 @@ function deleteStudent(id) {
 ========================================================= */
 
 function renderStudents() {
+    const students = getStudents();
+    const container = studentsList;
+    if (!container) return;
+    container.innerHTML = '';
 
-    const students =
-    getStudents();
+    const intro = document.createElement('div');
+    intro.style.cssText = 'background:#f7f7f7;border:1px solid #ddd;border-radius:8px;padding:12px;margin-bottom:12px;text-align:center;';
+    intro.innerHTML = '<strong style="font-size:1.05rem;color:#111;">📋 قوائم الطلبة المسجلين في نظام البصمة</strong><div style="margin-top:5px;color:#555;font-size:.9rem;">نفس نظام جداول معلومات الطلبة، مع حذف عمود هاتف ولي الأمر.</div>';
+    container.appendChild(intro);
 
-    studentsList.innerHTML =
-    "";
+    const controls = document.createElement('div');
+    controls.className = 'student-roster-controls';
+    controls.id = 'faceStudentRosterControls';
+    container.appendChild(controls);
+    renderStudentRosterControls('face', controls);
+}
 
-    if (
-        students.length === 0
-    ) {
+function getGradeBranchInfo(grade) {
+    const value = String(grade || '').trim();
+    const senior = {
+        'الرابع العلمي': { grade: 'الرابع', branch: 'العلمي' },
+        'الرابع الأدبي': { grade: 'الرابع', branch: 'الأدبي' },
+        'الخامس العلمي': { grade: 'الخامس', branch: 'العلمي' },
+        'الخامس الأدبي': { grade: 'الخامس', branch: 'الأدبي' },
+        'السادس العلمي': { grade: 'السادس', branch: 'العلمي' },
+        'السادس الأدبي': { grade: 'السادس', branch: 'الأدبي' }
+    };
+    if (senior[value]) return senior[value];
+    return { grade: value, branch: '' };
+}
 
-        studentsList.innerHTML =
-        '<div class="empty">لا يوجد طلاب مسجلون.</div>';
+function isSeniorGrade(grade) {
+    return ['الرابع العلمي','الرابع الأدبي','الخامس العلمي','الخامس الأدبي','السادس العلمي','السادس الأدبي'].includes(String(grade || '').trim());
+}
 
+function getSchoolStudentsForRoster() {
+    return Array.isArray(studentsData) ? studentsData.slice() : [];
+}
+
+function getFaceStudentsForRoster() {
+    return getFaceAttendanceStudentsSafe().map((s, i) => ({
+        ...s,
+        id: s.id || s.studentId || ('face_' + i),
+        grade: s.className || s.grade || ''
+    }));
+}
+
+function sortRosterStudents(list) {
+    return [...list].sort((a,b) => {
+        const an = String(a.name || '').trim();
+        const bn = String(b.name || '').trim();
+        return an.localeCompare(bn, 'ar', { sensitivity:'base' });
+    });
+}
+
+function renderStudentRosterControls(mode, container) {
+    if (!container) return;
+    container.innerHTML = '';
+    const allRow = document.createElement('div');
+    allRow.className = 'student-roster-control-row';
+    allRow.innerHTML = `
+        <div class="student-roster-control-title">👥 جميع الطلبة</div>
+        <button type="button" class="student-roster-control-btn" onclick="openStudentRosterViewer('all','${mode}')">عرض</button>
+        <div class="student-roster-download">
+            <button type="button" class="student-roster-control-btn" onclick="toggleStudentDownloadMenu(this)">تحميل</button>
+            <div class="student-roster-download-menu">
+                <button type="button" onclick="downloadStudentRoster('all','pdf','${mode}')">📄 PDF</button>
+                <button type="button" onclick="downloadStudentRoster('all','excel','${mode}')">📊 Excel</button>
+                <button type="button" onclick="downloadStudentRoster('all','word','${mode}')">📝 Word</button>
+            </div>
+        </div>`;
+    container.appendChild(allRow);
+
+    gradeOrder.forEach((grade) => {
+        const row = document.createElement('div');
+        row.className = 'student-roster-control-row';
+        row.innerHTML = `
+            <div class="student-roster-control-title">${escapeHtml(grade)}</div>
+            <button type="button" class="student-roster-control-btn" onclick="openStudentRosterViewer('${escapeHtml(grade)}','${mode}')">عرض</button>
+            <div class="student-roster-download">
+                <button type="button" class="student-roster-control-btn" onclick="toggleStudentDownloadMenu(this)">تحميل</button>
+                <div class="student-roster-download-menu">
+                    <button type="button" onclick="downloadStudentRoster('${escapeHtml(grade)}','pdf','${mode}')">📄 PDF</button>
+                    <button type="button" onclick="downloadStudentRoster('${escapeHtml(grade)}','excel','${mode}')">📊 Excel</button>
+                    <button type="button" onclick="downloadStudentRoster('${escapeHtml(grade)}','word','${mode}')">📝 Word</button>
+                </div>
+            </div>`;
+        container.appendChild(row);
+    });
+}
+
+function toggleStudentDownloadMenu(button) {
+    document.querySelectorAll('.student-roster-download-menu.show').forEach(menu => {
+        if (!button.parentElement.contains(menu)) menu.classList.remove('show');
+    });
+    const menu = button.parentElement.querySelector('.student-roster-download-menu');
+    if (menu) menu.classList.toggle('show');
+}
+
+function getRosterData(mode, grade) {
+    let list = mode === 'face' ? getFaceStudentsForRoster() : getSchoolStudentsForRoster();
+    if (grade !== 'all') list = list.filter(s => String(s.grade || '').trim() === String(grade || '').trim());
+    return sortRosterStudents(list);
+}
+
+function getRosterLogoHtml() {
+    const logo = document.querySelector('.header-logo-box');
+    return logo ? logo.innerHTML : '';
+}
+
+function buildStudentRosterPage(grade, list, mode, pageNumber, totalPages) {
+    const info = getGradeBranchInfo(grade);
+    const showBranch = isSeniorGrade(grade);
+    const schoolData = getSchoolStudentsForRoster();
+    const rows = [];
+    const pageSize = 30;
+    const source = list || [];
+    const start = pageNumber * pageSize;
+    const pageItems = source.slice(start, start + pageSize);
+
+    for (let i = 0; i < pageSize; i++) {
+        const st = pageItems[i];
+        const rowNumber = i + 1;
+        let name = '', phone = '', notes = '', face = '';
+        if (st) {
+            name = escapeHtml(st.name || '');
+            const schoolStudent = schoolData.find(s => s.id === st.studentId || (String(s.name||'').trim() === String(st.name||'').trim() && String(s.grade||'').trim() === String(st.grade||'').trim()));
+            phone = escapeHtml(mode === 'face' ? '' : (st.phone || ''));
+            notes = escapeHtml((schoolStudent && schoolStudent.notes) || st.notes || '');
+            const registered = mode === 'face' ? true : isStudentFaceRegistered(st);
+            face = registered
+                ? '<span class="face-ok">🟢 تم تسجيل بصمة الوجه</span>'
+                : '<span style="color:#c62828;font-weight:800;">🔴 لم يتم تسجيل بصمة الوجه</span>';
+        }
+        const actionText = st ? '<span class="action-cell">✏️</span>' : '';
+        const deleteText = st ? '<span class="action-cell">🗑️</span>' : '';
+        const moveText = st ? '<span class="action-cell">↔️</span>' : '';
+        rows.push(`<tr>
+            <td>${toArabicNumber(rowNumber)}</td>
+            <td class="name-cell">${name}</td>
+            <td>${escapeHtml(info.grade)}</td>
+            ${showBranch ? `<td>${escapeHtml(info.branch)}</td>` : ''}
+            ${mode === 'school' ? `<td dir="ltr">${phone || ''}</td>` : ''}
+            <td>${face}</td>
+            <td>${actionText}</td>
+            <td>${deleteText}</td>
+            <td>${moveText}</td>
+            <td class="notes-cell">${notes}</td>
+        </tr>`);
+    }
+
+    const titleGrade = showBranch ? `${info.grade} — ${info.branch}` : info.grade;
+    return `<section class="student-roster-page">
+        <div class="student-roster-page-header">
+            <div class="student-roster-header-side left">
+                <div class="student-roster-grade-line">الصف : ....................</div>
+            </div>
+            <div class="student-roster-logo">${getRosterLogoHtml()}</div>
+            <div class="student-roster-header-side right">
+                <div class="student-roster-school-title">إدارة ثانوية الفراجية للبنين</div>
+                <div class="student-roster-platform-title">منصة إلكترونية</div>
+            </div>
+        </div>
+        <div class="student-roster-year">العام الدراسي 2026-2027</div>
+        <div style="text-align:center;font-weight:800;font-size:18px;margin:3mm 0 2mm;">قائمة الطلبة — ${escapeHtml(titleGrade)}</div>
+        <table class="student-roster-table">
+            <colgroup>
+                <col style="width:4%"><col style="width:25%"><col style="width:9%">
+                ${showBranch ? '<col style="width:9%">' : ''}
+                ${mode === 'school' ? '<col style="width:13%">' : ''}
+                <col style="width:12%"><col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:13%">
+            </colgroup>
+            <thead><tr>
+                <th>ت</th><th>اسم الطالب الثلاثي</th><th>الصف</th>
+                ${showBranch ? '<th>الفرع</th>' : ''}
+                ${mode === 'school' ? '<th>هاتف ولي الأمر</th>' : ''}
+                <th>بصمة الوجه</th><th>تعديل</th><th>حذف</th><th>نقل</th><th>ملاحظات</th>
+            </tr></thead>
+            <tbody>${rows.join('')}</tbody>
+        </table>
+        <div class="student-roster-footer">
+            <div class="footer-left">إعداد وبرمجة<br>د. أحمد عباس جمعه 2026</div>
+            <div class="footer-right">المدير<br>د. سعدون حزين فرحان</div>
+        </div>
+    </section>`;
+}
+
+function toArabicNumber(n) {
+    return String(n).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+}
+
+function openStudentRosterViewer(grade, mode) {
+    document.querySelectorAll('.student-roster-download-menu.show').forEach(m => m.classList.remove('show'));
+    const overlay = document.getElementById('studentRosterOverlay');
+    const pages = document.getElementById('studentRosterPages');
+    const title = document.getElementById('studentRosterViewerTitle');
+    if (!overlay || !pages) return;
+
+    const grades = grade === 'all' ? gradeOrder.slice() : [grade];
+    const allData = mode === 'face' ? getFaceStudentsForRoster() : getSchoolStudentsForRoster();
+    pages.innerHTML = '';
+    let pageCount = 0;
+
+    grades.forEach(g => {
+        const list = sortRosterStudents(allData.filter(s => String(s.grade || '').trim() === String(g || '').trim()));
+        const countPages = Math.max(1, Math.ceil(list.length / 30));
+        for (let p = 0; p < countPages; p++) {
+            pages.insertAdjacentHTML('beforeend', buildStudentRosterPage(g, list, mode, p, countPages));
+            pageCount++;
+        }
+    });
+    title.textContent = grade === 'all' ? `📋 جميع الطلبة — ${pageCount} صفحة` : `📋 جدول ${grade}`;
+    overlay.classList.remove('hidden');
+}
+
+function closeStudentRosterViewer(event) {
+    if (event && event.target !== event.currentTarget) return;
+    const overlay = document.getElementById('studentRosterOverlay');
+    if (overlay) overlay.classList.add('hidden');
+}
+
+function buildRosterDownloadContainer(grade, mode) {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'position:absolute;left:-100000px;top:0;width:210mm;background:#fff;';
+    const pages = document.createElement('div');
+    pages.className = 'student-roster-pages';
+    const grades = grade === 'all' ? gradeOrder.slice() : [grade];
+    const allData = mode === 'face' ? getFaceStudentsForRoster() : getSchoolStudentsForRoster();
+    grades.forEach(g => {
+        const list = sortRosterStudents(allData.filter(s => String(s.grade || '').trim() === String(g || '').trim()));
+        const countPages = Math.max(1, Math.ceil(list.length / 30));
+        for (let p=0; p<countPages; p++) pages.insertAdjacentHTML('beforeend', buildStudentRosterPage(g, list, mode, p, countPages));
+    });
+    wrap.appendChild(pages);
+    document.body.appendChild(wrap);
+    return wrap;
+}
+
+async function downloadStudentRoster(grade, type, mode) {
+    document.querySelectorAll('.student-roster-download-menu.show').forEach(m => m.classList.remove('show'));
+    const label = grade === 'all' ? 'جميع_الطلبة' : String(grade).replace(/\s+/g,'_');
+    const data = mode === 'face' ? getFaceStudentsForRoster() : getSchoolStudentsForRoster();
+    const selected = grade === 'all' ? data : data.filter(s => String(s.grade||'').trim() === String(grade||'').trim());
+    if (!selected.length && grade !== 'all') {
+        if (!confirm('لا توجد أسماء في هذا الصف حالياً. هل تريد تحميل الجدول الفارغ؟')) return;
+    }
+
+    if (type === 'excel') {
+        const wb = XLSX.utils.book_new();
+        const grades = grade === 'all' ? gradeOrder.slice() : [grade];
+        grades.forEach(g => {
+            const list = sortRosterStudents(data.filter(s => String(s.grade||'').trim() === String(g||'').trim()));
+            const info = getGradeBranchInfo(g);
+            const rows = list.map((st,i) => {
+                const schoolStudent = getSchoolStudentsForRoster().find(s => s.id === st.studentId || (String(s.name||'').trim()===String(st.name||'').trim() && String(s.grade||'').trim()===String(st.grade||'').trim()));
+                const r = { 'ت':i+1, 'اسم الطالب الثلاثي':st.name||'', 'الصف':info.grade };
+                if (isSeniorGrade(g)) r['الفرع'] = info.branch;
+                if (mode === 'school') r['هاتف ولي الأمر'] = st.phone || '';
+                r['بصمة الوجه'] = 'تم تسجيل بصمة الوجه';
+                r['تعديل'] = '';
+                r['حذف'] = '';
+                r['نقل'] = '';
+                r['ملاحظات'] = (schoolStudent && schoolStudent.notes) || st.notes || '';
+                return r;
+            });
+            const ws = XLSX.utils.json_to_sheet(rows.length ? rows : [{ 'ت':'', 'اسم الطالب الثلاثي':'', 'الصف':info.grade, ...(isSeniorGrade(g)?{'الفرع':info.branch}:{}), ...(mode==='school'?{'هاتف ولي الأمر':''}:{}), 'بصمة الوجه':'', 'تعديل':'', 'حذف':'', 'نقل':'', 'ملاحظات':'' }]);
+            XLSX.utils.book_append_sheet(wb, ws, g.slice(0,31));
+        });
+        XLSX.writeFile(wb, `${label}.xlsx`);
         return;
     }
 
-    const grid =
-    document.createElement("div");
-
-    grid.className =
-    "class-grid";
-
-    CLASS_NAMES.forEach(
-        className => {
-
-            const classCard =
-            document.createElement("div");
-
-            classCard.className =
-            "class-card";
-
-            const title =
-            document.createElement("h3");
-
-            title.textContent =
-            className;
-
-            classCard.appendChild(
-                title
-            );
-
-            const classStudents =
-            students
-            .filter(
-                student =>
-                student.className ===
-                className
-            )
-            .sort(
-                (a,b) =>
-                a.name.localeCompare(
-                    b.name,
-                    "ar"
-                )
-            );
-
-            if (
-                classStudents.length === 0
-            ) {
-
-                const empty =
-                document.createElement("div");
-
-                empty.className =
-                "empty";
-
-                empty.textContent =
-                "لا يوجد طلاب مسجلون.";
-
-                classCard.appendChild(
-                    empty
-                );
-
-            } else {
-
-                classStudents.forEach(
-                    (student,index) => {
-
-                        const item =
-                        document.createElement("div");
-
-                        item.className =
-                        "list-item";
-
-                        item.innerHTML = `
-
-                            <strong>
-                                ${index + 1}. ${escapeHtml(student.name)}
-                            </strong>
-
-                            <div class="student-actions">
-
-                                <button
-                                    type="button"
-                                    class="btn-warning"
-                                    onclick="editStudent('${student.id}')">
-                                    ✏️ تعديل
-                                </button>
-
-                                <button
-                                    type="button"
-                                    class="btn-primary"
-                                    onclick="reRegisterFace('${student.id}')">
-                                    📷 إعادة البصمة
-                                </button>
-
-                                <button
-                                    type="button"
-                                    class="btn-danger"
-                                    onclick="deleteStudent('${student.id}')">
-                                    🗑 حذف
-                                </button>
-
-                            </div>
-                        `;
-
-                        classCard.appendChild(
-                            item
-                        );
-
-                    }
-                );
-
-            }
-
-            grid.appendChild(
-                classCard
-            );
-
+    const wrap = buildRosterDownloadContainer(grade, mode);
+    try {
+        if (type === 'pdf') {
+            const opt = {
+                margin: 0,
+                filename: `${label}.pdf`,
+                image: { type:'jpeg', quality:0.98 },
+                html2canvas: { scale:2, useCORS:true, backgroundColor:'#fff' },
+                jsPDF: { unit:'mm', format:'a4', orientation:'portrait' },
+                pagebreak: { mode:['css','legacy'] }
+            };
+            await html2pdf().from(wrap).set(opt).save();
+        } else if (type === 'word') {
+            const html = `<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><title>${label}</title><style>@page{size:A4;margin:0}body{margin:0;background:#fff}.student-roster-page{page-break-after:always;width:210mm;min-height:297mm;box-sizing:border-box;padding:10mm 8mm 8mm}.student-roster-page:last-child{page-break-after:auto}.student-roster-table{width:100%;border-collapse:collapse;direction:rtl;font-family:Tahoma,Arial,sans-serif}.student-roster-table th,.student-roster-table td{border:1px solid #555;padding:3px;text-align:center;font-size:11px;height:6.2mm}.student-roster-table th{font-weight:800;background:#fff}.student-roster-page-header{display:grid;grid-template-columns:1fr 120px 1fr;align-items:center;min-height:42mm;direction:ltr}.student-roster-header-side{direction:rtl;font-family:Tahoma,Arial,sans-serif;font-size:18px;line-height:1.9}.student-roster-logo{width:110px;height:125px}.student-roster-logo svg{width:100%;height:100%}.student-roster-footer{display:grid;grid-template-columns:1fr 1fr;direction:ltr;margin-top:5mm;font-family:Tahoma,Arial,sans-serif;font-size:15px;font-weight:700}.footer-left{direction:rtl;text-align:left}.footer-right{direction:rtl;text-align:right}</style></head><body>${wrap.querySelector('.student-roster-pages').innerHTML}</body></html>`;
+            const blob = new Blob(['\ufeff'+html], {type:'application/msword'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href=url; a.download=`${label}.doc`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
         }
-    );
+    } finally {
+        wrap.remove();
+    }
+}
 
-    studentsList.appendChild(
-        grid
-    );
+function getGradeBranchInfo(grade) {
+    const value = String(grade || '').trim();
+    const senior = {
+        'الرابع العلمي': { grade: 'الرابع', branch: 'العلمي' },
+        'الرابع الأدبي': { grade: 'الرابع', branch: 'الأدبي' },
+        'الخامس العلمي': { grade: 'الخامس', branch: 'العلمي' },
+        'الخامس الأدبي': { grade: 'الخامس', branch: 'الأدبي' },
+        'السادس العلمي': { grade: 'السادس', branch: 'العلمي' },
+        'السادس الأدبي': { grade: 'السادس', branch: 'الأدبي' }
+    };
+    if (senior[value]) return senior[value];
+    return { grade: value, branch: '' };
+}
 
+function isSeniorGrade(grade) {
+    return ['الرابع العلمي','الرابع الأدبي','الخامس العلمي','الخامس الأدبي','السادس العلمي','السادس الأدبي'].includes(String(grade || '').trim());
+}
+
+function moveFaceStudent(id) {
+    const students = getStudents();
+    const student = students.find(s => s.id === id);
+    if (!student) return;
+
+    const newClass = prompt('اختر الصف الجديد من القائمة التالية:\n\n' + CLASS_NAMES.join('\n'), student.className);
+    if (newClass === null) return;
+    const cleanClass = newClass.trim();
+    if (!CLASS_NAMES.includes(cleanClass)) {
+        alert('الصف غير صحيح.');
+        return;
+    }
+    if (cleanClass === student.className) return;
+
+    student.className = cleanClass;
+    saveStudents(students);
+    if (typeof window.__updateSchoolStudentFromFace === 'function') {
+        window.__updateSchoolStudentFromFace(student);
+    }
+    renderStudents();
+    if (typeof loadStudents === 'function') loadStudents();
+    showToast('↔️ تم نقل الطالب وتحديث صفه في معلومات الطلبة');
 }
 
 /* =========================================================
@@ -4515,101 +4814,113 @@ function getMaleArabicVoice() {
 
 }
 
-function speakAttendance(name) {
+function isLikelyMaleArabicVoice(voice) {
+    const name = String(voice && voice.name || '').toLowerCase();
+    const uri = String(voice && voice.voiceURI || '').toLowerCase();
+    const lang = String(voice && voice.lang || '').toLowerCase();
+    const text = name + ' ' + uri;
 
-    if (
-        !("speechSynthesis" in window)
-    ) {
+    const isArabic = lang.startsWith('ar') || text.includes('arabic') || text.includes('عربي');
+    if (!isArabic) return false;
 
-        return;
+    /*
+     * Web Speech API لا يملك خاصية gender قياسية لكل الأجهزة.
+     * لذلك نستخدم أسماء/معرّفات أصوات ذكورية معروفة، ونرفض صراحةً
+     * أي صوت يعلن نفسه كـ female/feminine/أنثى.
+     */
+    const femaleMarkers = [
+        'female', 'feminine', 'woman', 'girl', 'hoda', 'houda',
+        'laila', 'layla', 'leila', 'sara', 'sarah', 'salma',
+        'noura', 'nora', 'noora', 'reem', 'rima', 'rana',
+        'asma', 'asmaa', 'fatima', 'fatimah', 'maryam', 'mariam',
+        'hanan', 'hiba', 'heba', 'aya', 'aya', 'هدى', 'أنثى', 'انثى'
+    ];
 
+    if (femaleMarkers.some(marker => text.includes(marker))) {
+        return false;
     }
+
+    const maleMarkers = [
+        'male', 'man', 'masculine', 'ذكر',
+        'maged', 'majed', 'majid', 'hamed', 'hamid',
+        'hisham', 'hesham', 'tarik', 'tariq', 'tareq',
+        'naif', 'naser', 'nasser', 'fahad', 'saad',
+        'salem', 'saleh', 'mohammed', 'muhammad', 'mohammad',
+        'ahmed', 'omar', 'yousef', 'yusuf', 'ali', 'hassan',
+        'husain', 'hussein', 'abdullah', 'abdul', 'khaled',
+        'khalid', 'mahmoud', 'mustafa', 'mustafa', 'ibrahim',
+        'microsoft arabic male', 'google arabic male'
+    ];
+
+    return maleMarkers.some(marker => text.includes(marker));
+}
+
+function getStrictMaleArabicVoice() {
+    const voices = loadSpeechVoices();
+    if (!voices || voices.length === 0) return null;
+
+    return voices.find(isLikelyMaleArabicVoice) || null;
+}
+
+function speakMaleArabic(message) {
+    if (!('speechSynthesis' in window)) return;
 
     try {
-
         window.speechSynthesis.cancel();
-
         window.speechSynthesis.resume();
-
-    } catch(error) {
-
-        console.warn(error);
-
+    } catch (error) {
+        console.warn('Speech resume:', error);
     }
 
-    const speakNow =
-    function() {
+    let attempts = 0;
+    const maxAttempts = 8;
 
-        const voice =
-        getMaleArabicVoice();
+    const speakNow = function() {
+        attempts++;
+        const maleVoice = getStrictMaleArabicVoice();
 
-        const utterance =
-        new SpeechSynthesisUtterance(
-            "تم تسجيل حضور الطالب " +
-            name
-        );
-
-        utterance.lang =
-        "ar-IQ";
-
-        utterance.rate =
-        0.82;
-
-        utterance.pitch =
-        0.7;
-
-        utterance.volume =
-        1;
-
-        if (voice) {
-
-            utterance.voice =
-            voice;
-
+        /* لا يوجد أي fallback لصوت عربي غير معروف؛ حتى لا يُستخدم صوت امرأة. */
+        if (!maleVoice) {
+            if (attempts < maxAttempts) {
+                setTimeout(speakNow, 350);
+            } else {
+                console.warn('لم يتوفر صوت عربي رجل على الجهاز، لذلك لم يتم تشغيل صوت أنثوي كبديل.');
+            }
+            return;
         }
 
-        setTimeout(
-            function() {
+        const utterance = new SpeechSynthesisUtterance(String(message || ''));
+        utterance.lang = 'ar-IQ';
+        utterance.voice = maleVoice;
+        utterance.rate = 0.82;
+        utterance.pitch = 0.65;
+        utterance.volume = 1;
 
-                try {
-
-                    window.speechSynthesis.speak(
-                        utterance
-                    );
-
-                } catch(error) {
-
-                    console.error(
-                        "Speech:",
-                        error
-                    );
-
-                }
-
-            },
-            100
-        );
-
+        try {
+            window.speechSynthesis.speak(utterance);
+        } catch (error) {
+            console.error('Speech:', error);
+        }
     };
 
     loadSpeechVoices();
+    speakNow();
+}
 
-    if (
-        !speechVoicesReady ||
-        speechVoices.length === 0
-    ) {
+function speakAttendance(name) {
+    speakMaleArabic('تم تسجيل حضور الطالب ' + name + ' بنجاح');
+}
 
-        setTimeout(
-            speakNow,
-            300
-        );
+function speakStudentFaceSaved(name) {
+    speakMaleArabic('تم تسجيل بصمة وجه الطالب ' + name + ' بنجاح');
+}
 
-    } else {
+function speakStaffFaceSaved(name) {
+    speakMaleArabic('تم تسجيل بصمة وجه المدرس ' + name + ' بنجاح');
+}
 
-        speakNow();
-
-    }
-
+function speakStaffAttendance(name) {
+    speakMaleArabic('تم تسجيل حضور المدرس ' + name + ' بنجاح');
 }
 
 if (
@@ -6333,6 +6644,12 @@ function() {
         "هل تريد حذف جميع أسماء الطلبة وبصماتهم؟ هذه العملية لا يمكن التراجع عنها.",
         function() {
 
+            const faceStudents = getStudents();
+
+            if (typeof window.__removeSchoolStudentForFace === 'function') {
+                faceStudents.forEach(faceStudent => window.__removeSchoolStudentForFace(faceStudent));
+            }
+
             localStorage.removeItem(
                 STUDENTS_KEY
             );
@@ -6453,6 +6770,7 @@ window.__initStudentAttendanceOnOpen = function(){
     const SA_LOCATION_KEY = 'SCHOOL_FIXED_LOCATION_V1';
     const SA_RADIUS_METERS = 150;
     let saModelsLoaded = false, saRegisterStream = null, saAttendanceStream = null;
+    let saRegisterCameraMode = 'user', saAttendanceCameraMode = 'user';
     let saCapturedDescriptor = null, saAttendanceRunning = false;
 
     const $ = id => document.getElementById(id);
@@ -6500,10 +6818,38 @@ window.__initStudentAttendanceOnOpen = function(){
         }catch(e){ console.error(e); staffModelStatus.textContent='❌ تعذر تحميل نماذج الوجه. تأكد من اتصال الإنترنت.'; return false; }
     }
     function stopStream(stream){ if(stream) stream.getTracks().forEach(t=>t.stop()); return null; }
-    async function openFrontCamera(video){
+    async function openStaffCamera(video, mode){
         if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('CAMERA_UNAVAILABLE');
-        const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'user'},width:{ideal:720},height:{ideal:720}},audio:false});
-        video.srcObject=stream; await video.play(); return stream;
+        if(video.srcObject){ stopStream(video.srcObject); video.srcObject=null; }
+        let stream=null;
+        try{
+            stream=await navigator.mediaDevices.getUserMedia({
+                video:{facingMode:{exact:mode},width:{ideal:720},height:{ideal:720}},
+                audio:false
+            });
+        }catch(firstError){
+            console.warn('Exact staff camera failed:',firstError);
+            stream=await navigator.mediaDevices.getUserMedia({
+                video:{facingMode:{ideal:mode},width:{ideal:720},height:{ideal:720}},
+                audio:false
+            });
+        }
+        video.srcObject=stream;
+        video.style.transform = mode === 'user' ? 'scaleX(-1)' : 'none';
+        await video.play();
+        return stream;
+    }
+    function updateStaffRegisterCameraLabel(){
+        const label=$('staffRegisterCameraLabel');
+        if(label) label.textContent=saRegisterCameraMode==='user'?'📷 الكاميرا الأمامية':'📷 الكاميرا الخلفية';
+        const video=$('staffRegisterVideo');
+        if(video) video.style.transform=saRegisterCameraMode==='user'?'scaleX(-1)':'none';
+    }
+    function updateStaffAttendanceCameraLabel(){
+        const label=$('staffAttendanceCameraLabel');
+        if(label) label.textContent=saAttendanceCameraMode==='user'?'📷 الكاميرا الأمامية — وجّه وجهك أمام الكاميرا':'📷 الكاميرا الخلفية — وجّه وجهك أمام الكاميرا';
+        const video=$('staffAttendanceVideo');
+        if(video) video.style.transform=saAttendanceCameraMode==='user'?'scaleX(-1)':'none';
     }
     function getStaffRecords(){ return getStoredJSON(SA_STAFF_KEY,[]); }
     function getTodayKey(){ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
@@ -6556,8 +6902,33 @@ window.__initStudentAttendanceOnOpen = function(){
         if(!name){ setMsg(staffRegisterMessage,'⚠️ اختر اسم المدرس أولًا.','error'); return; }
         if(!(await loadStaffModels())) return;
         try{
-            saRegisterStream=await openFrontCamera($('staffRegisterVideo')); $('staffRegisterCameraBox').classList.remove('hidden'); saCapturedDescriptor=null; $('saveStaffFaceBtn').disabled=true; setMsg(staffRegisterMessage,'📷 ضع الوجه أمام الكاميرا ثم اضغط «التقاط الوجه».','info');
-        }catch(e){ setMsg(staffRegisterMessage,'❌ تعذر فتح الكاميرا الأمامية. اسمح للمتصفح باستخدام الكاميرا.','error'); }
+            saRegisterCameraMode='user';
+            updateStaffRegisterCameraLabel();
+            saRegisterStream=await openStaffCamera($('staffRegisterVideo'),saRegisterCameraMode);
+            $('staffRegisterCameraBox').classList.remove('hidden');
+            saCapturedDescriptor=null;
+            $('saveStaffFaceBtn').disabled=true;
+            setMsg(staffRegisterMessage,'📷 تم فتح الكاميرا. إذا ظهرت رسالة إذن الكاميرا اختر «السماح»، ثم ضع الوجه أمام الكاميرا. يمكنك الضغط على 🔄 للتبديل.','info');
+        }catch(e){ console.error(e); setMsg(staffRegisterMessage,'❌ تعذر فتح الكاميرا. اسمح للمتصفح باستخدام الكاميرا من نافذة الصلاحيات ثم حاول مرة أخرى.','error'); }
+    });
+    $('switchStaffRegisterCamera').addEventListener('click',async()=>{
+        if(!saRegisterStream) return;
+        const btn=$('switchStaffRegisterCamera');
+        btn.disabled=true;
+        const oldMode=saRegisterCameraMode;
+        const newMode=oldMode==='user'?'environment':'user';
+        try{
+            stopStream(saRegisterStream); saRegisterStream=null;
+            saRegisterCameraMode=newMode; updateStaffRegisterCameraLabel();
+            saRegisterStream=await openStaffCamera($('staffRegisterVideo'),newMode);
+            setMsg(staffRegisterMessage,newMode==='user'?'📷 تم التحويل إلى الكاميرا الأمامية.':'📷 تم التحويل إلى الكاميرا الخلفية.','info');
+        }catch(e){
+            console.error(e);
+            saRegisterCameraMode=oldMode; updateStaffRegisterCameraLabel();
+            try{ saRegisterStream=await openStaffCamera($('staffRegisterVideo'),oldMode); setMsg(staffRegisterMessage,'⚠️ تعذر تبديل الكاميرا، تمت إعادة الكاميرا السابقة.','error'); }
+            catch(returnError){ console.error(returnError); $('staffRegisterCameraBox').classList.add('hidden'); setMsg(staffRegisterMessage,'❌ تعذر تشغيل الكاميرا. تأكد من صلاحية الكاميرا.','error'); }
+        }
+        btn.disabled=false;
     });
     $('captureStaffFaceBtn').addEventListener('click',async()=>{
         const name=selectedStaffName(); if(!name){setMsg(staffRegisterMessage,'⚠️ اختر اسم المدرس أولًا.','error');return;}
@@ -6572,7 +6943,7 @@ window.__initStudentAttendanceOnOpen = function(){
         const name=selectedStaffName(); if(!name||!saCapturedDescriptor){setMsg(staffRegisterMessage,'⚠️ اختر الاسم والتقط الوجه أولًا.','error');return;}
         const records=getStaffRecords().filter(r=>cleanName(r.name)!==name); records.push({id:Date.now().toString(),name,descriptor:saCapturedDescriptor,createdAt:new Date().toISOString()}); saveJSON(SA_STAFF_KEY,records);
         if(name && !getPlatformStaffNames().includes(name)){ const names=getStoredJSON(SA_NAMES_KEY,[]); if(!names.includes(name)){names.push(name);saveJSON(SA_NAMES_KEY,names);} }
-        setMsg(staffRegisterMessage,'✅ تم حفظ بصمة الوجه بنجاح لهذا المدرس.','success'); saCapturedDescriptor=null; $('saveStaffFaceBtn').disabled=true; stopStream(saRegisterStream); saRegisterStream=null; $('staffRegisterCameraBox').classList.add('hidden');
+        setMsg(staffRegisterMessage,`✅ تم حفظ بصمة الوجه بنجاح للمدرس: ${name}.`,'success'); speakStaffFaceSaved(name); saCapturedDescriptor=null; $('saveStaffFaceBtn').disabled=true; stopStream(saRegisterStream); saRegisterStream=null; $('staffRegisterCameraBox').classList.add('hidden');
     });
     $('closeStaffRegisterCameraBtn').addEventListener('click',()=>{stopStream(saRegisterStream);saRegisterStream=null;$('staffRegisterCameraBox').classList.add('hidden');});
 
@@ -6585,8 +6956,38 @@ window.__initStudentAttendanceOnOpen = function(){
         $('staffAttendanceLocationInfo').textContent=`📍 أنت داخل نطاق المدرسة — المسافة عن الموقع المثبت: ${Math.round(loc.distance)} متر.`;
         const records=getStaffRecords(); if(records.length===0){setMsg(staffAttendanceMessage,'⚠️ لا توجد بصمات كادر محفوظة. سجّل وجهًا جديدًا أولًا.','error');return;}
         if(!(await loadStaffModels())) return;
-        try{ saAttendanceStream=await openFrontCamera($('staffAttendanceVideo')); $('staffAttendanceCameraBox').classList.remove('hidden'); saAttendanceRunning=true; setMsg(staffAttendanceMessage,'📷 وجّه وجهك أمام الكاميرا، وسيتم التسجيل تلقائيًا بعد التعرف عليك.','info'); saRecognizeLoop(); }
-        catch(e){setMsg(staffAttendanceMessage,'❌ تعذر فتح الكاميرا الأمامية. اسمح للمتصفح باستخدام الكاميرا.','error');}
+        try{
+            saAttendanceCameraMode='user';
+            updateStaffAttendanceCameraLabel();
+            saAttendanceStream=await openStaffCamera($('staffAttendanceVideo'),saAttendanceCameraMode);
+            $('staffAttendanceCameraBox').classList.remove('hidden');
+            saAttendanceRunning=true;
+            setMsg(staffAttendanceMessage,'📷 تم فتح الكاميرا. إذا ظهرت رسالة إذن الكاميرا اختر «السماح». يمكنك الضغط على 🔄 للتبديل بين الأمامية والخلفية.','info');
+            saRecognizeLoop();
+        }
+        catch(e){setMsg(staffAttendanceMessage,'❌ تعذر فتح الكاميرا. اسمح للمتصفح باستخدام الكاميرا من نافذة الصلاحيات ثم حاول مرة أخرى.','error');}
+    });
+    $('switchStaffAttendanceCamera').addEventListener('click',async()=>{
+        if(!saAttendanceStream || !saAttendanceRunning) return;
+        const btn=$('switchStaffAttendanceCamera');
+        btn.disabled=true;
+        const oldMode=saAttendanceCameraMode;
+        const newMode=oldMode==='user'?'environment':'user';
+        saAttendanceRunning=false;
+        try{
+            stopStream(saAttendanceStream); saAttendanceStream=null;
+            saAttendanceCameraMode=newMode; updateStaffAttendanceCameraLabel();
+            saAttendanceStream=await openStaffCamera($('staffAttendanceVideo'),newMode);
+            saAttendanceRunning=true;
+            setMsg(staffAttendanceMessage,newMode==='user'?'📷 تم التحويل إلى الكاميرا الأمامية.':'📷 تم التحويل إلى الكاميرا الخلفية.','info');
+            saRecognizeLoop();
+        }catch(e){
+            console.error(e);
+            saAttendanceCameraMode=oldMode; updateStaffAttendanceCameraLabel();
+            try{ saAttendanceStream=await openStaffCamera($('staffAttendanceVideo'),oldMode); saAttendanceRunning=true; setMsg(staffAttendanceMessage,'⚠️ تعذر تبديل الكاميرا، تمت إعادة الكاميرا السابقة.','error'); saRecognizeLoop(); }
+            catch(returnError){ console.error(returnError); saAttendanceRunning=false; $('staffAttendanceCameraBox').classList.add('hidden'); setMsg(staffAttendanceMessage,'❌ تعذر تشغيل الكاميرا. تأكد من صلاحية الكاميرا.','error'); }
+        }
+        btn.disabled=false;
     });
     async function saRecognizeLoop(){
         if(!saAttendanceRunning)return;
@@ -6606,7 +7007,7 @@ window.__initStudentAttendanceOnOpen = function(){
         if(!pos.ok){setMsg(staffAttendanceMessage,'❌ تعذر تأكيد وجودك داخل المدرسة، لذلك لم يتم تسجيل الحضور.','error');stopStream(saAttendanceStream);saAttendanceStream=null;return;}
         const today=getTodayKey(), arr=getStoredJSON(SA_ATT_KEY,[]), exists=arr.find(r=>r.date===today&&cleanName(r.name)===cleanName(name));
         if(exists){ $('staffDetectedBox').classList.remove('hidden'); $('staffDetectedName').textContent=`✔ ${name}`; $('staffDetectedTime').textContent=`الحضور مسجل مسبقًا اليوم — ${exists.time}`; $('staffDetectedDistance').textContent=`📍 داخل المدرسة — ${Math.round(pos.distance)} متر`; setMsg(staffAttendanceMessage,'ℹ️ هذا المدرس مسجل حضوره مسبقًا اليوم.','info'); }
-        else { const record={id:Date.now().toString(),name:cleanName(name),date:today,time:timeNow(),locationDistance:Math.round(pos.distance),faceDistance:Number(distanceFace.toFixed(4))}; arr.push(record);saveJSON(SA_ATT_KEY,arr); $('staffDetectedBox').classList.remove('hidden'); $('staffDetectedName').textContent=`✅ تم تسجيل حضور: ${name}`; $('staffDetectedTime').textContent=`الوقت: ${record.time}`; $('staffDetectedDistance').textContent=`📍 داخل المدرسة — ${record.locationDistance} متر`; setMsg(staffAttendanceMessage,'✅ تم تسجيل حضور الكادر بنجاح.','success'); renderStaffToday(); }
+        else { const record={id:Date.now().toString(),name:cleanName(name),date:today,time:timeNow(),locationDistance:Math.round(pos.distance),faceDistance:Number(distanceFace.toFixed(4))}; arr.push(record);saveJSON(SA_ATT_KEY,arr); $('staffDetectedBox').classList.remove('hidden'); $('staffDetectedName').textContent=`✅ تم تسجيل حضور: ${name}`; $('staffDetectedTime').textContent=`الوقت: ${record.time}`; $('staffDetectedDistance').textContent=`📍 داخل المدرسة — ${record.locationDistance} متر`; setMsg(staffAttendanceMessage,`✅ تم تسجيل حضور الكادر بنجاح: ${name}.`,'success'); speakStaffAttendance(name); renderStaffToday(); }
         stopStream(saAttendanceStream);saAttendanceStream=null;$('staffAttendanceCameraBox').classList.add('hidden');
     }
     $('stopStaffAttendanceBtn').addEventListener('click',()=>{saAttendanceRunning=false;stopStream(saAttendanceStream);saAttendanceStream=null;$('staffAttendanceCameraBox').classList.add('hidden');setMsg(staffAttendanceMessage,'تم إيقاف الكاميرا.','info');});
@@ -6616,6 +7017,8 @@ window.__initStudentAttendanceOnOpen = function(){
     }
     window.__initStaffAttendanceOnOpen=function(){ populateStaffNames(); renderLocation(); renderStaffToday(); loadStaffModels(); };
     window.addEventListener('beforeunload',()=>{saAttendanceRunning=false;stopStream(saRegisterStream);stopStream(saAttendanceStream);});
+    updateStaffRegisterCameraLabel();
+    updateStaffAttendanceCameraLabel();
     renderLocation(); renderStaffToday(); loadStaffModels();
 })();
 </script>
@@ -6712,6 +7115,100 @@ window.__initStudentAttendanceOnOpen = function(){
         const DEFAULT_SCHOOL_WHATSAPP_NUMBER = '9647891235779';
         let SCHOOL_WHATSAPP_NUMBER = String(localStorage.getItem('schoolWhatsappSenderNumber') || DEFAULT_SCHOOL_WHATSAPP_NUMBER).trim();
         let studentsData = [];
+
+        /* =========================================================
+           الربط الموحد بين «معلومات الطلبة» وبصمات الوجه
+        ========================================================= */
+        window.__getSchoolStudentsData = function(){ return studentsData; };
+
+        window.__registerFaceStudentInSchoolInfo = function(faceStudent, preferredId){
+            try {
+                if (!faceStudent) return null;
+                let list = Array.isArray(studentsData) ? studentsData : [];
+                const name = String(faceStudent.name || '').trim();
+                const grade = String(faceStudent.className || '').trim();
+                const targetId = preferredId || faceStudent.studentId || '';
+                let idx = targetId ? list.findIndex(s => s.id === targetId) : -1;
+                if (idx < 0) idx = list.findIndex(s => String(s.name || '').trim() === name && String(s.grade || '').trim() === grade);
+                if (idx >= 0) {
+                    list[idx] = { ...list[idx], name, grade };
+                    faceStudent.studentId = list[idx].id;
+                } else {
+                    const newId = targetId || ('student_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,7));
+                    list.push({ id:newId, name, grade, section:'', phone:'', notes:'' });
+                    faceStudent.studentId = newId;
+                }
+                studentsData = list;
+                localStorage.setItem('schoolStudentsData', JSON.stringify(studentsData));
+                if (typeof loadStudents === 'function') loadStudents();
+                return faceStudent.studentId;
+            } catch(e) { console.error('Face/student sync:', e); return null; }
+        };
+
+        window.__updateSchoolStudentFromFace = function(faceStudent){
+            return window.__registerFaceStudentInSchoolInfo(faceStudent, faceStudent && faceStudent.studentId ? faceStudent.studentId : '');
+        };
+
+        window.__removeSchoolStudentForFace = function(faceStudent){
+            try {
+                if (!faceStudent) return;
+                const id = faceStudent.studentId || '';
+                const name = String(faceStudent.name || '').trim();
+                const grade = String(faceStudent.className || '').trim();
+                let idx = id ? studentsData.findIndex(s => s.id === id) : -1;
+                if (idx < 0) idx = studentsData.findIndex(s => String(s.name || '').trim() === name && String(s.grade || '').trim() === grade);
+                if (idx >= 0) {
+                    studentsData.splice(idx, 1);
+                    localStorage.setItem('schoolStudentsData', JSON.stringify(studentsData));
+                    if (typeof loadStudents === 'function') loadStudents();
+                }
+            } catch(e) { console.error('Remove face/student sync:', e); }
+        };
+
+        window.__updateFaceRecordForSchoolStudent = function(id, oldName, newName, newGrade){
+            try {
+                const key = 'FACE_ATTENDANCE_STUDENTS';
+                const records = JSON.parse(localStorage.getItem(key) || '[]');
+                let changed = false;
+                records.forEach(r => {
+                    const matchesId = id && r.studentId === id;
+                    const matchesOld = !matchesId && oldName && String(r.name || '').trim() === String(oldName || '').trim();
+                    if (matchesId || matchesOld) {
+                        r.name = String(newName || '').trim();
+                        r.className = String(newGrade || '').trim();
+                        if (id) r.studentId = id;
+                        changed = true;
+                    }
+                });
+                if (changed) localStorage.setItem(key, JSON.stringify(records));
+            } catch(e) { console.error('School edit/face sync:', e); }
+        };
+
+        window.__removeFaceRecordForSchoolStudent = function(id, name, grade){
+            try {
+                const key = 'FACE_ATTENDANCE_STUDENTS';
+                const records = JSON.parse(localStorage.getItem(key) || '[]');
+                const filtered = records.filter(r => {
+                    const byId = id && r.studentId === id;
+                    const byNameGrade = !id && name && String(r.name || '').trim() === String(name || '').trim() && String(r.className || '').trim() === String(grade || '').trim();
+                    return !(byId || byNameGrade);
+                });
+                localStorage.setItem(key, JSON.stringify(filtered));
+            } catch(e) { console.error('School delete/face sync:', e); }
+        };
+
+        window.__syncAllFaceRecordsToSchoolInfo = function(){
+            try {
+                const records = JSON.parse(localStorage.getItem('FACE_ATTENDANCE_STUDENTS') || '[]');
+                let changed = false;
+                records.forEach(r => {
+                    const before = r.studentId;
+                    const id = window.__registerFaceStudentInSchoolInfo(r, r.studentId || '');
+                    if (id && before !== id) changed = true;
+                });
+                if (changed) localStorage.setItem('FACE_ATTENDANCE_STUDENTS', JSON.stringify(records));
+            } catch(e) { console.error('Initial face/student sync:', e); }
+        };
         let whatsappParentsQueue = [];
         let whatsappParentsIndex = 0;
         let whatsappParentsBaseMessage = '';
@@ -6762,6 +7259,7 @@ window.__initStudentAttendanceOnOpen = function(){
             
             const savedStudents = localStorage.getItem('schoolStudentsData');
             if (savedStudents) studentsData = JSON.parse(savedStudents);
+            if (typeof window.__syncAllFaceRecordsToSchoolInfo === 'function') window.__syncAllFaceRecordsToSchoolInfo();
 
             const savedArchive = localStorage.getItem('schoolArchiveData');
             if (savedArchive) archiveData = JSON.parse(savedArchive);
@@ -8203,35 +8701,63 @@ window.__initStudentAttendanceOnOpen = function(){
             }
         }
 
-        function loadStudents() {
-            const filterGrade = document.getElementById('studentFilterGrade').value;
-            const tbody = document.getElementById('studentsTableBody');
-            tbody.innerHTML = '';
+        function getFaceAttendanceStudentsSafe() {
+            try {
+                const raw = localStorage.getItem('FACE_ATTENDANCE_STUDENTS');
+                const list = raw ? JSON.parse(raw) : [];
+                return Array.isArray(list) ? list : [];
+            } catch(e) {
+                return [];
+            }
+        }
 
-            const filtered = sortStudents(filterGrade ? studentsData.filter(s => s.grade === filterGrade) : studentsData);
+        function isStudentFaceRegistered(student) {
+            const faceStudents = getFaceAttendanceStudentsSafe();
+            const id = String(student.id || '');
+            const name = String(student.name || '').trim();
+            const grade = String(student.grade || '').trim();
+            return faceStudents.some(faceStudent =>
+                (id && String(faceStudent.studentId || '') === id) ||
+                (String(faceStudent.name || '').trim() === name && String(faceStudent.className || '').trim() === grade && !!faceStudent.descriptor)
+            );
+        }
 
-            if(filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #666; padding: 15px;">لا يوجد طلاب مسجلين حالياً.</td></tr>`;
+        function openStudentFaceRegistrationFromInfo(id) {
+            if (typeof window.openStudentFaceRegistration !== 'function') {
+                alert('نظام تسجيل بصمة الوجه غير جاهز بعد.');
                 return;
             }
+            switchMainTab('studentAttendance');
+            setTimeout(() => window.openStudentFaceRegistration(id), 80);
+        }
 
-            filtered.forEach((st, idx) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${idx + 1}</td>
-                    <td style="font-weight: bold;">${st.name}</td>
-                    <td>${st.grade}${st.section ? ` - شعبة ${st.section}` : ''}</td>
-                    <td dir="ltr" style="text-align: right;">${st.phone || '-'}</td>
-                    <td>${st.notes || '-'}</td>
-                    <td class="no-print">
-                        <div class="action-btns">
-                            <button class="btn-action btn-edit" onclick="editStudent('${st.id}')">✏️ تعديل</button>
-                            <button class="btn-action btn-delete" onclick="deleteStudent('${st.id}')">🗑️ حذف</button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+        function loadStudents() {
+            const container = document.getElementById('schoolStudentRosterControls');
+            if (container) renderStudentRosterControls('school', container);
+        }
+
+        function moveSchoolStudent(id) {
+            const st = studentsData.find(s => s.id === id);
+            if (!st) return;
+
+            const newGrade = prompt('اختر الصف الجديد من القائمة التالية:\n\n' + gradeOrder.join('\n'), st.grade);
+            if (newGrade === null) return;
+            const cleanGrade = newGrade.trim();
+            if (!gradeOrder.includes(cleanGrade)) {
+                alert('الصف غير صحيح.');
+                return;
+            }
+            if (cleanGrade === st.grade) return;
+
+            const oldGrade = st.grade;
+            st.grade = cleanGrade;
+            localStorage.setItem('schoolStudentsData', JSON.stringify(studentsData));
+
+            if (typeof window.__updateFaceRecordForSchoolStudent === 'function') {
+                window.__updateFaceRecordForSchoolStudent(st.id, st.name, st.name, cleanGrade);
+            }
+            logActivity('staff', 'نقل طالب', `نقل الطالب: ${st.name} من ${oldGrade} إلى ${cleanGrade}`);
+            loadStudents();
         }
 
         function handleAddStudent(event) {
@@ -8251,7 +8777,11 @@ window.__initStudentAttendanceOnOpen = function(){
             if(id) {
                 const idx = studentsData.findIndex(s => s.id === id);
                 if(idx !== -1) {
+                    const oldStudentName = studentsData[idx].name;
                     studentsData[idx] = { ...studentsData[idx], id, name, grade, section, phone, notes };
+                    if (typeof window.__updateFaceRecordForSchoolStudent === 'function') {
+                        window.__updateFaceRecordForSchoolStudent(id, oldStudentName, name, grade);
+                    }
                     logActivity('staff', 'تعديل طالب', `تعديل بيانات الطالب: ${name} - الصف: ${grade} - الشعبة: ${section || '-'}`);
                 }
             } else {
@@ -8282,6 +8812,9 @@ window.__initStudentAttendanceOnOpen = function(){
             if(confirm("هل أنت متأكد من حذف هذا الطالب؟")) {
                 const deleted = studentsData.find(s => s.id === id);
                 studentsData = studentsData.filter(s => s.id !== id);
+                if (typeof window.__removeFaceRecordForSchoolStudent === 'function') {
+                    window.__removeFaceRecordForSchoolStudent(id, deleted?.name || '', deleted?.grade || '');
+                }
                 logActivity('staff', 'حذف طالب', `حذف الطالب: ${deleted?.name || id} - الصف: ${deleted?.grade || '-'} - الشعبة: ${deleted?.section || '-'}`);
                 localStorage.setItem('schoolStudentsData', JSON.stringify(studentsData));
                 loadStudents();
@@ -8294,81 +8827,35 @@ window.__initStudentAttendanceOnOpen = function(){
             resultsDiv.innerHTML = '';
 
             if(!query) {
-                resultsDiv.innerHTML = `<p style="text-align: center; color: #666;">ابدأ الكتابة للبحث عن الطلاب.</p>`;
+                resultsDiv.innerHTML = `<p style="text-align:center;color:#666;">ابدأ الكتابة للبحث عن الطلاب.</p>`;
                 return;
             }
-
-            const matched = studentsData.filter(s => s.name.toLowerCase().includes(query));
-            if(matched.length === 0) {
-                resultsDiv.innerHTML = `<p style="text-align: center; color: #ff5252;">لم يتم العثور على أي طالب بهذا الاسم.</p>`;
+            const matched = studentsData.filter(s => String(s.name || '').toLowerCase().includes(query));
+            if(!matched.length) {
+                resultsDiv.innerHTML = `<p style="text-align:center;color:#ff5252;">لم يتم العثور على أي طالب بهذا الاسم.</p>`;
                 return;
             }
-
             const table = document.createElement('table');
             table.className = 'student-table';
-            table.innerHTML = `<thead><tr><th>ت</th><th>اسم الطالب</th><th>الصف</th><th>هاتف ولي الأمر</th><th>ملاحظات</th></tr></thead><tbody></tbody>`;
+            const showBranch = matched.some(st => isSeniorGrade(st.grade));
+            table.innerHTML = `<thead><tr><th>ت</th><th>اسم الطالب الثلاثي</th><th>الصف</th>${showBranch ? '<th>الفرع</th>' : ''}<th>هاتف ولي الأمر</th><th>بصمة الوجه</th><th>تعديل</th><th>حذف</th><th>نقل</th><th>ملاحظات</th></tr></thead><tbody></tbody>`;
             const tbody = table.querySelector('tbody');
-
-            matched.forEach((st, idx) => {
+            sortRosterStudents(matched).forEach((st, idx) => {
+                const info = getGradeBranchInfo(st.grade);
+                const registered = isStudentFaceRegistered(st);
+                const status = registered ? '<span style="color:#16803a;font-weight:700;">🟢 تم تسجيل بصمة الوجه</span>' : '<div style="display:flex;flex-direction:column;gap:5px;align-items:center;"><span style="color:#c62828;font-weight:700;">🔴 لم يتم تسجيل بصمة الوجه</span><button type="button" class="btn-action btn-save" onclick="openStudentFaceRegistrationFromInfo(\''+st.id+'\')">📷 اضغط لتسجيل بصمة الوجه</button></div>';
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${idx + 1}</td><td style="font-weight:bold;">${st.name}</td><td>${st.grade}</td><td dir="ltr">${st.phone || '-'}</td><td>${st.notes || '-'}</td>`;
+                tr.innerHTML = `<td>${idx+1}</td><td style="font-weight:bold;">${escapeHtml(st.name)}</td><td>${escapeHtml(info.grade)}</td>${showBranch?`<td>${escapeHtml(info.branch||'-')}</td>`:''}<td dir="ltr">${escapeHtml(st.phone||'-')}</td><td>${status}</td><td><button class="btn-action btn-edit" type="button" onclick="editStudent('${st.id}')">✏️ تعديل</button></td><td><button class="btn-action btn-delete" type="button" onclick="deleteStudent('${st.id}')">🗑️ حذف</button></td><td><button class="btn-action" type="button" style="background:#e67e22;color:white;" onclick="moveSchoolStudent('${st.id}')">↔️ نقل</button></td><td>${escapeHtml(st.notes||'-')}</td>`;
                 tbody.appendChild(tr);
             });
             resultsDiv.appendChild(table);
         }
 
         function downloadStudentsFile(type) {
-            const grade = document.getElementById('downloadGradeSelect').value;
-            let list = grade === 'all' ? studentsData : studentsData.filter(s => s.grade === grade);
-
-            if(list.length === 0) {
-                alert("لا توجد بيانات طلاب للتحميل في هذا الصف.");
-                return;
-            }
-
-            if(type === 'excel') {
-                let excelData = list.map((st, i) => ({
-                    "ت": i + 1,
-                    "اسم الطالب الثلاثي": st.name,
-                    "الصف الدراسي": st.grade,
-                    "الشعبة": st.section || "",
-                    "هاتف ولي الأمر": st.phone || '',
-                    "ملاحظات": st.notes || ''
-                }));
-                const worksheet = XLSX.utils.json_to_sheet(excelData);
-                const workbook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workbook, worksheet, "الطلاب");
-                XLSX.writeFile(workbook, `قائمة_الطلاب_${grade}.xlsx`);
-            } else if(type === 'pdf') {
-                const element = document.getElementById('printableStudentTable');
-                let opt = {
-                    margin: 10,
-                    filename: `قائمة_الطلاب_${grade}.pdf`,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2 },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                };
-                html2pdf().from(element).set(opt).save();
-            } else if(type === 'word') {
-                let htmlContent = `<html dir="rtl"><head><meta charset="UTF-8"><title>قائمة الطلاب</title></head><body style="font-family: Arial, sans-serif;">`;
-                htmlContent += `<h2 style="text-align:center; color:#1b4332;">ثانوية الفراجية للبنين - قائمة طلاب (${grade})</h2>`;
-                htmlContent += `<table border="1" style="width:100%; border-collapse:collapse; text-align:right;">`;
-                htmlContent += `<tr style="background:#1b4332; color:white;"><th>ت</th><th>اسم الطالب الثلاثي</th><th>الصف</th><th>الهاتف</th><th>ملاحظات</th></tr>`;
-                list.forEach((st, i) => {
-                    htmlContent += `<tr><td>${i+1}</td><td>${st.name}</td><td>${st.grade}</td><td>${st.phone || ''}</td><td>${st.notes || ''}</td></tr>`;
-                });
-                htmlContent += `</table></body></html>`;
-
-                let blob = new Blob(['\ufeff' + htmlContent], { type: 'application/msword' });
-                let url = URL.createObjectURL(blob);
-                let a = document.createElement('a');
-                a.href = url;
-                a.download = `قائمة_الطلاب_${grade}.doc`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            }
+            const grade = document.getElementById('downloadGradeSelect') ? document.getElementById('downloadGradeSelect').value : 'all';
+            return downloadStudentRoster(grade, type, 'school');
         }
+
     </script>
 </div>
 </div>
