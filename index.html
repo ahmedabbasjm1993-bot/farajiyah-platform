@@ -1014,6 +1014,65 @@
 </div>
 <button class="btn-save" onclick="enterAsStudent()" style="width: 100%; padding: 10px;">دخول للطالب 🚀</button>
 </div>
+<div class="hidden" id="staffLoginForm" style="margin-top: 15px; border-top: 1px dashed #ddd; padding-top: 15px; text-align: right;">
+<h3 style="color: var(--primary-color); margin-bottom: 12px; text-align: center;">تسجيل دخول الكادر التدريسي</h3>
+<div class="form-group">
+<label>المنصب أو الصلاحية:</label>
+<select id="roleCardProfRole">
+<option value="مدرس المادة">مدرس المادة</option>
+<option value="مدير المدرسة">مدير المدرسة</option>
+<option value="المرشد التربوي">المرشد التربوي</option>
+<option value="معاون المدير">معاون المدير</option>
+</select>
+</div>
+<div class="form-group">
+<label>الاسم الثلاثي:</label>
+<select id="roleCardProfNameSelect" onchange="checkRoleCardNameManual()">
+<option value="">-- اختر الاسم الثلاثي --</option>
+<option value="سعدون حزين فرحان">سعدون حزين فرحان</option>
+<option value="سفان محمد إبراهيم">سفان محمد إبراهيم</option>
+<option value="كريم مساهر حمد">كريم مساهر حمد</option>
+<option value="عادل حسين محمد">عادل حسين محمد</option>
+<option value="مخلص خالد خلف">مخلص خالد خلف</option>
+<option value="مصطفى طيب صالح">مصطفى طيب صالح</option>
+<option value="أنمار شاكر محمود">أنمار شاكر محمود</option>
+<option value="أنمار عبدالله سلمان">أنمار عبدالله سلمان</option>
+<option value="عمار علي محمود">عمار علي محمود</option>
+<option value="عمر سعدي شبيب">عمر سعدي شبيب</option>
+<option value="نهاد طالب سلمان">نهاد طالب سلمان</option>
+<option value="هيثم نايف أسود">هيثم نايف أسود</option>
+<option value="علاء سالم كردي">علاء سالم كردي</option>
+<option value="أوس عبد اللطيف فهد">أوس عبد اللطيف فهد</option>
+<option value="أسعد حاتم فريح">أسعد حاتم فريح</option>
+<option value="أحمد عباس جمعه">أحمد عباس جمعه</option>
+<option value="MANUAL_OTHER">➕ إضافة اسم اخر</option>
+</select>
+<input class="hidden" id="roleCardProfNameManual" placeholder="اكتب الاسم الثلاثي يدوياً..." style="margin-top: 8px;" type="text"/>
+</div>
+<div class="form-group">
+<label>الاختصاص أو المادة:</label>
+<select id="roleCardProfSpecialtySelect" onchange="checkRoleCardSpecialtyManual()">
+<option value="">-- اختر الاختصاص أو المادة --</option>
+<option value="مدير المدرسة">مدير المدرسة</option>
+<option value="المعاون">المعاون</option>
+<option value="المرشد التربوي">المرشد التربوي</option>
+<option value="التربية الإسلامية">التربية الإسلامية</option>
+<option value="اللغة العربية">اللغة العربية</option>
+<option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+<option value="الرياضيات">الرياضيات</option>
+<option value="فيزياء">فيزياء</option>
+<option value="كيمياء">كيمياء</option>
+<option value="احياء">احياء</option>
+<option value="اجتماعيات">اجتماعيات</option>
+<option value="حاسوب">حاسوب</option>
+<option value="رياضة">رياضة</option>
+<option value="فنية">فنية</option>
+<option value="MANUAL_OTHER">➕ أضف اختصاص اخر</option>
+</select>
+<input class="hidden" id="roleCardProfSpecialtyManual" placeholder="اكتب الاختصاص أو المادة يدوياً..." style="margin-top: 8px;" type="text"/>
+</div>
+<button class="btn-save" onclick="saveProfileFromRoleCard()" style="width: 100%; padding: 10px;">دخول الكادر</button>
+</div>
 <div class="auth-footer" style="margin-top: 15px;">اعداد وبرمجة (د. أحمد عباس جمعه 2026)</div>
 </div>
 </div>
@@ -1469,7 +1528,7 @@
 
     <div class="sa-status" id="staffModelStatus">⏳ جارٍ تجهيز نظام التعرف على الوجه...</div>
 
-    <div class="sa-location-card">
+    <div class="sa-location-card hidden" id="staffSchoolLocationCard">
         <h3>📍 موقع المدرسة</h3>
         <div id="schoolLocationStatus" class="sa-location-status">لم يتم تثبيت موقع المدرسة بعد.</div>
         <div class="sa-location-actions">
@@ -1481,7 +1540,24 @@
 
     <div class="sa-actions">
         <button type="button" class="sa-main-btn sa-register-btn" id="staffRegisterFaceBtn">🙂 تسجيل وجه جديد</button>
-        <button type="button" class="sa-main-btn sa-attendance-btn" id="staffTakeAttendanceBtn">📷 تسجيل الحضور</button>
+        <button type="button" class="sa-main-btn sa-attendance-btn" id="staffTakeAttendanceBtn">📷 تسجيل الحضور اليومي</button>
+    </div>
+
+    <div class="sa-panel hidden" id="staffFaceManagementPanel">
+        <h3>🙂 إدارة تسجيل وجوه الكادر</h3>
+        <div class="sa-actions sa-face-sub-actions">
+            <button type="button" class="sa-main-btn sa-register-btn" id="staffRegisteredFacesBtn">✅ الكادر الذي تم تسجيله بنجاح</button>
+            <button type="button" class="sa-main-btn sa-pending-btn" id="staffPendingFacesBtn">🔴 الذين لم يسجلوا بعد</button>
+            <button type="button" class="sa-main-btn sa-new-face-btn" id="staffNewFaceBtn">➕ تسجيل وجه جديد</button>
+        </div>
+        <div class="sa-panel hidden" id="staffRegisteredFacesPanel">
+            <h3>✅ الكادر الذي تم تسجيله بنجاح</h3>
+            <div id="staffRegisteredFacesList" class="sa-list"></div>
+        </div>
+        <div class="sa-panel hidden" id="staffPendingFacesPanel">
+            <h3>🔴 الذين لم يسجلوا بعد</h3>
+            <div id="staffPendingFacesList" class="sa-list"></div>
+        </div>
     </div>
 
     <div class="sa-panel hidden" id="staffRegisterPanel">
@@ -2360,25 +2436,74 @@
         }
 
         function selectRole(role) {
+            // يبقى المستخدم داخل شاشة الاختيار نفسها؛ وبذلك لا تظهر معلومات رأس الصفحة
+            // قبل تسجيل الدخول، ويظهر نموذج الكادر بنفس شكل نموذج الطالب.
+            isStudentMode = (role === 'student');
+            currentUser = null;
+
+            const studentForm = document.getElementById('studentLoginForm');
+            const staffForm = document.getElementById('staffLoginForm');
+            const loginCard = document.getElementById('loginCard');
+            const mainPlatform = document.getElementById('mainPlatform');
+
+            if(loginCard) loginCard.classList.add('hidden');
+            if(mainPlatform) mainPlatform.classList.add('hidden');
+            document.getElementById('appAuthScreen').classList.add('hidden');
+            document.getElementById('roleSelectionScreen').classList.remove('hidden');
+
             if(role === 'staff') {
-                // الدخول إلى نموذج الكادر مباشرة، دون المرور بشاشة
-                // اسم المستخدم وكلمة المرور الخاصة بالتطبيق.
-                isStudentMode = false;
-                currentUser = null;
-
-                document.getElementById('roleSelectionScreen').classList.add('hidden');
-                document.getElementById('appAuthScreen').classList.add('hidden');
-                document.getElementById('loginCard').classList.remove('hidden');
-                document.getElementById('mainPlatform').classList.add('hidden');
-
-                // إخفاء القائمة والشريط العلوي أثناء تسجيل دخول الكادر فقط.
-                const topMenu = document.querySelector('.menu-container');
-                const ticker = document.getElementById('mainPlatformTicker');
-                if(topMenu) topMenu.classList.add('hidden');
-                if(ticker) ticker.classList.add('hidden');
+                if(studentForm) studentForm.classList.add('hidden');
+                if(staffForm) staffForm.classList.remove('hidden');
             } else {
-                document.getElementById('studentLoginForm').classList.remove('hidden');
+                if(staffForm) staffForm.classList.add('hidden');
+                if(studentForm) studentForm.classList.remove('hidden');
             }
+
+            // تبقى عناصر رأس المنصة مخفية إلى أن يتم تسجيل الدخول فعلياً.
+            const topMenu = document.querySelector('.menu-container');
+            const ticker = document.getElementById('mainPlatformTicker');
+            if(topMenu) topMenu.classList.add('hidden');
+            if(ticker) ticker.classList.add('hidden');
+        }
+
+        function checkRoleCardNameManual() {
+            const sel = document.getElementById('roleCardProfNameSelect');
+            const man = document.getElementById('roleCardProfNameManual');
+            if(sel && man) man.classList.toggle('hidden', sel.value !== 'MANUAL_OTHER');
+        }
+
+        function checkRoleCardSpecialtyManual() {
+            const sel = document.getElementById('roleCardProfSpecialtySelect');
+            const man = document.getElementById('roleCardProfSpecialtyManual');
+            if(sel && man) man.classList.toggle('hidden', sel.value !== 'MANUAL_OTHER');
+        }
+
+        function saveProfileFromRoleCard() {
+            const role = document.getElementById('roleCardProfRole').value;
+            const nameSel = document.getElementById('roleCardProfNameSelect').value;
+            let name = nameSel === 'MANUAL_OTHER' ? document.getElementById('roleCardProfNameManual').value : nameSel;
+            const specSel = document.getElementById('roleCardProfSpecialtySelect').value;
+            let spec = specSel === 'MANUAL_OTHER' ? document.getElementById('roleCardProfSpecialtyManual').value : specSel;
+
+            if(!name || !spec) {
+                alert('الرجاء إكمال بيانات الاسم والاختصاص.');
+                return;
+            }
+
+            name = cleanStaffName(name);
+            currentUser = { role: role, name: name, specialty: spec, phone: '' };
+            isStudentMode = false;
+            localStorage.setItem('teacherProfile', JSON.stringify(currentUser));
+
+            activeStaffList = activeStaffList.filter(s => s.name !== name);
+            loggedOutStaffList = loggedOutStaffList.filter(s => s.name !== name);
+            activeStaffList.push({ name: name, specialty: spec, time: nowDetails().time });
+            localStorage.setItem('activeStaffList', JSON.stringify(activeStaffList));
+            localStorage.setItem('loggedOutStaffList', JSON.stringify(loggedOutStaffList));
+
+            logActivity('staff', 'تسجيل دخول', `دخول الكادر إلى المنصة - الاختصاص: ${spec}`);
+            showMainPlatform();
+            document.getElementById('roleSelectionScreen').classList.add('hidden');
         }
 
         function enterAsStudent() {
@@ -2442,8 +2567,10 @@
             if(savedTeacherProfile) {
                 try {
                     currentUser = JSON.parse(savedTeacherProfile);
-                    if(currentUser && currentUser.name) {
+                        if(currentUser && currentUser.name) {
                         isStudentMode = false;
+                        document.getElementById('roleSelectionScreen').classList.add('hidden');
+                        document.getElementById('appAuthScreen').classList.add('hidden');
                         checkTeacherProfile();
                         return;
                     }
@@ -2452,16 +2579,13 @@
                 }
             }
 
-            const isRemembered = localStorage.getItem('appRemembered');
-            if (isRemembered === 'true') {
-                showSplashScreen();
-            } else {
-                if(!isStudentMode && !currentUser) {
-                    document.getElementById('roleSelectionScreen').classList.remove('hidden');
-                } else {
-                    document.getElementById('appAuthScreen').classList.remove('hidden');
-                }
-            }
+            // عند عدم وجود جلسة محفوظة، ابدأ دائماً من شاشة اختيار الطالب/الكادر.
+            // appRemembered خاص بالشاشة القديمة ولا يجب أن يمنع نموذج الكادر الجديد.
+            document.getElementById('appAuthScreen').classList.add('hidden');
+            document.getElementById('mainPlatform').classList.add('hidden');
+            document.getElementById('roleSelectionScreen').classList.remove('hidden');
+            document.getElementById('studentLoginForm').classList.add('hidden');
+            document.getElementById('staffLoginForm').classList.add('hidden');
         }
 
         function loginApp() {
@@ -2527,9 +2651,13 @@
 
                 showMainPlatform();
             } else {
-                document.getElementById('loginCard').classList.remove('hidden');
+                // لا توجد جلسة محفوظة: أظهر شاشة الاختيار ونموذج الكادر داخلها،
+                // ولا تعرض رأس المنصة أو القائمة قبل تسجيل الدخول.
+                document.getElementById('loginCard').classList.add('hidden');
                 document.getElementById('mainPlatform').classList.add('hidden');
-                // إخفاء زر القائمة والشريط العلوي في صفحة تسجيل دخول الكادر فقط.
+                document.getElementById('roleSelectionScreen').classList.remove('hidden');
+                document.getElementById('studentLoginForm').classList.add('hidden');
+                document.getElementById('staffLoginForm').classList.remove('hidden');
                 const topMenu = document.querySelector('.menu-container');
                 const ticker = document.getElementById('mainPlatformTicker');
                 if (topMenu) topMenu.classList.add('hidden');
@@ -2678,6 +2806,13 @@
             }
             document.querySelectorAll('.tab-main-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('#mainPlatform > .card').forEach(card => card.classList.add('hidden'));
+
+            // إخفاء واجهتي حضور الطلاب والكادر أيضًا لأنهما في بنية مستقلة عن mainPlatform.
+            // هذا يمنع بقاء محتوى حضور الطلاب ظاهرًا عند الانتقال إلى حضور الكادر.
+            const studentAttendanceTab = document.getElementById('tabContentStudentAttendance');
+            const staffAttendanceTab = document.getElementById('tabContentStaffAttendance');
+            if (studentAttendanceTab) studentAttendanceTab.classList.add('hidden');
+            if (staffAttendanceTab) staffAttendanceTab.classList.add('hidden');
 
             if (tabName === 'send') {
                 document.getElementById('tabBtnSend').classList.add('active');
@@ -8510,7 +8645,97 @@ window.__initStudentAttendanceOnOpen = function(){
 .staff-attendance-app .sa-header{background:linear-gradient(135deg,#1b4332,#2d6a4f);color:#fff;border-radius:14px;padding:18px;text-align:center;margin-bottom:14px}
 .staff-attendance-app .sa-header h2{margin:0 0 7px;font-size:1.35rem}.staff-attendance-app .sa-header p{margin:0;font-size:.92rem;opacity:.94}
 .staff-attendance-app .sa-status,.staff-attendance-app .sa-location-card,.staff-attendance-app .sa-panel{background:#fff;border:1px solid #e4e9e6;border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 3px 12px rgba(0,0,0,.05)}
-.staff-attendance-app .sa-status{text-align:center;font-weight:700}.staff-attendance-app .sa-location-card h3,.staff-attendance-app .sa-panel h3{margin:0 0 12px}.staff-attendance-app .sa-location-status{padding:10px;border-radius:10px;background:#f1f5f3;margin-bottom:10px}.staff-attendance-app .sa-location-actions,.staff-attendance-app .sa-actions,.staff-attendance-app .sa-panel-actions,.staff-attendance-app .sa-camera-buttons{display:flex;gap:10px;flex-wrap:wrap}.staff-attendance-app .sa-actions{margin-bottom:14px}.staff-attendance-app .sa-main-btn,.staff-attendance-app .sa-btn{border:0;border-radius:10px;padding:12px 16px;cursor:pointer;font-weight:700;font-size:.95rem}.staff-attendance-app .sa-main-btn{flex:1;min-width:190px;color:#fff}.staff-attendance-app .sa-register-btn{background:#2d6a4f}.staff-attendance-app .sa-attendance-btn{background:#0d6efd}.staff-attendance-app .sa-btn-primary{background:#0d6efd;color:#fff}.staff-attendance-app .sa-btn-success{background:#198754;color:#fff}.staff-attendance-app .sa-btn-danger{background:#dc3545;color:#fff}.staff-attendance-app .sa-btn-location{background:#6f42c1;color:#fff}.staff-attendance-app .sa-btn-secondary{background:#6c757d;color:#fff}.staff-attendance-app .sa-field{margin-bottom:12px}.staff-attendance-app .sa-field label{display:block;font-weight:700;margin-bottom:7px}.staff-attendance-app .sa-field select,.staff-attendance-app .sa-field input{width:100%;padding:12px;border:1px solid #cfd8d3;border-radius:10px;font-size:1rem;background:#fff}.staff-attendance-app .sa-camera-wrap{border:1px solid #d9e1dc;border-radius:14px;padding:12px;background:#101820;margin-top:12px}.staff-attendance-app .sa-camera-label{color:#fff;text-align:center;font-weight:700;margin-bottom:9px}.staff-attendance-app video{width:100%;max-height:390px;display:block;border-radius:10px;object-fit:cover;transform:scaleX(-1);background:#000}.staff-attendance-app .sa-camera-buttons{margin-top:10px;justify-content:center}.staff-attendance-app .sa-message{margin-top:10px;min-height:22px;font-weight:700}.staff-attendance-app .sa-attendance-info{background:#eef6ff;border-radius:10px;padding:11px;margin-bottom:10px}.staff-attendance-app .sa-small-note{font-size:.84rem;color:#667085;margin-top:8px;line-height:1.6}.staff-attendance-app .sa-detected{margin-top:12px;padding:14px;border-radius:12px;background:#e9f7ef;border:1px solid #b8e0c6;text-align:center;font-weight:700}.staff-attendance-app .sa-detected div{margin:5px 0}.staff-attendance-app .sa-list .sa-record{padding:11px;border-bottom:1px solid #eee}.staff-attendance-app .sa-list .sa-record:last-child{border-bottom:0}.staff-attendance-app .hidden{display:none!important}
+.staff-attendance-app .sa-status{text-align:center;font-weight:700}.staff-attendance-app .sa-location-card h3,.staff-attendance-app .sa-panel h3{margin:0 0 12px}.staff-attendance-app .sa-location-status{padding:10px;border-radius:10px;background:#f1f5f3;margin-bottom:10px}.staff-attendance-app .sa-location-actions,.staff-attendance-app .sa-actions,.staff-attendance-app .sa-panel-actions,.staff-attendance-app .sa-camera-buttons{display:flex;gap:10px;flex-wrap:wrap}.staff-attendance-app .sa-actions{margin-bottom:14px}.staff-attendance-app .sa-main-btn,.staff-attendance-app .sa-btn{border:0;border-radius:10px;padding:12px 16px;cursor:pointer;font-weight:700;font-size:.95rem}.staff-attendance-app .sa-main-btn{flex:1;min-width:190px;color:#fff}.staff-attendance-app .sa-register-btn{background:#2d6a4f}.staff-attendance-app .sa-attendance-btn{background:#0d6efd}.staff-attendance-app .sa-pending-btn{background:#dc3545;color:#fff}.staff-attendance-app .sa-new-face-btn{background:#6f42c1;color:#fff}.staff-attendance-app .sa-face-sub-actions{margin:0 0 14px}.staff-attendance-app .sa-face-list-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px;border-bottom:1px solid #eee}.staff-attendance-app .sa-face-list-row:last-child{border-bottom:0}.staff-attendance-app .sa-face-name{flex:1;min-width:170px;font-weight:700}.staff-attendance-app .sa-face-ok{color:#198754;font-size:1.15rem}.staff-attendance-app .sa-face-no{color:#dc3545;font-size:1.15rem}.staff-attendance-app .sa-mini-btn{border:0;border-radius:8px;padding:8px 12px;color:#fff;font-weight:700;cursor:pointer}.staff-attendance-app .sa-edit-face{background:#0d6efd}.staff-attendance-app .sa-delete-face{background:#dc3545}.staff-attendance-app .sa-register-pending{background:#198754}.staff-attendance-app .sa-face-save-notice{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:99999;background:#fff;border:3px solid #198754;border-radius:18px;padding:18px 28px;box-shadow:0 10px 35px rgba(0,0,0,.25);font-size:1.25rem;font-weight:800;text-align:center;min-width:260px}.staff-attendance-app .sa-attendance-btn{background:#0d6efd}.staff-attendance-app .sa-btn-primary{background:#0d6efd;color:#fff}.staff-attendance-app .sa-btn-success{background:#198754;color:#fff}.staff-attendance-app .sa-btn-danger{background:#dc3545;color:#fff}.staff-attendance-app .sa-btn-location{background:#6f42c1;color:#fff}.staff-attendance-app .sa-btn-secondary{background:#6c757d;color:#fff}.staff-attendance-app .sa-field{margin-bottom:12px}.staff-attendance-app .sa-field label{display:block;font-weight:700;margin-bottom:7px}.staff-attendance-app .sa-field select,.staff-attendance-app .sa-field input{width:100%;padding:12px;border:1px solid #cfd8d3;border-radius:10px;font-size:1rem;background:#fff}.staff-attendance-app .sa-camera-wrap{border:1px solid #d9e1dc;border-radius:14px;padding:12px;background:#101820;margin-top:12px}.staff-attendance-app .sa-camera-label{color:#fff;text-align:center;font-weight:700;margin-bottom:9px}.staff-attendance-app video{width:100%;max-height:390px;display:block;border-radius:10px;object-fit:cover;transform:scaleX(-1);background:#000}.staff-attendance-app .sa-camera-buttons{margin-top:10px;justify-content:center}.staff-attendance-app .sa-message{margin-top:10px;min-height:22px;font-weight:700}.staff-attendance-app .sa-attendance-info{background:#eef6ff;border-radius:10px;padding:11px;margin-bottom:10px}.staff-attendance-app .sa-small-note{font-size:.84rem;color:#667085;margin-top:8px;line-height:1.6}.staff-attendance-app .sa-detected{margin-top:12px;padding:14px;border-radius:12px;background:#e9f7ef;border:1px solid #b8e0c6;text-align:center;font-weight:700}.staff-attendance-app .sa-detected div{margin:5px 0}.staff-attendance-app .sa-list .sa-record{padding:11px;border-bottom:1px solid #eee}.staff-attendance-app .sa-list .sa-record:last-child{border-bottom:0}.staff-attendance-app .hidden{display:none!important}
+
+/* تحسين قائمة وجوه الكادر: الاسم + الحالة + الأزرار في صف واحد */
+.staff-attendance-app #staffFaceManagementPanel,
+.staff-attendance-app #staffRegisteredFacesPanel,
+.staff-attendance-app #staffPendingFacesPanel {
+    width: 100%;
+    box-sizing: border-box;
+}
+.staff-attendance-app #staffPendingFacesPanel,
+.staff-attendance-app #staffRegisteredFacesPanel {
+    padding: 16px;
+    min-height: 150px;
+}
+.staff-attendance-app #staffPendingFacesList,
+.staff-attendance-app #staffRegisteredFacesList {
+    width: 100%;
+    max-height: 60vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+.staff-attendance-app .sa-face-list-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 10px;
+    min-height: 52px;
+}
+.staff-attendance-app .sa-face-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 1rem;
+    font-weight: 800;
+}
+.staff-attendance-app .sa-face-ok,
+.staff-attendance-app .sa-face-no {
+    width: 24px;
+    text-align: center;
+    font-size: 1rem;
+    line-height: 1;
+}
+.staff-attendance-app .sa-mini-btn {
+    white-space: nowrap;
+    padding: 6px 9px;
+    min-height: 34px;
+    font-size: .78rem;
+    line-height: 1.1;
+}
+.staff-attendance-app .sa-register-pending {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+}
+.staff-attendance-app .sa-camera-icon {
+    font-size: .82rem;
+    line-height: 1;
+}
+@media (max-width: 600px) {
+    /* جعل قائمة أسماء الكادر بعرض شاشة الهاتف فقط دون تغيير بقية المنصة */
+    .staff-attendance-app #staffPendingFacesPanel,
+    .staff-attendance-app #staffRegisteredFacesPanel {
+        width: 100vw;
+        max-width: 100vw;
+        margin-left: calc(50% - 50vw);
+        margin-right: 0;
+        box-sizing: border-box;
+    }
+}
+
+@media (max-width: 520px) {
+    .staff-attendance-app .sa-face-list-row {
+        grid-template-columns: minmax(0, 1fr) 20px auto;
+        gap: 5px;
+        padding: 10px 6px;
+    }
+    .staff-attendance-app .sa-face-name { font-size: .9rem; }
+    .staff-attendance-app .sa-mini-btn { padding: 5px 7px; font-size: .72rem; }
+    .staff-attendance-app .sa-edit-face { grid-column: 3; }
+    .staff-attendance-app .sa-delete-face { grid-column: 3; }
+    .staff-attendance-app #staffRegisteredFacesPanel .sa-face-list-row {
+        grid-template-columns: minmax(0, 1fr) 20px auto auto;
+    }
+    .staff-attendance-app #staffRegisteredFacesPanel .sa-edit-face { grid-column: auto; }
+    .staff-attendance-app #staffRegisteredFacesPanel .sa-delete-face { grid-column: auto; }
+}
 </style>
 <script>
 /* =========================================================
@@ -8525,7 +8750,7 @@ window.__initStudentAttendanceOnOpen = function(){
     const SA_LOCATION_KEY = 'SCHOOL_FIXED_LOCATION_V1';
     const SA_RADIUS_METERS = 150;
     let saModelsLoaded = false, saRegisterStream = null, saAttendanceStream = null;
-    let saCapturedDescriptor = null, saAttendanceRunning = false;
+    let saCapturedDescriptor = null, saAttendanceRunning = false, saEditingStaffName = null;
 
     const $ = id => document.getElementById(id);
     const staffFaceName = $('staffFaceName'), staffFaceNameManual = $('staffFaceNameManual');
@@ -8549,10 +8774,55 @@ window.__initStudentAttendanceOnOpen = function(){
     }
     function populateStaffNames(){
         if(!staffFaceName) return;
+        const registered=new Set(getStaffRecords().map(r=>cleanName(r.name)));
+        const names=getPlatformStaffNames().filter(n=>!registered.has(cleanName(n)));
+        staffFaceName.innerHTML='<option value="">-- اختر اسم المدرس الذي لم يسجل بعد --</option>';
+        names.forEach(n=>{ const o=document.createElement('option'); o.value=cleanName(n); o.textContent=cleanName(n); staffFaceName.appendChild(o); });
+        const m=document.createElement('option'); m.value='MANUAL_OTHER'; m.textContent='➕ إضافة اسم آخر'; staffFaceName.appendChild(m);
+    }
+    function renderStaffFaceLists(){
+        const registeredList=$('staffRegisteredFacesList'), pendingList=$('staffPendingFacesList');
+        if(!registeredList || !pendingList) return;
+        const records=getStaffRecords();
+        const recordMap=new Map(records.map(r=>[cleanName(r.name),r]));
         const names=getPlatformStaffNames();
-        staffFaceName.innerHTML='<option value="">-- اختر اسم المدرس --</option>';
-        names.forEach(n=>{ const o=document.createElement('option'); o.value=n; o.textContent=(typeof getStaffDisplayName==='function'?getStaffDisplayName(n):n); staffFaceName.appendChild(o); });
-        const m=document.createElement('option'); m.value='MANUAL_OTHER'; m.textContent='➕ إضافة اسم جديد'; staffFaceName.appendChild(m);
+        const registered=names.filter(n=>recordMap.has(cleanName(n)));
+        const pending=names.filter(n=>!recordMap.has(cleanName(n)));
+        registeredList.innerHTML=registered.length ? registered.map((n,i)=>`<div class="sa-face-list-row"><span class="sa-face-name">${i+1}) ${escapeText(cleanName(n))}</span><span class="sa-face-ok" aria-label="تم التسجيل">🟢</span><button type="button" class="sa-mini-btn sa-edit-face" data-staff-edit="${escapeText(n)}">تعديل</button><button type="button" class="sa-mini-btn sa-delete-face" data-staff-delete="${escapeText(n)}">حذف</button></div>`).join('') : '<div class="sa-small-note">لا يوجد كادر مسجل الوجه حتى الآن.</div>';
+        pendingList.innerHTML=pending.length ? pending.map((n,i)=>`<div class="sa-face-list-row"><span class="sa-face-name">${i+1}) ${escapeText(cleanName(n))}</span><span class="sa-face-no" aria-label="لم يسجل">🔴</span><button type="button" class="sa-mini-btn sa-register-pending" data-staff-pending="${escapeText(n)}"><span class="sa-camera-icon">📷</span> اضغط للتسجيل</button></div>`).join('') : '<div class="sa-small-note">🎉 تم تسجيل وجوه جميع الكادر.</div>';
+        registeredList.querySelectorAll('[data-staff-edit]').forEach(btn=>btn.addEventListener('click',()=>editStaffFace(btn.getAttribute('data-staff-edit'))));
+        registeredList.querySelectorAll('[data-staff-delete]').forEach(btn=>btn.addEventListener('click',()=>deleteStaffFace(btn.getAttribute('data-staff-delete'))));
+        pendingList.querySelectorAll('[data-staff-pending]').forEach(btn=>btn.addEventListener('click',()=>startPendingStaffFace(btn.getAttribute('data-staff-pending'))));
+    }
+    function showStaffFaceSaveNotice(name){
+        const box=document.createElement('div'); box.className='sa-face-save-notice'; box.textContent=`✅ تم تسجيل الوجه بنجاح
+${name}`; document.body.appendChild(box);
+        setTimeout(()=>box.remove(),2500);
+        try{
+            const u=new SpeechSynthesisUtterance(`تم تسجيل وجه ${name} بنجاح`); u.lang='ar-SA'; u.rate=.9; u.pitch=.8;
+            const voices=window.speechSynthesis.getVoices();
+            const male=voices.find(v=>/male|man|رجل|ذكر|arabic.*male|male.*arabic/i.test(v.name+' '+v.lang));
+            if(male) u.voice=male;
+            window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
+        }catch(e){}
+    }
+    function editStaffFace(name){
+        saEditingStaffName=cleanName(name);
+        $('staffFaceManagementPanel').classList.add('hidden'); $('staffRegisteredFacesPanel').classList.add('hidden'); $('staffPendingFacesPanel').classList.add('hidden');
+        $('staffRegisterPanel').classList.remove('hidden'); $('staffFaceManualWrap').classList.add('hidden'); staffFaceName.value='';
+        setMsg(staffRegisterMessage,`تعديل بصمة الوجه: ${saEditingStaffName}. افتح الكاميرا لإعادة التسجيل.`,'info');
+        loadStaffModels();
+    }
+    function startPendingStaffFace(name){
+        saEditingStaffName=null; $('staffFaceManagementPanel').classList.add('hidden'); $('staffRegisteredFacesPanel').classList.add('hidden'); $('staffPendingFacesPanel').classList.add('hidden');
+        $('staffRegisterPanel').classList.remove('hidden'); populateStaffNames(); staffFaceName.value=cleanName(name);
+        setMsg(staffRegisterMessage,`تسجيل بصمة الوجه للكادر: ${cleanName(name)}`,'info'); loadStaffModels();
+    }
+    function deleteStaffFace(name){
+        if(!confirm(`هل أنت متأكد من حذف بصمة الوجه للكادر:
+${cleanName(name)} ؟`)) return;
+        saveJSON(SA_STAFF_KEY,getStaffRecords().filter(r=>cleanName(r.name)!==cleanName(name)));
+        populateStaffNames(); renderStaffFaceLists();
     }
     function selectedStaffName(){
         if(staffFaceName.value==='MANUAL_OTHER') return cleanName(staffFaceNameManual.value);
@@ -8620,19 +8890,25 @@ window.__initStudentAttendanceOnOpen = function(){
     $('openSchoolMapBtn').addEventListener('click',openSchoolMap);
     staffFaceName.addEventListener('change',()=>{ $('staffFaceManualWrap').classList.toggle('hidden',staffFaceName.value!=='MANUAL_OTHER'); if(staffFaceName.value!=='MANUAL_OTHER') staffFaceNameManual.value=''; });
     $('staffRegisterFaceBtn').addEventListener('click',async()=>{
-        $('staffAttendancePanel').classList.add('hidden'); $('staffRegisterPanel').classList.remove('hidden'); populateStaffNames(); setMsg(staffRegisterMessage,'اختر اسم المدرس ثم افتح الكاميرا الأمامية.','info');
-        await loadStaffModels();
+        $('staffSchoolLocationCard').classList.add('hidden');
+        $('staffAttendancePanel').classList.add('hidden'); $('staffRegisterPanel').classList.add('hidden'); $('staffFaceManagementPanel').classList.remove('hidden'); $('staffRegisteredFacesPanel').classList.add('hidden'); $('staffPendingFacesPanel').classList.add('hidden');
+        saEditingStaffName=null; renderStaffFaceLists(); await loadStaffModels();
+    });
+    $('staffRegisteredFacesBtn').addEventListener('click',()=>{ $('staffRegisteredFacesPanel').classList.remove('hidden'); $('staffPendingFacesPanel').classList.add('hidden'); renderStaffFaceLists(); });
+    $('staffPendingFacesBtn').addEventListener('click',()=>{ $('staffPendingFacesPanel').classList.remove('hidden'); $('staffRegisteredFacesPanel').classList.add('hidden'); renderStaffFaceLists(); });
+    $('staffNewFaceBtn').addEventListener('click',async()=>{
+        saEditingStaffName=null; $('staffFaceManagementPanel').classList.add('hidden'); $('staffRegisterPanel').classList.remove('hidden'); populateStaffNames(); staffFaceName.value=''; $('staffFaceManualWrap').classList.add('hidden'); setMsg(staffRegisterMessage,'اختر اسمًا من الكادر الذي لم يسجل بعد، أو اختر «إضافة اسم آخر».','info'); await loadStaffModels();
     });
     $('startStaffRegisterCameraBtn').addEventListener('click',async()=>{
-        const name=selectedStaffName();
+        const name=saEditingStaffName || selectedStaffName();
         if(!name){ setMsg(staffRegisterMessage,'⚠️ اختر اسم المدرس أولًا.','error'); return; }
         if(!(await loadStaffModels())) return;
         try{
-            saRegisterStream=await openFrontCamera($('staffRegisterVideo')); $('staffRegisterCameraBox').classList.remove('hidden'); saCapturedDescriptor=null; $('saveStaffFaceBtn').disabled=true; setMsg(staffRegisterMessage,'📷 ضع الوجه أمام الكاميرا ثم اضغط «التقاط الوجه».','info');
+            saRegisterStream=await openFrontCamera($('staffRegisterVideo')); $('staffRegisterCameraBox').classList.remove('hidden'); saCapturedDescriptor=null; $('saveStaffFaceBtn').disabled=true; setMsg(staffRegisterMessage,`📷 ضع وجه ${name} أمام الكاميرا ثم اضغط «التقاط الوجه».`,'info');
         }catch(e){ setMsg(staffRegisterMessage,'❌ تعذر فتح الكاميرا الأمامية. اسمح للمتصفح باستخدام الكاميرا.','error'); }
     });
     $('captureStaffFaceBtn').addEventListener('click',async()=>{
-        const name=selectedStaffName(); if(!name){setMsg(staffRegisterMessage,'⚠️ اختر اسم المدرس أولًا.','error');return;}
+        const name=saEditingStaffName || selectedStaffName(); if(!name){setMsg(staffRegisterMessage,'⚠️ اختر اسم المدرس أولًا.','error');return;}
         if(!saRegisterStream){setMsg(staffRegisterMessage,'⚠️ افتح الكاميرا أولًا.','error');return;}
         try{
             const d=await faceapi.detectSingleFace($('staffRegisterVideo'),new faceapi.TinyFaceDetectorOptions({inputSize:416,scoreThreshold:.5})).withFaceLandmarks().withFaceDescriptor();
@@ -8641,14 +8917,17 @@ window.__initStudentAttendanceOnOpen = function(){
         }catch(e){console.error(e);setMsg(staffRegisterMessage,'❌ حدث خطأ أثناء تحليل الوجه.','error');}
     });
     $('saveStaffFaceBtn').addEventListener('click',()=>{
-        const name=selectedStaffName(); if(!name||!saCapturedDescriptor){setMsg(staffRegisterMessage,'⚠️ اختر الاسم والتقط الوجه أولًا.','error');return;}
-        const records=getStaffRecords().filter(r=>cleanName(r.name)!==name); records.push({id:Date.now().toString(),name,descriptor:saCapturedDescriptor,createdAt:new Date().toISOString()}); saveJSON(SA_STAFF_KEY,records);
-        if(name && !getPlatformStaffNames().includes(name)){ const names=getStoredJSON(SA_NAMES_KEY,[]); if(!names.includes(name)){names.push(name);saveJSON(SA_NAMES_KEY,names);} }
-        setMsg(staffRegisterMessage,'✅ تم حفظ بصمة الوجه بنجاح لهذا المدرس.','success'); saCapturedDescriptor=null; $('saveStaffFaceBtn').disabled=true; stopStream(saRegisterStream); saRegisterStream=null; $('staffRegisterCameraBox').classList.add('hidden');
+        const name=saEditingStaffName || selectedStaffName(); if(!name||!saCapturedDescriptor){setMsg(staffRegisterMessage,'⚠️ اختر الاسم والتقط الوجه أولًا.','error');return;}
+        const clean=cleanName(name); const records=getStaffRecords().filter(r=>cleanName(r.name)!==clean); records.push({id:Date.now().toString(),name:clean,descriptor:saCapturedDescriptor,createdAt:new Date().toISOString()}); saveJSON(SA_STAFF_KEY,records);
+        if(!getPlatformStaffNames().includes(clean)){ const names=getStoredJSON(SA_NAMES_KEY,[]); if(!names.includes(clean)){names.push(clean);saveJSON(SA_NAMES_KEY,names);} }
+        showStaffFaceSaveNotice(clean); setMsg(staffRegisterMessage,'✅ تم حفظ بصمة الوجه بنجاح لهذا المدرس.','success'); saCapturedDescriptor=null; saEditingStaffName=null; $('saveStaffFaceBtn').disabled=true; stopStream(saRegisterStream); saRegisterStream=null; $('staffRegisterCameraBox').classList.add('hidden');
+        populateStaffNames(); renderStaffFaceLists();
+        setTimeout(()=>{ $('staffRegisterPanel').classList.add('hidden'); $('staffFaceManagementPanel').classList.remove('hidden'); $('staffRegisteredFacesPanel').classList.remove('hidden'); $('staffPendingFacesPanel').classList.add('hidden'); renderStaffFaceLists(); },700);
     });
     $('closeStaffRegisterCameraBtn').addEventListener('click',()=>{stopStream(saRegisterStream);saRegisterStream=null;$('staffRegisterCameraBox').classList.add('hidden');});
 
     $('staffTakeAttendanceBtn').addEventListener('click',async()=>{
+        $('staffSchoolLocationCard').classList.remove('hidden');
         $('staffRegisterPanel').classList.add('hidden'); $('staffAttendancePanel').classList.remove('hidden'); $('staffDetectedBox').classList.add('hidden');
         const loc=await verifyInsideSchool();
         if(loc.reason==='NO_LOCATION'){ setMsg(staffAttendanceMessage,'⚠️ لم يتم تثبيت موقع المدرسة بعد. ثبّت الموقع من قسم «موقع المدرسة» أولًا.','error'); return; }
@@ -8686,7 +8965,7 @@ window.__initStudentAttendanceOnOpen = function(){
         const list=$('staffTodayAttendanceList'); if(!list)return; const arr=getStoredJSON(SA_ATT_KEY,[]).filter(r=>r.date===getTodayKey()).sort((a,b)=>String(a.time).localeCompare(String(b.time),'ar'));
         list.innerHTML=arr.length?arr.map((r,i)=>`<div class="sa-record"><b>${i+1}. ${escapeText(r.name)}</b><div>🕒 وقت الحضور: ${escapeText(r.time)}</div><div>📍 داخل المدرسة — ${escapeText(r.locationDistance)} متر</div></div>`).join(''):'<div class="sa-small-note">لا يوجد حضور مسجل لهذا اليوم.</div>';
     }
-    window.__initStaffAttendanceOnOpen=function(){ populateStaffNames(); renderLocation(); renderStaffToday(); loadStaffModels(); };
+    window.__initStaffAttendanceOnOpen=function(){ populateStaffNames(); renderStaffFaceLists(); renderLocation(); renderStaffToday(); loadStaffModels(); };
     window.addEventListener('beforeunload',()=>{saAttendanceRunning=false;stopStream(saRegisterStream);stopStream(saAttendanceStream);});
     renderLocation(); renderStaffToday(); loadStaffModels();
 })();
