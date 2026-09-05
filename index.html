@@ -2392,6 +2392,10 @@
             const existingStudent = studentsData.find(s => s.name.trim() === name.trim() && s.grade === grade);
             const section = existingStudent?.section || '';
             currentUser = { name: name, specialty: `طالب - ${grade}`, phone: existingStudent?.phone || '', role: 'طالب', grade: grade, section: section };
+
+            // حفظ جلسة الطالب حتى لا يطلب منه إدخال بياناته عند فتح المنصة مرة أخرى.
+            // تبقى الجلسة محفوظة إلى أن يضغط الطالب «تسجيل خروج».
+            localStorage.setItem('studentProfile', JSON.stringify(currentUser));
             
             // تسجيل الطالب في قائمة الداخلين وإزالته من قائمة الخروج إن وجد
             activeStudentsList = activeStudentsList.filter(s => s.name !== name);
@@ -2416,6 +2420,38 @@
         }
 
         function checkLoginState() {
+            // استعادة جلسة الطالب أو الكادر تلقائيًا عند فتح المنصة مرة أخرى.
+            // لا تُلغى الجلسة إلا عند الضغط على «تسجيل خروج».
+            const savedStudentProfile = localStorage.getItem('studentProfile');
+            if(savedStudentProfile) {
+                try {
+                    currentUser = JSON.parse(savedStudentProfile);
+                    if(currentUser && currentUser.name && currentUser.grade) {
+                        isStudentMode = true;
+                        document.getElementById('roleSelectionScreen').classList.add('hidden');
+                        document.getElementById('appAuthScreen').classList.add('hidden');
+                        showMainPlatformForStudent();
+                        return;
+                    }
+                } catch(e) {
+                    localStorage.removeItem('studentProfile');
+                }
+            }
+
+            const savedTeacherProfile = localStorage.getItem('teacherProfile');
+            if(savedTeacherProfile) {
+                try {
+                    currentUser = JSON.parse(savedTeacherProfile);
+                    if(currentUser && currentUser.name) {
+                        isStudentMode = false;
+                        checkTeacherProfile();
+                        return;
+                    }
+                } catch(e) {
+                    localStorage.removeItem('teacherProfile');
+                }
+            }
+
             const isRemembered = localStorage.getItem('appRemembered');
             if (isRemembered === 'true') {
                 showSplashScreen();
@@ -2563,7 +2599,9 @@
                 }
                 logActivity(isStudentMode ? 'student' : 'staff', 'تسجيل خروج', 'تسجيل الخروج من المنصة');
 
+                // حذف جلسة الدخول المحفوظة فقط عند تسجيل الخروج.
                 localStorage.removeItem('teacherProfile');
+                localStorage.removeItem('studentProfile');
                 currentUser = null;
                 isStudentMode = false;
                 location.reload();
@@ -3696,108 +3734,148 @@
                 return;
             }
 
-            if(type==='excel'){
-                const wb=XLSX.utils.book_new();
-                lists.forEach(({grade,list})=>{
-                    const rows=[];
-                    const count=Math.max(30,list.length);
-                    for(let i=0;i<count;i++){
-                        const st=list[i]||{};
-                        rows.push({
-                            'ت':i+1,
-                            'اسم الطالب الثلاثي':st.name||'',
-                            'هاتف ولي الأمر':st.phone||'',
-                            'بصمة الوجه':st.name?(getStudentFaceRecord(st)?'✓':'📷'):'',
-                            'تعديل':st.name?'تعديل':'',
-                            'حذف':st.name?'حذف':'',
-                            'نقل':st.name?'نقل':''
-                        });
-                    }
-                    const ws=XLSX.utils.json_to_sheet(rows);
-                    ws['!cols']=[{wch:5},{wch:34},{wch:28},{wch:14},{wch:10},{wch:10},{wch:10}];
-                    XLSX.utils.book_append_sheet(wb,ws,grade.slice(0,31));
-                });
-                XLSX.writeFile(wb,`${fileName}.xlsx`);
-                return;
-            }
-
-            const printWrap=document.createElement('div');
-            printWrap.dir='rtl';
-            printWrap.style.cssText='background:#fff;width:100%;padding:0;margin:0;';
-            printWrap.className='student-export-wrap';
-
-            const logo=document.querySelector('.header-logo-box svg');
-            lists.forEach(({grade,list})=>{
-                const sheet=document.createElement('section');
-                sheet.className='student-grade-sheet';
-                sheet.style.pageBreakAfter='always';
-                sheet.innerHTML=`<div class="student-sheet-head"><div class="student-sheet-school">إدارة ثانوية الفراجية للبنين<span>منصة إلكترونية</span></div><div class="student-sheet-logo">${logo?logo.outerHTML:''}</div><div class="student-sheet-grade"><span>الصف</span><br>${escapeHtml(grade)}</div></div><div class="student-sheet-title">قائمة معلومات الطلبة</div><div class="student-sheet-year">للعام الدراسي 2026-2027</div><table class="student-sheet-table"><thead><tr><th class="col-no">ت</th><th class="col-name">اسم الطالب الثلاثي</th><th class="col-phone">هاتف ولي الأمر</th><th class="col-face">بصمة الوجه</th><th class="col-edit">تعديل</th><th class="col-delete">حذف</th><th class="col-move">نقل</th></tr></thead><tbody></tbody></table><div class="student-sheet-footer"><div class="principal"><span>المدير</span><br>د. سعدون حزين فرحان</div><div class="developer"><span>إعداد وبرمجة</span><br>د. أحمد عباس جمعه 2026</div></div>`;
-                const tbody=sheet.querySelector('tbody');
+            const makeSheetHtml=(grade,list)=>{
+                const logo=document.querySelector('.header-logo-box svg');
+                const rows=[];
                 const count=Math.max(30,list.length);
                 for(let i=0;i<count;i++){
                     const st=list[i]||{};
-                    const tr=document.createElement('tr');
-                    tr.innerHTML=`<td>${i+1}</td><td style="font-weight:900;text-align:right;">${escapeHtml(st.name||'')}${st.section?`<div style="font-size:8px;font-weight:600;color:#555;">شعبة ${escapeHtml(st.section)}</div>`:''}</td><td class="phone-cell">${escapeHtml(st.phone||'')}</td><td>${st.name?(getStudentFaceRecord(st)?'<span class="face-ok">✓</span>':'📷'):''}</td><td>${st.name?'تعديل':''}</td><td>${st.name?'حذف':''}</td><td>${st.name?'نقل':''}</td>`;
-                    tbody.appendChild(tr);
+                    rows.push(`<tr><td>${i+1}</td><td class="student-name">${escapeHtml(st.name||'')}${st.section?`<div class="section">شعبة ${escapeHtml(st.section)}</div>`:''}</td><td class="phone-cell">${escapeHtml(st.phone||'')}</td><td>${st.name?(getStudentFaceRecord(st)?'<span class="face-ok">✓</span>':'📷'):''}</td><td>${st.name?'تعديل':''}</td><td>${st.name?'حذف':''}</td><td>${st.name?'نقل':''}</td></tr>`);
                 }
-                printWrap.appendChild(sheet);
-            });
+                return `<section class="student-grade-sheet">
+                    <div class="student-sheet-head">
+                        <div class="student-sheet-school">إدارة ثانوية الفراجية للبنين<span>منصة إلكترونية</span></div>
+                        <div class="student-sheet-logo">${logo?logo.outerHTML:''}</div>
+                        <div class="student-sheet-grade"><span>الصف</span><br>${escapeHtml(grade)}</div>
+                    </div>
+                    <div class="student-sheet-title">قائمة معلومات الطلبة</div>
+                    <div class="student-sheet-year">للعام الدراسي 2026-2027</div>
+                    <table class="student-sheet-table" dir="rtl"><thead><tr><th class="col-no">ت</th><th class="col-name">اسم الطالب الثلاثي</th><th class="col-phone">هاتف ولي الأمر</th><th class="col-face">بصمة الوجه</th><th class="col-edit">تعديل</th><th class="col-delete">حذف</th><th class="col-move">نقل</th></tr></thead><tbody>${rows.join('')}</tbody></table>
+                    <div class="student-sheet-footer"><div class="principal"><span>المدير</span><br>د. سعدون حزين فرحان</div><div class="developer"><span>إعداد وبرمجة</span><br>د. أحمد عباس جمعه 2026</div></div>
+                </section>`;
+            };
 
-            // نحتاج إخفاء النسخة عن الشاشة فقط أثناء الإنشاء، مع الحفاظ على نفس التنسيق.
-            printWrap.style.position='fixed';
-            printWrap.style.left='-100000px';
-            printWrap.style.top='0';
-            printWrap.style.width='794px';
+            const exportCss=`
+                @page{size:A4 portrait;margin:0}
+                *{box-sizing:border-box}
+                html,body{margin:0;padding:0;background:#fff;color:#111;font-family:Arial,Tahoma,sans-serif;direction:rtl}
+                body{width:210mm}
+                .student-export-wrap{width:210mm;background:#fff;direction:rtl}
+                .student-grade-sheet{width:210mm;min-height:297mm;background:#fff;border:0;margin:0;padding:10mm 4mm 6mm;page-break-after:always;break-after:page}
+                .student-grade-sheet:last-child{page-break-after:auto;break-after:auto}
+                .student-sheet-head{display:grid;grid-template-columns:1fr 28mm 1fr;align-items:center;gap:2mm;margin-bottom:2mm;direction:rtl}
+                .student-sheet-school{text-align:center;font-weight:800;line-height:1.45;font-size:16px;white-space:nowrap}
+                .student-sheet-school span{display:block;font-weight:600;font-size:14px;text-align:center;margin-top:1px}
+                .student-sheet-logo{width:24mm;height:29mm;display:flex;align-items:center;justify-content:center;margin:auto}
+                .student-sheet-logo svg{width:100%;height:100%}
+                .student-sheet-grade{text-align:center;font-weight:800;font-size:16px;line-height:1.45;white-space:nowrap;transform:translateX(-3mm)}
+                .student-sheet-grade span,.student-sheet-footer span{font-weight:900}
+                .student-sheet-title{text-align:center;font-weight:900;font-size:17px;margin:1mm 0 2mm;color:#111}
+                .student-sheet-year{text-align:center;font-size:15px;font-weight:700;margin-bottom:2mm}
+                .student-sheet-table{width:100%;border-collapse:collapse;table-layout:fixed;direction:rtl;background:#fff}
+                .student-sheet-table th,.student-sheet-table td{border:1px solid #444;padding:1.45mm 1mm;text-align:center;vertical-align:middle;font-size:12px;line-height:1.25;word-wrap:break-word;height:10.3mm}
+                .student-sheet-table th{background:#fff;color:#111;font-weight:900}
+                .student-sheet-table .col-no{width:5%}.student-sheet-table .col-name{width:34%}.student-sheet-table .col-phone{width:28%}.student-sheet-table .col-face{width:10%}.student-sheet-table .col-edit{width:7.5%}.student-sheet-table .col-delete{width:7.5%}.student-sheet-table .col-move{width:8%}
+                .student-sheet-table .face-ok{color:#16823a;font-size:20px;font-weight:900}
+                .student-sheet-table .student-name{font-weight:900;text-align:right}
+                .student-sheet-table .section{font-size:8px;font-weight:600;color:#555}
+                .student-sheet-table td.phone-cell{direction:ltr;unicode-bidi:plaintext;white-space:nowrap;font-size:11px}
+                .student-sheet-footer{display:flex;justify-content:space-between;direction:rtl;margin-top:3mm;font-size:13px;font-weight:700;line-height:1.7}
+                .student-sheet-footer .developer,.student-sheet-footer .principal{width:50%;text-align:center}
+            `;
+
+            if(type==='excel'){
+                if(typeof ExcelJS==='undefined'){
+                    try{
+                        await new Promise((resolve,reject)=>{
+                            const script=document.createElement('script');
+                            script.src='https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js';
+                            script.onload=resolve; script.onerror=reject; document.head.appendChild(script);
+                        });
+                    }catch(e){
+                        // fallback إلى SheetJS الموجود أصلًا في المنصة
+                    }
+                }
+
+                if(typeof ExcelJS!=='undefined'){
+                    const workbook=new ExcelJS.Workbook();
+                    for(const {grade,list} of lists){
+                        const ws=workbook.addWorksheet(grade.slice(0,31),{views:[{rightToLeft:true,showGridLines:false}]});
+                        ws.pageSetup={paperSize:9,orientation:'portrait',fitToPage:true,fitToWidth:1,fitToHeight:0,margins:{left:0,right:0,top:0.25,bottom:0.25,header:0,footer:0},horizontalDpi:300,verticalDpi:300};
+                        ws.columns=[{width:7},{width:30},{width:25},{width:12},{width:9},{width:9},{width:9}];
+                        ws.mergeCells('A1:G1'); ws.getCell('A1').value='إدارة ثانوية الفراجية للبنين';
+                        ws.mergeCells('A2:G2'); ws.getCell('A2').value='منصة إلكترونية';
+                        ws.mergeCells('A3:G3'); ws.getCell('A3').value=`الصف: ${grade}`;
+                        ws.mergeCells('A4:G4'); ws.getCell('A4').value='قائمة معلومات الطلبة';
+                        ws.mergeCells('A5:G5'); ws.getCell('A5').value='للعام الدراسي 2026-2027';
+                        for(let r=1;r<=5;r++){
+                            const c=ws.getCell(`A${r}`); c.alignment={horizontal:'center',vertical:'middle',readingOrder:'rtl'}; c.font={name:'Arial',size:r===4?16:(r===1?15:12),bold:true};
+                        }
+                        ws.getRow(1).height=24; ws.getRow(2).height=20; ws.getRow(3).height=22; ws.getRow(4).height=26; ws.getRow(5).height=22;
+                        const header=['ت','اسم الطالب الثلاثي','هاتف ولي الأمر','بصمة الوجه','تعديل','حذف','نقل'];
+                        ws.addRow(header);
+                        const hr=ws.lastRow; hr.height=28;
+                        hr.eachCell(c=>{c.font={name:'Arial',size:11,bold:true};c.alignment={horizontal:'center',vertical:'middle',wrapText:true,readingOrder:'rtl'};c.border={top:{style:'thin'},left:{style:'thin'},bottom:{style:'thin'},right:{style:'thin'}};});
+                        const count=Math.max(30,list.length);
+                        for(let i=0;i<count;i++){
+                            const st=list[i]||{};
+                            const row=ws.addRow([i+1,st.name||'',st.phone||'',st.name?(getStudentFaceRecord(st)?'✓':'📷'):'',st.name?'تعديل':'',st.name?'حذف':'',st.name?'نقل':'']);
+                            row.height=29;
+                            row.eachCell(c=>{c.font={name:'Arial',size:10,bold:false};c.alignment={horizontal:'center',vertical:'middle',wrapText:true,readingOrder:'rtl'};c.border={top:{style:'thin'},left:{style:'thin'},bottom:{style:'thin'},right:{style:'thin'}};});
+                            row.getCell(2).alignment={horizontal:'right',vertical:'middle',wrapText:true,readingOrder:'rtl'};
+                        }
+                        ws.autoFilter.ref=`A6:G${6+count}`;
+                        ws.printArea=`A1:G${6+count}`;
+                        ws.headerFooter.oddFooter.center.text='';
+                    }
+                    const buffer=await workbook.xlsx.writeBuffer();
+                    const blob=new Blob([buffer],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+                    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`${fileName}.xlsx`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+                    return;
+                }
+
+                const wb=XLSX.utils.book_new();
+                lists.forEach(({grade,list})=>{
+                    const rows=[['إدارة ثانوية الفراجية للبنين'],['منصة إلكترونية'],[`الصف: ${grade}`],['قائمة معلومات الطلبة'],['للعام الدراسي 2026-2027'],[],['ت','اسم الطالب الثلاثي','هاتف ولي الأمر','بصمة الوجه','تعديل','حذف','نقل']];
+                    const count=Math.max(30,list.length);
+                    for(let i=0;i<count;i++){const st=list[i]||{};rows.push([i+1,st.name||'',st.phone||'',st.name?(getStudentFaceRecord(st)?'✓':'📷'):'',st.name?'تعديل':'',st.name?'حذف':'',st.name?'نقل':'']);}
+                    const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[{wch:7},{wch:30},{wch:25},{wch:12},{wch:9},{wch:9},{wch:9}];ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:6}},{s:{r:1,c:0},e:{r:1,c:6}},{s:{r:2,c:0},e:{r:2,c:6}},{s:{r:3,c:0},e:{r:3,c:6}},{s:{r:4,c:0},e:{r:4,c:6}}];ws['!sheetViews']=[{rightToLeft:true}];XLSX.utils.book_append_sheet(wb,ws,grade.slice(0,31));
+                });
+                XLSX.writeFile(wb,`${fileName}.xlsx`); return;
+            }
+
+            const printWrap=document.createElement('div');
+            printWrap.className='student-export-wrap';
+            printWrap.dir='rtl';
+            printWrap.innerHTML=lists.map(({grade,list})=>makeSheetHtml(grade,list)).join('');
+            printWrap.style.cssText='position:absolute;left:0;top:0;width:210mm;background:#fff;direction:rtl;z-index:-1;';
+            const style=document.createElement('style');style.textContent=exportCss;printWrap.prepend(style);
             document.body.appendChild(printWrap);
 
-            if(type==='pdf'){
-                const opt={
-                    margin:0,
-                    filename:`${fileName}.pdf`,
-                    image:{type:'jpeg',quality:.98},
-                    html2canvas:{scale:2,useCORS:true,backgroundColor:'#fff',logging:false},
-                    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
-                };
-                await html2pdf().from(printWrap).set(opt).save();
-            } else if(type==='word'){
-                const css=`
-                    @page{size:A4;margin:8mm}
-                    *{box-sizing:border-box}
-                    body{font-family:Arial,Tahoma,sans-serif;direction:rtl;background:#fff;margin:0;padding:0;color:#111}
-                    .student-grade-sheet{background:#fff;border:0;margin:0;padding:8px 5px 8px;page-break-after:always;min-height:270mm}
-                    .student-grade-sheet:last-child{page-break-after:auto}
-                    .student-sheet-head{display:grid;grid-template-columns:1fr 72px 1fr;align-items:center;gap:4px;margin-bottom:8px;direction:rtl}
-                    .student-sheet-logo{width:62px;height:76px;display:flex;align-items:center;justify-content:center;margin:auto}
-                    .student-sheet-logo svg{width:62px;height:76px}
-                    .student-sheet-school{text-align:center;font-weight:800;line-height:1.45;font-size:11px}
-                    .student-sheet-school span{display:block;font-weight:600;font-size:10px;text-align:center;margin-top:1px}
-                    .student-sheet-grade{text-align:center;font-weight:800;font-size:11px;line-height:1.45;white-space:nowrap;transform:translateX(-24px)}
-                    .student-sheet-grade span,.student-sheet-footer span{font-weight:900}
-                    .student-sheet-title{text-align:center;font-weight:900;font-size:13px;margin:2px 0 5px;color:#164f3a}
-                    .student-sheet-year{text-align:center;font-weight:800;font-size:11px;margin-bottom:5px}
-                    .student-sheet-table{width:100%;border-collapse:collapse;table-layout:fixed;direction:rtl;background:#fff}
-                    .student-sheet-table th,.student-sheet-table td{border:1px solid #444;padding:5px 2px;text-align:center;vertical-align:middle;font-size:9.5px;line-height:1.25;word-wrap:break-word}
-                    .student-sheet-table th{background:#fff;color:#111;font-weight:900}
-                    .student-sheet-table .col-no{width:5%}.student-sheet-table .col-name{width:34%}.student-sheet-table .col-phone{width:28%}.student-sheet-table .col-face{width:10%}.student-sheet-table .col-edit{width:7.5%}.student-sheet-table .col-delete{width:7.5%}.student-sheet-table .col-move{width:8%}
-                    .student-sheet-table .face-ok{color:#16823a;font-size:17px;font-weight:900}
-                    .student-sheet-table td:nth-child(2){font-size:11px;font-weight:900;text-align:right}
-                    .student-sheet-table td.phone-cell{direction:ltr;unicode-bidi:plaintext;white-space:nowrap;font-size:11px}
-                    .student-sheet-footer{display:flex;justify-content:space-between;direction:rtl;margin-top:8px;font-size:9px;font-weight:700;line-height:1.7}
-                    .student-sheet-footer .developer,.student-sheet-footer .principal{width:50%;text-align:center}
-                `;
-                const docHtml=`<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${css}</style></head><body>${printWrap.innerHTML}</body></html>`;
-                const blob=new Blob(['\ufeff'+docHtml],{type:'application/msword'});
-                const url=URL.createObjectURL(blob);
-                const a=document.createElement('a'); a.href=url; a.download=`${fileName}.doc`; document.body.appendChild(a); a.click(); a.remove();
-                setTimeout(()=>URL.revokeObjectURL(url),1000);
-            } else if(type==='image'){
-                const sheet=printWrap.querySelector('.student-grade-sheet');
-                if(!sheet){printWrap.remove();return;}
-                const canvas=await html2canvas(sheet,{scale:2,backgroundColor:'#fff',useCORS:true,logging:false});
-                const dataUrl=canvas.toDataURL('image/png');
-                const a=document.createElement('a'); a.href=dataUrl; a.download=`${fileName}.png`; document.body.appendChild(a); a.click(); a.remove();
+            try{
+                if(type==='pdf'){
+                    await html2pdf().from(printWrap).set({
+                        margin:0,filename:`${fileName}.pdf`,image:{type:'jpeg',quality:.98},
+                        html2canvas:{scale:2,useCORS:true,backgroundColor:'#fff',logging:false,scrollX:0,scrollY:0,windowWidth:794},
+                        jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+                        pagebreak:{mode:['css','legacy']}
+                    }).save();
+                }else if(type==='word'){
+                    const docHtml=`<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${exportCss}</style></head><body>${printWrap.innerHTML}</body></html>`;
+                    const blob=new Blob(['\ufeff',docHtml],{type:'application/msword'});
+                    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${fileName}.doc`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+                }else if(type==='image'){
+                    const sheet=printWrap.querySelector('.student-grade-sheet');
+                    if(!sheet)return;
+                    const canvas=await html2canvas(sheet,{scale:2,backgroundColor:'#fff',useCORS:true,logging:false,scrollX:0,scrollY:0,windowWidth:794});
+                    const a=document.createElement('a');a.href=canvas.toDataURL('image/png');a.download=`${fileName}.png`;document.body.appendChild(a);a.click();a.remove();
+                }
+            }catch(error){
+                console.error(error);
+                alert(type==='pdf'?'تعذر إنشاء ملف PDF.':type==='word'?'تعذر إنشاء ملف Word.':'تعذر إنشاء الصورة.');
+            }finally{
+                printWrap.remove();
             }
-            printWrap.remove();
         }
 
     </script>
