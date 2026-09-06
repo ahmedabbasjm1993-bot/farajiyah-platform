@@ -1,24 +1,42 @@
-/* خدمة إشعارات منصة المدرسة - لا تغيّر بيانات المنصة */
-self.addEventListener('install',()=>self.skipWaiting());
-self.addEventListener('activate',event=>event.waitUntil(self.clients.claim()));
-self.addEventListener('push',event=>{
-  let data={};
-  try{data=event.data?event.data.json():{}}catch(e){data={body:event.data?event.data.text():''};}
-  const title=data.title||'🔔 منصة المدرسة';
-  const options={body:data.body||'لديك إشعار جديد من منصة المدرسة',icon:data.icon||undefined,badge:data.badge||undefined,tag:data.tag||('school-'+Date.now()),renotify:true,data:data.data||{}};
-  event.waitUntil(self.registration.showNotification(title,options));
+/* خدمة إشعارات منصة المدرسة - FCM Web Push */
+importScripts('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js');
+
+firebase.initializeApp({
+  apiKey: 'AIzaSyBWPHnFrcC2NiRpHk8MB9ZEk_EghH-_Phc',
+  authDomain: 'alfarajia2027-80fdd.firebaseapp.com',
+  databaseURL: 'https://alfarajia2027-80fdd-default-rtdb.firebaseio.com',
+  projectId: 'alfarajia2027-80fdd',
+  storageBucket: 'alfarajia2027-80fdd.firebasestorage.app',
+  messagingSenderId: '201311860084',
+  appId: '1:201311860084:web:15b6fc29c0ed88ec7ca821'
 });
-self.addEventListener('notificationclick',event=>{
+
+const messaging = firebase.messaging();
+
+messaging.onBackgroundMessage(function(payload) {
+  const n = payload.notification || {};
+  const d = payload.data || {};
+  self.registration.showNotification(n.title || d.title || '🔔 منصة المدرسة', {
+    body: n.body || d.body || 'لديك إشعار جديد من منصة المدرسة',
+    icon: n.icon || d.icon || undefined,
+    badge: n.badge || d.badge || undefined,
+    tag: n.tag || d.tag || ('school-' + Date.now()),
+    renotify: true,
+    data: d
+  });
+});
+
+self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', event => event.waitUntil(self.clients.claim()));
+
+self.addEventListener('notificationclick', event => {
   event.notification.close();
-  event.waitUntil((async()=>{
-    const list=await clients.matchAll({type:'window',includeUncontrolled:true});
-    for(const client of list){if('focus' in client){await client.focus();return;}}
-    if(clients.openWindow) await clients.openWindow('./');
+  event.waitUntil((async () => {
+    const list = await clients.matchAll({type:'window', includeUncontrolled:true});
+    for (const client of list) {
+      if ('focus' in client) { await client.focus(); return; }
+    }
+    if (clients.openWindow) await clients.openWindow('./');
   })());
-});
-self.addEventListener('message',event=>{
-  const d=event.data||{};
-  if(d.type==='SHOW_NOTIFICATION'){
-    event.waitUntil(self.registration.showNotification(d.title||'🔔 منصة المدرسة',{body:d.body||'',tag:d.tag||('school-'+Date.now()),renotify:true,data:d.data||{}}));
-  }
 });
