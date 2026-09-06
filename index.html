@@ -2192,9 +2192,10 @@
     'schoolWhatsappGroups','schoolWhatsappSenderNumber','schoolWhatsappBulkApiEndpoint',
     'schoolWhatsappBulkApiKey','schoolWhatsappMessageMode','schoolWhatsappTemplateName',
     'schoolWhatsappTemplateLanguage','SCHOOL_LEAVE_REQUESTS_V1',
-    'SCHOOL_LEAVE_READ_NOTIFICATIONS_V1','SCHOOL_FIXED_LOCATION_V1','STAFF_ADMIN_SECURITY_CODES_V1'
+    'SCHOOL_LEAVE_READ_NOTIFICATIONS_V1','SCHOOL_FIXED_LOCATION_V1','STAFF_ADMIN_SECURITY_CODES_V1','SCHOOL_PUBLISHED_SCHEDULES_V2'
   ]);
   let db=null, ready=false, applyingRemote=false, reloadTimer=null;
+  const pendingCloudWrites=new Map();
   const originalSet=Storage.prototype.setItem;
   const originalRemove=Storage.prototype.removeItem;
   function scheduleReload(){
@@ -2204,13 +2205,15 @@
   function validKey(k){return SYNC_KEYS.has(String(k||''));}
   function cloudRef(key){return db.ref('schoolPlatformState').child(String(key));}
   async function cloudWrite(key,value){
-    if(!ready||!db||!validKey(key))return;
+    if(!validKey(key))return;
+    if(!ready||!db){pendingCloudWrites.set(String(key),value);return;}
     try{
       const ref=cloudRef(key);
       if(value===null){await ref.remove();}
       else{
         const text=String(value);
-        if(text.length>900000){console.warn('Cloud sync skipped for large item:',key,text.length);return;}
+        const maxCloudSize=key==='SCHOOL_PUBLISHED_SCHEDULES_V2'?9500000:900000;
+        if(text.length>maxCloudSize){console.warn('Cloud sync skipped for large item:',key,text.length);return;}
         await ref.set({value:text,updatedAt:firebase.database.ServerValue.TIMESTAMP});
       }
     }catch(e){console.error('Realtime Database write failed',key,e);}
@@ -2232,6 +2235,11 @@
         console.warn('Anonymous auth unavailable; continuing with Realtime Database rules.',authErr);
       }
       ready=true;
+      if(pendingCloudWrites.size){
+        const queued=[...pendingCloudWrites.entries()];
+        pendingCloudWrites.clear();
+        for(const [key,value] of queued) await cloudWrite(key,value);
+      }
       const root=db.ref('schoolPlatformState');
       const snap=await root.once('value');
       const remoteAll=snap.val()||{};
