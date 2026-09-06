@@ -4167,48 +4167,7 @@
                         pagebreak:{mode:['css','legacy']}
                     }).save();
                 }else if(type==='word'){
-                    const docHtml=`<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${exportCss}</style></head><body>${printWrap.innerHTML}
-<!-- FCM_WEB_PUSH_CLIENT_V1 -->
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js"></script>
-<script>
-(function(){
-  const FCM_VAPID_KEY='BLRwHpzXfL2BB8kidoI9b9m38ObtCgcqJDusaHlGLRry0PYbMqFtuh2TBrwuLbvqLifpBAJjMFbEGAqKm4l_-Vs';
-  const FCM_TOKEN_ROOT='schoolPushTokens';
-  async function registerSchoolPush(){
-    try{
-      if(!('serviceWorker' in navigator)||!('Notification' in window)||typeof firebase==='undefined'||!firebase.messaging)return false;
-      if(Notification.permission==='default'){
-        const permission=await Notification.requestPermission().catch(()=> 'denied');
-        if(permission!=='granted')return false;
-      }
-      if(Notification.permission!=='granted')return false;
-      const reg=await navigator.serviceWorker.register('./service-worker.js',{scope:'./'});
-      const messaging=firebase.messaging();
-      const token=await messaging.getToken({vapidKey:FCM_VAPID_KEY,serviceWorkerRegistration:reg});
-      if(!token)return false;
-      const name=(typeof currentUser!=='undefined'&&currentUser&&currentUser.name)?String(currentUser.name):'';
-      const role=(typeof isStudentMode!=='undefined'&&isStudentMode)?'student':'staff';
-      if(name&&typeof firebase!=='undefined'&&firebase.database){
-        const key=encodeURIComponent(name).replace(/%/g,'_');
-        await firebase.database().ref(FCM_TOKEN_ROOT+'/'+role+'/'+key).set({name:name,token:token,updatedAt:firebase.database.ServerValue.TIMESTAMP});
-      }
-      window.__schoolFCMToken=token;
-      return true;
-    }catch(e){console.error('FCM registration failed',e);return false}
-  }
-  window.enableSchoolPushNotifications=registerSchoolPush;
-  window.addEventListener('load',function(){
-    setTimeout(function(){
-      if(typeof lrStaffCanReceiveSystemNotifications==='function'&&lrStaffCanReceiveSystemNotifications()) registerSchoolPush();
-    },1200);
-  });
-  window.addEventListener('pointerdown',function(){
-    if(typeof lrStaffCanReceiveSystemNotifications==='function'&&lrStaffCanReceiveSystemNotifications()) registerSchoolPush();
-  },{passive:true});
-})();
-</script>
-
-</body></html>`;
+                    const docHtml=`<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${exportCss}</style></head><body>${printWrap.innerHTML}</body></html>`;
                     const blob=new Blob(['\ufeff',docHtml],{type:'application/msword'});
                     const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${fileName}.doc`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
                 }else if(type==='image'){
@@ -8585,48 +8544,7 @@ function() {
 
             ${content}
 
-        
-<!-- FCM_WEB_PUSH_CLIENT_V1 -->
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js"></script>
-<script>
-(function(){
-  const FCM_VAPID_KEY='BLRwHpzXfL2BB8kidoI9b9m38ObtCgcqJDusaHlGLRry0PYbMqFtuh2TBrwuLbvqLifpBAJjMFbEGAqKm4l_-Vs';
-  const FCM_TOKEN_ROOT='schoolPushTokens';
-  async function registerSchoolPush(){
-    try{
-      if(!('serviceWorker' in navigator)||!('Notification' in window)||typeof firebase==='undefined'||!firebase.messaging)return false;
-      if(Notification.permission==='default'){
-        const permission=await Notification.requestPermission().catch(()=> 'denied');
-        if(permission!=='granted')return false;
-      }
-      if(Notification.permission!=='granted')return false;
-      const reg=await navigator.serviceWorker.register('./service-worker.js',{scope:'./'});
-      const messaging=firebase.messaging();
-      const token=await messaging.getToken({vapidKey:FCM_VAPID_KEY,serviceWorkerRegistration:reg});
-      if(!token)return false;
-      const name=(typeof currentUser!=='undefined'&&currentUser&&currentUser.name)?String(currentUser.name):'';
-      const role=(typeof isStudentMode!=='undefined'&&isStudentMode)?'student':'staff';
-      if(name&&typeof firebase!=='undefined'&&firebase.database){
-        const key=encodeURIComponent(name).replace(/%/g,'_');
-        await firebase.database().ref(FCM_TOKEN_ROOT+'/'+role+'/'+key).set({name:name,token:token,updatedAt:firebase.database.ServerValue.TIMESTAMP});
-      }
-      window.__schoolFCMToken=token;
-      return true;
-    }catch(e){console.error('FCM registration failed',e);return false}
-  }
-  window.enableSchoolPushNotifications=registerSchoolPush;
-  window.addEventListener('load',function(){
-    setTimeout(function(){
-      if(typeof lrStaffCanReceiveSystemNotifications==='function'&&lrStaffCanReceiveSystemNotifications()) registerSchoolPush();
-    },1200);
-  });
-  window.addEventListener('pointerdown',function(){
-    if(typeof lrStaffCanReceiveSystemNotifications==='function'&&lrStaffCanReceiveSystemNotifications()) registerSchoolPush();
-  },{passive:true});
-})();
-</script>
-
-</body>
+        </body>
 
         </html>
     `;
@@ -9369,46 +9287,5 @@ self.addEventListener('notificationclick',event=>{event.notification.close();eve
   else bindRoleLoginButtons();
 })();
 </script>
-
-<!-- FCM_WEB_PUSH_CLIENT_V1 -->
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js"></script>
-<script>
-(function(){
-  const FCM_VAPID_KEY='BLRwHpzXfL2BB8kidoI9b9m38ObtCgcqJDusaHlGLRry0PYbMqFtuh2TBrwuLbvqLifpBAJjMFbEGAqKm4l_-Vs';
-  const FCM_TOKEN_ROOT='schoolPushTokens';
-  async function registerSchoolPush(){
-    try{
-      if(!('serviceWorker' in navigator)||!('Notification' in window)||typeof firebase==='undefined'||!firebase.messaging)return false;
-      if(Notification.permission==='default'){
-        const permission=await Notification.requestPermission().catch(()=> 'denied');
-        if(permission!=='granted')return false;
-      }
-      if(Notification.permission!=='granted')return false;
-      const reg=await navigator.serviceWorker.register('./service-worker.js',{scope:'./'});
-      const messaging=firebase.messaging();
-      const token=await messaging.getToken({vapidKey:FCM_VAPID_KEY,serviceWorkerRegistration:reg});
-      if(!token)return false;
-      const name=(typeof currentUser!=='undefined'&&currentUser&&currentUser.name)?String(currentUser.name):'';
-      const role=(typeof isStudentMode!=='undefined'&&isStudentMode)?'student':'staff';
-      if(name&&typeof firebase!=='undefined'&&firebase.database){
-        const key=encodeURIComponent(name).replace(/%/g,'_');
-        await firebase.database().ref(FCM_TOKEN_ROOT+'/'+role+'/'+key).set({name:name,token:token,updatedAt:firebase.database.ServerValue.TIMESTAMP});
-      }
-      window.__schoolFCMToken=token;
-      return true;
-    }catch(e){console.error('FCM registration failed',e);return false}
-  }
-  window.enableSchoolPushNotifications=registerSchoolPush;
-  window.addEventListener('load',function(){
-    setTimeout(function(){
-      if(typeof lrStaffCanReceiveSystemNotifications==='function'&&lrStaffCanReceiveSystemNotifications()) registerSchoolPush();
-    },1200);
-  });
-  window.addEventListener('pointerdown',function(){
-    if(typeof lrStaffCanReceiveSystemNotifications==='function'&&lrStaffCanReceiveSystemNotifications()) registerSchoolPush();
-  },{passive:true});
-})();
-</script>
-
 </body>
 </html>
