@@ -6,6 +6,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>منصة ثانوية الفراجية للبنين</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
         :root {
@@ -1586,9 +1587,10 @@
         <div class="sa-small-note">يُفضّل تنفيذ تثبيت الموقع وأنت داخل المدرسة. سيتم اعتماد نطاق أمان قدره 150 مترًا حول الموقع المثبت.</div>
     </div>
 
-    <div class="sa-actions">
+    <div class="sa-actions" id="staffAttendanceChoice">
         <button type="button" class="sa-main-btn sa-register-btn" id="staffRegisterFaceBtn">🙂 تسجيل وجه جديد</button>
         <button type="button" class="sa-main-btn sa-attendance-btn" id="staffTakeAttendanceBtn">📷 تسجيل الحضور اليومي</button>
+        <button type="button" class="sa-main-btn sa-leave-btn" id="staffLeaveRequestBtn">📝 طلب الإجازة</button>
     </div>
 
     <div class="sa-panel hidden" id="staffFaceManagementPanel">
@@ -1651,7 +1653,17 @@
         </div>
     </div>
 
-    <div class="sa-panel">
+    <div class="sa-panel staff-leave-panel hidden" id="staffLeaveRequestPanel">
+        <h3>📝 طلب إجازة الكادر</h3>
+        <div class="sa-field"><label for="staffLeaveTarget">طلب الإجازة إلى</label><select id="staffLeaveTarget"><option value="manager">المدير</option><option value="assistant">المعاون</option></select></div>
+        <div class="sa-field"><label>اسم المدرس</label><div id="staffLeaveAutoName" style="padding:12px;border:1px solid #cfd8d3;border-radius:10px;background:#f7faf8;font-weight:800;color:var(--primary-color);">سيظهر اسم المدرس المسجل حضوره تلقائياً</div></div>
+        <div class="sa-field"><label for="staffLeaveReason">سبب الإجازة</label><textarea id="staffLeaveReason" rows="4" placeholder="اكتب سبب الإجازة"></textarea></div>
+        <div class="sa-field"><label for="staffLeaveDay">تاريخ الإجازة</label><select id="staffLeaveDay" onchange="toggleStaffLeaveCustomDay()"></select><input class="hidden" id="staffLeaveCustomDay" type="date" style="margin-top:8px;"/></div>
+        <button type="button" class="sa-btn sa-btn-primary staff-leave-submit" onclick="previewStaffLeaveRequest()">📨 معاينة طلب الإجازة</button>
+        <div id="staffLeaveStatus" class="sa-message"></div>
+    </div>
+
+    <div class="sa-panel" id="staffTodayAttendancePanel">
         <h3>📋 سجل حضور الكادر اليوم</h3>
         <div id="staffTodayAttendanceList" class="sa-list"></div>
     </div>
@@ -2001,6 +2013,21 @@
 </div>
 <button class="btn-save" id="saveStudentBtn" style="width: 100%; padding: 12px; font-size: 1.05rem;" type="submit">حفظ بيانات الطالب</button>
 </form>
+<div id="excelStudentImportBox" style="margin-top:18px;padding:15px;border:2px dashed #198754;border-radius:12px;background:#f7fff9;">
+  <div style="font-weight:900;color:#176b3a;margin-bottom:8px;">📊 ملء قوائم الطلبة تلقائياً من ملف Excel</div>
+  <div style="font-size:.9rem;color:#555;line-height:1.7;margin-bottom:10px;">رتّب الملف بهذا الشكل: التسلسل ← اسم الطالب ← الصف ← الفرع (الفرع للصفوف الرابع والخامس والسادس).</div>
+  <input id="studentExcelFile" type="file" accept=".xlsx,.xls" style="width:100%;padding:9px;border:1px solid #c9d8cf;border-radius:8px;background:#fff;">
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+    <button type="button" class="btn-save" onclick="importStudentsFromExcel('all')" style="flex:1;min-width:150px;">📥 رفع جميع الطلاب</button>
+    <button type="button" class="btn-action" onclick="importStudentsFromExcel('grade')" style="flex:1;min-width:150px;background:#0d6efd;color:#fff;">📥 رفع حسب الصف</button>
+  </div>
+  <select id="studentExcelGrade" style="width:100%;margin-top:10px;padding:10px;border:1px solid #c9d8cf;border-radius:8px;">
+    <option value="">-- اختر الصف للرفع --</option>
+    <option value="الأول المتوسط">الأول المتوسط</option><option value="الثاني المتوسط">الثاني المتوسط</option><option value="الثالث المتوسط">الثالث المتوسط</option>
+    <option value="الرابع العلمي">الرابع العلمي</option><option value="الرابع الأدبي">الرابع الأدبي</option><option value="الخامس العلمي">الخامس العلمي</option><option value="الخامس الأدبي">الخامس الأدبي</option><option value="السادس العلمي">السادس العلمي</option><option value="السادس الأدبي">السادس الأدبي</option>
+  </select>
+  <div id="studentExcelImportStatus" style="margin-top:8px;font-weight:800;"></div>
+</div>
 </div>
 <div class="sub-section hidden" id="subContentSearch">
 <div class="search-box">
@@ -2192,9 +2219,10 @@
     'schoolWhatsappGroups','schoolWhatsappSenderNumber','schoolWhatsappBulkApiEndpoint',
     'schoolWhatsappBulkApiKey','schoolWhatsappMessageMode','schoolWhatsappTemplateName',
     'schoolWhatsappTemplateLanguage','SCHOOL_LEAVE_REQUESTS_V1',
-    'SCHOOL_LEAVE_READ_NOTIFICATIONS_V1','SCHOOL_FIXED_LOCATION_V1','STAFF_ADMIN_SECURITY_CODES_V1'
+    'SCHOOL_LEAVE_READ_NOTIFICATIONS_V1','SCHOOL_FIXED_LOCATION_V1','STAFF_ADMIN_SECURITY_CODES_V1','SCHOOL_PUBLISHED_SCHEDULES_V2'
   ]);
   let db=null, ready=false, applyingRemote=false, reloadTimer=null;
+  const pendingCloudWrites=new Map();
   const originalSet=Storage.prototype.setItem;
   const originalRemove=Storage.prototype.removeItem;
   function scheduleReload(){
@@ -2204,13 +2232,15 @@
   function validKey(k){return SYNC_KEYS.has(String(k||''));}
   function cloudRef(key){return db.ref('schoolPlatformState').child(String(key));}
   async function cloudWrite(key,value){
-    if(!ready||!db||!validKey(key))return;
+    if(!validKey(key))return;
+    if(!ready||!db){pendingCloudWrites.set(String(key),value);return;}
     try{
       const ref=cloudRef(key);
       if(value===null){await ref.remove();}
       else{
         const text=String(value);
-        if(text.length>900000){console.warn('Cloud sync skipped for large item:',key,text.length);return;}
+        const maxCloudSize=key==='SCHOOL_PUBLISHED_SCHEDULES_V2'?9500000:900000;
+        if(text.length>maxCloudSize){console.warn('Cloud sync skipped for large item:',key,text.length);return;}
         await ref.set({value:text,updatedAt:firebase.database.ServerValue.TIMESTAMP});
       }
     }catch(e){console.error('Realtime Database write failed',key,e);}
@@ -2232,6 +2262,11 @@
         console.warn('Anonymous auth unavailable; continuing with Realtime Database rules.',authErr);
       }
       ready=true;
+      if(pendingCloudWrites.size){
+        const queued=[...pendingCloudWrites.entries()];
+        pendingCloudWrites.clear();
+        for(const [key,value] of queued) await cloudWrite(key,value);
+      }
       const root=db.ref('schoolPlatformState');
       const snap=await root.once('value');
       const remoteAll=snap.val()||{};
@@ -3175,6 +3210,8 @@
             document.getElementById('mainPlatform').classList.remove('hidden');
             document.getElementById('headerUserInfo').classList.remove('hidden');
             document.getElementById('userInfoText').innerHTML = `<span style="display:block;white-space:nowrap;font-weight:900;">👤 ${getStaffDisplayName(currentUser.name).replace(' : ', ' ')}</span><span style="display:block;white-space:nowrap;font-size:.9em;font-weight:700;margin-top:2px;padding-right:1.65em;">الاختصاص (${currentUser.specialty || '-'})</span>`;
+            const staffLeaveAutoName = document.getElementById('staffLeaveAutoName');
+            if (staffLeaveAutoName) staffLeaveAutoName.textContent = cleanStaffName(currentUser.name);
             
             document.querySelectorAll('.staff-only-item').forEach(el => el.classList.remove('hidden'));
             document.querySelectorAll('.student-hide-item').forEach(el => el.classList.remove('hidden'));
@@ -3185,6 +3222,7 @@
             if (staffTopMenu) staffTopMenu.classList.remove('hidden');
             if (staffTicker) staffTicker.classList.remove('hidden');
             document.querySelectorAll('.staff-menu-item').forEach(el => el.classList.remove('hidden'));
+            updateLeaveNotificationMenu();
             updatePlatformTicker();
 
             renderGroupsTable();
@@ -4217,6 +4255,143 @@
             switchSubTab('list');
         }
 
+        /* =========================================================
+           ملء قوائم الطلبة تلقائياً من Excel
+           إضافة مستقلة ولا تغيّر طريقة التسجيل اليدوي
+        ========================================================= */
+        (function(){
+            const excelGrades=['الأول المتوسط','الثاني المتوسط','الثالث المتوسط','الرابع العلمي','الرابع الأدبي','الخامس العلمي','الخامس الأدبي','السادس العلمي','السادس الأدبي'];
+            const normExcel=v=>String(v??'').replace(/\uFEFF/g,'').replace(/\s+/g,' ').trim();
+            const arabicDigitsExcel=v=>normExcel(v).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+            const gradeExcel=v=>normExcel(v).replace(/^الصف\s*/,'').replace(/\s+/g,' ');
+            const makeGradeExcel=(raw,branch)=>{
+                let g=gradeExcel(raw), b=normExcel(branch);
+                if(excelGrades.includes(g)) return g;
+                if(/^(الرابع|الخامس|السادس)$/.test(g)){
+                    if(/علمي|العلمي/i.test(b)) return g+' العلمي';
+                    if(/أدبي|الادبي|الأدبي/i.test(b)) return g+' الأدبي';
+                }
+                return g;
+            };
+            const setExcelStatus=(msg,ok)=>{
+                const el=document.getElementById('studentExcelImportStatus');
+                if(el){el.textContent=msg;el.style.color=ok?'#198754':'#dc3545';}
+            };
+            let cachedExcelBuffer=null;
+            let cachedExcelFileKey='';
+            const excelFileKey=file=>file?String(file.name||'')+'|'+String(file.size||0)+'|'+String(file.lastModified||0):'';
+            const readExcelFile=async(file)=>{
+                if(!file) throw new Error('لم يتم اختيار ملف.');
+                const key=excelFileKey(file);
+                let buffer=null;
+                if(cachedExcelBuffer&&cachedExcelFileKey===key) buffer=cachedExcelBuffer;
+                if(!buffer){
+                    try{
+                        if(typeof file.arrayBuffer==='function') buffer=await file.arrayBuffer();
+                    }catch(err){
+                        console.warn('تعذر استخدام File.arrayBuffer، سيتم استخدام FileReader.',err);
+                    }
+                }
+                if(!buffer){
+                    buffer=await new Promise((resolve,reject)=>{
+                        if(typeof FileReader==='undefined'){
+                            reject(new Error('المتصفح لا يسمح بقراءة الملف المحدد. يرجى اختيار الملف مرة أخرى ثم الضغط على رفع.'));
+                            return;
+                        }
+                        const reader=new FileReader();
+                        reader.onload=()=>resolve(reader.result);
+                        reader.onerror=()=>reject(new Error('تعذر قراءة الملف من الهاتف. يرجى اختيار الملف مرة أخرى ثم الضغط على رفع مباشرة.'));
+                        reader.onabort=()=>reject(new Error('تم إلغاء قراءة الملف.'));
+                        try{reader.readAsArrayBuffer(file)}catch(err){reject(err)}
+                    });
+                }
+                if(!buffer) throw new Error('تعذر الوصول إلى محتوى الملف.');
+                try{
+                    return XLSX.read(new Uint8Array(buffer),{type:'array',cellDates:false});
+                }catch(err){
+                    throw new Error('الملف غير صالح أو لا يمكن قراءته كملف Excel.');
+                }
+            };
+            const cacheSelectedExcelFile=()=>{
+                const input=document.getElementById('studentExcelFile');
+                const file=input?.files?.[0];
+                if(!file){cachedExcelBuffer=null;cachedExcelFileKey='';return;}
+                cachedExcelBuffer=null;
+                cachedExcelFileKey=excelFileKey(file);
+                if(typeof FileReader==='undefined') return;
+                try{
+                    const reader=new FileReader();
+                    reader.onload=()=>{
+                        if(reader.result){cachedExcelBuffer=reader.result;cachedExcelFileKey=excelFileKey(file);}
+                    };
+                    reader.onerror=()=>{cachedExcelBuffer=null;};
+                    reader.readAsArrayBuffer(file);
+                }catch(err){cachedExcelBuffer=null;}
+            };
+            document.addEventListener('DOMContentLoaded',()=>{
+                const input=document.getElementById('studentExcelFile');
+                if(input) input.addEventListener('change',cacheSelectedExcelFile);
+            });
+            window.importStudentsFromExcel=async function(mode){
+                const input=document.getElementById('studentExcelFile');
+                const wanted=document.getElementById('studentExcelGrade')?.value||'';
+                if(!input?.files?.length){setExcelStatus('يرجى اختيار ملف Excel أولاً.',false);return;}
+                if(mode==='grade'&&!wanted){setExcelStatus('يرجى اختيار الصف المراد رفعه.',false);return;}
+                if(typeof XLSX==='undefined'){setExcelStatus('مكتبة قراءة ملفات Excel غير متوفرة.',false);return;}
+                try{
+                    setExcelStatus('⏳ جارٍ قراءة ملف Excel...',true);
+                    const wb=await readExcelFile(input.files[0]);
+                    if(!wb||!wb.SheetNames||!wb.SheetNames.length){setExcelStatus('❌ لم يتم العثور على ورقة عمل داخل الملف.',false);return;}
+                    const ws=wb.Sheets[wb.SheetNames[0]];
+                    if(!ws){setExcelStatus('❌ تعذر فتح أول ورقة في ملف Excel.',false);return;}
+                    const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false,blankrows:false});
+                    if(!rows.length){setExcelStatus('الملف فارغ.',false);return;}
+                    let start=0;
+                    const header=(rows[0]||[]).map(normExcel).join(' ');
+                    if(/تسلسل|اسم|الصف|الفرع/.test(header)) start=1;
+                    let imported=0, skipped=0;
+                    const existing=new Set((studentsData||[]).map(x=>normExcel(x.name)+'|'+normExcel(x.grade)));
+                    for(let i=start;i<rows.length;i++){
+                        const row=rows[i]||[];
+                        if(row.length<3) continue;
+                        const serial=arabicDigitsExcel(row[0]);
+                        const name=normExcel(row[1]);
+                        const rawGrade=normExcel(row[2]);
+                        const branch=normExcel(row[3]);
+                        if(!name||!rawGrade){skipped++;continue;}
+                        const grade=makeGradeExcel(rawGrade,branch);
+                        if(!excelGrades.includes(grade)){skipped++;continue;}
+                        if(mode==='grade'&&grade!==wanted) continue;
+                        const key=name+'|'+grade;
+                        if(existing.has(key)){skipped++;continue;}
+                        studentsData.push({
+                            id:generateId(),
+                            name,
+                            grade,
+                            section:'',
+                            phone:'',
+                            notes:serial?'تسلسل Excel: '+serial:''
+                        });
+                        existing.add(key);
+                        imported++;
+                    }
+                    localStorage.setItem('schoolStudentsData',JSON.stringify(studentsData));
+                    if(typeof loadStudents==='function') loadStudents();
+                    setExcelStatus('✅ تم رفع '+imported+' طالباً'+(skipped?' — تم تجاوز '+skipped+' سجل مكرر أو غير صالح.':''),true);
+                    if(typeof logActivity==='function') logActivity('staff','رفع قوائم الطلبة من Excel','تم رفع '+imported+' طالباً'+(mode==='grade'?' للصف '+wanted:' لجميع الصفوف'));
+                }catch(e){
+                    console.error('Excel student import:',e);
+                    setExcelStatus('❌ حدث خطأ أثناء قراءة ملف Excel: '+(e&&e.message?e.message:'تعذر قراءة الملف.')+'',false);
+                }
+            };
+            const toggleExcelGrade=()=>{
+                const sel=document.getElementById('studentExcelGrade');
+                const file=document.getElementById('studentExcelFile');
+                if(sel&&file){sel.style.display='block';}
+            };
+            document.addEventListener('DOMContentLoaded',toggleExcelGrade);
+        })();
+
         function editStudent(id) {
             const st = studentsData.find(s => s.id === id);
             if(!st) return;
@@ -4404,26 +4579,49 @@
             printWrap.className='student-export-wrap';
             printWrap.dir='rtl';
             printWrap.innerHTML=lists.map(({grade,list})=>makeSheetHtml(grade,list)).join('');
-            printWrap.style.cssText='position:absolute;left:0;top:0;width:210mm;background:#fff;direction:rtl;z-index:-1;';
+            printWrap.style.cssText='position:absolute;left:0;top:0;width:210mm;background:#fff;direction:rtl;z-index:9999;pointer-events:none;';
             const style=document.createElement('style');style.textContent=exportCss;printWrap.prepend(style);
             document.body.appendChild(printWrap);
+            await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
 
             try{
                 if(type==='pdf'){
-                    await html2pdf().from(printWrap).set({
-                        margin:0,filename:`${fileName}.pdf`,image:{type:'jpeg',quality:.98},
-                        html2canvas:{scale:2,useCORS:true,backgroundColor:'#fff',logging:false,scrollX:0,scrollY:0,windowWidth:794},
-                        jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
-                        pagebreak:{mode:['css','legacy']}
-                    }).save();
+                    /* إنشاء PDF مباشرة من كل صف لتجنب مشكلة الصفحة البيضاء في بعض متصفحات Android */
+                    const sheets=Array.from(printWrap.querySelectorAll('.student-grade-sheet'));
+                    if(!sheets.length) throw new Error('لا توجد قوائم للتصدير');
+                    let JsPDF=(window.jspdf&&window.jspdf.jsPDF)||window.jsPDF;
+                    if(!JsPDF){
+                        await new Promise((resolve,reject)=>{
+                            const sc=document.createElement('script');
+                            sc.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+                            sc.onload=resolve; sc.onerror=reject; document.head.appendChild(sc);
+                        });
+                        JsPDF=(window.jspdf&&window.jspdf.jsPDF)||window.jsPDF;
+                    }
+                    if(!JsPDF) throw new Error('مكتبة PDF غير متوفرة');
+                    if(document.fonts&&document.fonts.ready) await document.fonts.ready;
+                    const pdf=new JsPDF({unit:'mm',format:'a4',orientation:'portrait',compress:true});
+                    for(let i=0;i<sheets.length;i++){
+                        const sheet=sheets[i];
+                        const canvas=await html2canvas(sheet,{
+                            scale:2,useCORS:true,allowTaint:true,backgroundColor:'#fff',logging:false,
+                            scrollX:0,scrollY:0,windowWidth:794,windowHeight:1123
+                        });
+                        const img=canvas.toDataURL('image/jpeg',0.96);
+                        if(i>0) pdf.addPage('a4','portrait');
+                        pdf.addImage(img,'JPEG',0,0,210,297,undefined,'FAST');
+                    }
+                    pdf.save(`${fileName}.pdf`);
                 }else if(type==='word'){
-                    const docHtml=`<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${exportCss}</style></head><body>${printWrap.innerHTML}</body></html>`;
+                    const docHtml=`<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${exportCss}</style></head><body>${printWrap.innerHTML}<script>
+
+</body></html>`;
                     const blob=new Blob(['\ufeff',docHtml],{type:'application/msword'});
                     const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${fileName}.doc`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
                 }else if(type==='image'){
                     const sheet=printWrap.querySelector('.student-grade-sheet');
                     if(!sheet)return;
-                    const canvas=await html2canvas(sheet,{scale:2,backgroundColor:'#fff',useCORS:true,logging:false,scrollX:0,scrollY:0,windowWidth:794});
+                    const canvas=await html2canvas(sheet,{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#fff',logging:false,scrollX:0,scrollY:0,windowWidth:794,windowHeight:1123});
                     const a=document.createElement('a');a.href=canvas.toDataURL('image/png');a.download=`${fileName}.png`;document.body.appendChild(a);a.click();a.remove();
                 }
             }catch(error){
@@ -9066,7 +9264,7 @@ window.__initStudentAttendanceOnOpen = function(){
 .staff-attendance-app .sa-header{background:linear-gradient(135deg,#1b4332,#2d6a4f);color:#fff;border-radius:14px;padding:18px;text-align:center;margin-bottom:14px}
 .staff-attendance-app .sa-header h2{margin:0 0 7px;font-size:1.35rem}.staff-attendance-app .sa-header p{margin:0;font-size:.92rem;opacity:.94}
 .staff-attendance-app .sa-status,.staff-attendance-app .sa-location-card,.staff-attendance-app .sa-panel{background:#fff;border:1px solid #e4e9e6;border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 3px 12px rgba(0,0,0,.05)}
-.staff-attendance-app .sa-status{text-align:center;font-weight:700}.staff-attendance-app .sa-location-card h3,.staff-attendance-app .sa-panel h3{margin:0 0 12px}.staff-attendance-app .sa-location-status{padding:10px;border-radius:10px;background:#f1f5f3;margin-bottom:10px}.staff-attendance-app .sa-location-actions,.staff-attendance-app .sa-actions,.staff-attendance-app .sa-panel-actions,.staff-attendance-app .sa-camera-buttons{display:flex;gap:10px;flex-wrap:wrap}.staff-attendance-app .sa-actions{margin-bottom:14px}.staff-attendance-app .sa-main-btn,.staff-attendance-app .sa-btn{border:0;border-radius:10px;padding:12px 16px;cursor:pointer;font-weight:700;font-size:.95rem}.staff-attendance-app .sa-main-btn{flex:1;min-width:190px;color:#fff}.staff-attendance-app .sa-register-btn{background:#2d6a4f}.staff-attendance-app .sa-attendance-btn{background:#0d6efd}.staff-attendance-app .sa-pending-btn{background:#dc3545;color:#fff}.staff-attendance-app .sa-new-face-btn{background:#6f42c1;color:#fff}.staff-attendance-app .sa-face-sub-actions{margin:0 0 14px}.staff-attendance-app .sa-face-list-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px;border-bottom:1px solid #eee}.staff-attendance-app .sa-face-list-row:last-child{border-bottom:0}.staff-attendance-app .sa-face-name{flex:1;min-width:170px;font-weight:700}.staff-attendance-app .sa-face-ok{color:#198754;font-size:1.15rem}.staff-attendance-app .sa-face-no{color:#dc3545;font-size:1.15rem}.staff-attendance-app .sa-mini-btn{border:0;border-radius:8px;padding:8px 12px;color:#fff;font-weight:700;cursor:pointer}.staff-attendance-app .sa-edit-face{background:#0d6efd}.staff-attendance-app .sa-delete-face{background:#dc3545}.staff-attendance-app .sa-register-pending{background:#198754}.staff-attendance-app .sa-face-save-notice{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:99999;background:#fff;border:3px solid #198754;border-radius:18px;padding:18px 28px;box-shadow:0 10px 35px rgba(0,0,0,.25);font-size:1.25rem;font-weight:800;text-align:center;min-width:260px}.staff-attendance-app .sa-attendance-btn{background:#0d6efd}.staff-attendance-app .sa-btn-primary{background:#0d6efd;color:#fff}.staff-attendance-app .sa-btn-success{background:#198754;color:#fff}.staff-attendance-app .sa-btn-danger{background:#dc3545;color:#fff}.staff-attendance-app .sa-btn-location{background:#6f42c1;color:#fff}.staff-attendance-app .sa-btn-secondary{background:#6c757d;color:#fff}.staff-attendance-app .sa-field{margin-bottom:12px}.staff-attendance-app .sa-field label{display:block;font-weight:700;margin-bottom:7px}.staff-attendance-app .sa-field select,.staff-attendance-app .sa-field input{width:100%;padding:12px;border:1px solid #cfd8d3;border-radius:10px;font-size:1rem;background:#fff}.staff-attendance-app .sa-camera-wrap{border:1px solid #d9e1dc;border-radius:14px;padding:12px;background:#101820;margin-top:12px}.staff-attendance-app .sa-camera-label{color:#fff;text-align:center;font-weight:700;margin-bottom:9px}.staff-attendance-app video{width:100%;max-height:390px;display:block;border-radius:10px;object-fit:cover;transform:scaleX(-1);background:#000}.staff-attendance-app .sa-camera-buttons{margin-top:10px;justify-content:center}.staff-attendance-app .sa-message{margin-top:10px;min-height:22px;font-weight:700}.staff-attendance-app .sa-attendance-info{background:#eef6ff;border-radius:10px;padding:11px;margin-bottom:10px}.staff-attendance-app .sa-small-note{font-size:.84rem;color:#667085;margin-top:8px;line-height:1.6}.staff-attendance-app .sa-detected{margin-top:12px;padding:14px;border-radius:12px;background:#e9f7ef;border:1px solid #b8e0c6;text-align:center;font-weight:700}.staff-attendance-app .sa-detected div{margin:5px 0}.staff-attendance-app .sa-list .sa-record{padding:11px;border-bottom:1px solid #eee}.staff-attendance-app .sa-list .sa-record:last-child{border-bottom:0}.staff-attendance-app .hidden{display:none!important}
+.staff-attendance-app .sa-status{text-align:center;font-weight:700}.staff-attendance-app .sa-location-card h3,.staff-attendance-app .sa-panel h3{margin:0 0 12px}.staff-attendance-app .sa-location-status{padding:10px;border-radius:10px;background:#f1f5f3;margin-bottom:10px}.staff-attendance-app .sa-location-actions,.staff-attendance-app .sa-actions,.staff-attendance-app .sa-panel-actions,.staff-attendance-app .sa-camera-buttons{display:flex;gap:10px;flex-wrap:wrap}.staff-attendance-app .sa-actions{margin-bottom:14px}.staff-attendance-app .sa-main-btn,.staff-attendance-app .sa-btn{border:0;border-radius:10px;padding:12px 16px;cursor:pointer;font-weight:700;font-size:.95rem}.staff-attendance-app .sa-main-btn{flex:1;min-width:190px;color:#fff}.staff-attendance-app .sa-register-btn{background:#2d6a4f}.staff-attendance-app .sa-attendance-btn{background:#0d6efd}.staff-attendance-app .sa-leave-btn{background:#198754;color:#fff}.staff-attendance-app .sa-pending-btn{background:#dc3545;color:#fff}.staff-attendance-app .sa-new-face-btn{background:#6f42c1;color:#fff}.staff-attendance-app .sa-face-sub-actions{margin:0 0 14px}.staff-attendance-app .sa-face-list-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px;border-bottom:1px solid #eee}.staff-attendance-app .sa-face-list-row:last-child{border-bottom:0}.staff-attendance-app .sa-face-name{flex:1;min-width:170px;font-weight:700}.staff-attendance-app .sa-face-ok{color:#198754;font-size:1.15rem}.staff-attendance-app .sa-face-no{color:#dc3545;font-size:1.15rem}.staff-attendance-app .sa-mini-btn{border:0;border-radius:8px;padding:8px 12px;color:#fff;font-weight:700;cursor:pointer}.staff-attendance-app .sa-edit-face{background:#0d6efd}.staff-attendance-app .sa-delete-face{background:#dc3545}.staff-attendance-app .sa-register-pending{background:#198754}.staff-attendance-app .sa-face-save-notice{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:99999;background:#fff;border:3px solid #198754;border-radius:18px;padding:18px 28px;box-shadow:0 10px 35px rgba(0,0,0,.25);font-size:1.25rem;font-weight:800;text-align:center;min-width:260px}.staff-attendance-app .sa-attendance-btn{background:#0d6efd}.staff-attendance-app .sa-btn-primary{background:#0d6efd;color:#fff}.staff-attendance-app .sa-btn-success{background:#198754;color:#fff}.staff-attendance-app .sa-btn-danger{background:#dc3545;color:#fff}.staff-attendance-app .sa-btn-location{background:#6f42c1;color:#fff}.staff-attendance-app .sa-btn-secondary{background:#6c757d;color:#fff}.staff-attendance-app .sa-field{margin-bottom:12px}.staff-attendance-app .sa-field label{display:block;font-weight:700;margin-bottom:7px}.staff-attendance-app .sa-field select,.staff-attendance-app .sa-field input{width:100%;padding:12px;border:1px solid #cfd8d3;border-radius:10px;font-size:1rem;background:#fff}.staff-attendance-app .sa-camera-wrap{border:1px solid #d9e1dc;border-radius:14px;padding:12px;background:#101820;margin-top:12px}.staff-attendance-app .sa-camera-label{color:#fff;text-align:center;font-weight:700;margin-bottom:9px}.staff-attendance-app video{width:100%;max-height:390px;display:block;border-radius:10px;object-fit:cover;transform:scaleX(-1);background:#000}.staff-attendance-app .sa-camera-buttons{margin-top:10px;justify-content:center}.staff-attendance-app .sa-message{margin-top:10px;min-height:22px;font-weight:700}.staff-attendance-app .sa-attendance-info{background:#eef6ff;border-radius:10px;padding:11px;margin-bottom:10px}.staff-attendance-app .sa-small-note{font-size:.84rem;color:#667085;margin-top:8px;line-height:1.6}.staff-attendance-app .sa-detected{margin-top:12px;padding:14px;border-radius:12px;background:#e9f7ef;border:1px solid #b8e0c6;text-align:center;font-weight:700}.staff-attendance-app .sa-detected div{margin:5px 0}.staff-attendance-app .sa-list .sa-record{padding:11px;border-bottom:1px solid #eee}.staff-attendance-app .sa-list .sa-record:last-child{border-bottom:0}.staff-attendance-app .hidden{display:none!important}
 
 /* تحسين قائمة وجوه الكادر: الاسم + الحالة + الأزرار في صف واحد */
 .staff-attendance-app #staffFaceManagementPanel,
@@ -9158,6 +9356,36 @@ window.__initStudentAttendanceOnOpen = function(){
     .staff-attendance-app #staffRegisteredFacesPanel .sa-delete-face { grid-column: auto; }
 }
 </style>
+<style>
+.staff-attendance-app .staff-leave-panel{border:1px solid #e4e9e6;background:#fff}
+.staff-attendance-app .staff-leave-panel h3{color:var(--primary-color)}
+.staff-attendance-app .staff-leave-submit{width:100%;margin-top:4px}
+.staff-leave-preview-card{background:#fff;width:min(520px,100%);max-height:90vh;overflow:auto;border-radius:16px;padding:20px;box-shadow:0 12px 35px rgba(0,0,0,.35);direction:rtl}
+.staff-leave-preview-card h3{text-align:center;color:var(--primary-color);margin:0 0 18px}
+.staff-leave-preview-row{padding:11px 12px;border-bottom:1px solid #eee;line-height:1.7}
+.staff-leave-preview-actions{display:flex;gap:8px;margin-top:16px}.staff-leave-preview-actions button{flex:1}
+</style>
+<script>
+/* =========================================================
+   طلب إجازة الكادر — بدون بصمة وجه، ومندمج مع نظام إجازة الطلاب
+========================================================= */
+(function(){
+'use strict';
+const STAFF_LEAVE_NAMES=['سفان محمد إبراهيم','كريم مساهر حمد','عادل حسين محمد','مخلص خالد خلف','مصطفى طيب صالح','أنمار شاكر محمود','أنمار عبدالله سلمان','عمار علي محمود','عمر سعدي شبيب','نهاد طالب سلمان','هيثم نايف أسود','علاء سالم كردي','أوس عبد اللطيف فهد','أسعد حاتم فريح','أحمد عباس جمعه'];
+const STAFF_LEAVE_KEY='SCHOOL_LEAVE_REQUESTS_V1';
+const sEsc=v=>{const d=document.createElement('div');d.textContent=String(v??'');return d.innerHTML};
+const sGet=()=>{try{return JSON.parse(localStorage.getItem(STAFF_LEAVE_KEY)||'[]')}catch(e){return[]}};
+const sSave=v=>localStorage.setItem(STAFF_LEAVE_KEY,JSON.stringify(v));
+function populateStaffLeaveNames(){const sel=document.getElementById('staffLeaveName');if(!sel)return;sel.innerHTML='<option value="">-- اختر اسم المدرس --</option>'+STAFF_LEAVE_NAMES.map(n=>'<option value="'+sEsc(n)+'">'+sEsc(n)+'</option>').join('')}
+function populateStaffLeaveDays(){const sel=document.getElementById('staffLeaveDay');if(!sel)return;sel.innerHTML='';let added=0;const base=new Date();for(let i=0;i<21&&added<10;i++){const d=new Date(base);d.setDate(base.getDate()+i);if(d.getDay()===5||d.getDay()===6)continue;const iso=d.toISOString().slice(0,10);let label=i===0?'اليوم — ':i===1?'غداً — ':'';label+=d.toLocaleDateString('ar-IQ',{weekday:'long',day:'numeric',month:'long'});const o=document.createElement('option');o.value=iso;o.textContent=label;sel.appendChild(o);added++}const other=document.createElement('option');other.value='custom';other.textContent='📅 يوم آخر';sel.appendChild(other)}
+window.toggleStaffLeaveCustomDay=function(){const v=document.getElementById('staffLeaveDay')?.value;document.getElementById('staffLeaveCustomDay')?.classList.toggle('hidden',v!=='custom')};
+function getStaffLeaveDay(){let day=document.getElementById('staffLeaveDay')?.value||'';if(day==='custom')day=document.getElementById('staffLeaveCustomDay')?.value||'';return day}
+window.previewStaffLeaveRequest=function(){const name=document.getElementById('staffLeaveName')?.value||'',reason=document.getElementById('staffLeaveReason')?.value.trim()||'',day=getStaffLeaveDay();if(!name){alert('يرجى اختيار اسم المدرس.');return}if(!reason){alert('يرجى كتابة سبب الإجازة.');return}if(!day){alert('يرجى اختيار تاريخ الإجازة.');return}const d=new Date(day+'T00:00:00');if(isNaN(d.getTime())||d.getDay()===5||d.getDay()===6){alert('يمكن طلب الإجازة من يوم الأحد إلى يوم الخميس فقط.');return}const now=typeof lrNow==='function'?lrNow():{date:new Date().toLocaleDateString('ar-IQ'),time:new Date().toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit'})};document.getElementById('staffLeavePreviewModal')?.remove();const m=document.createElement('div');m.id='staffLeavePreviewModal';m.className='activity-modal-overlay';m.innerHTML='<div class="staff-leave-preview-card"><h3>🔎 معاينة طلب الإجازة</h3><div class="staff-leave-preview-row"><b>اسم المدرس:</b> '+sEsc(name)+'</div><div class="staff-leave-preview-row"><b>سبب الإجازة:</b> '+sEsc(reason)+'</div><div class="staff-leave-preview-row"><b>تاريخ الإجازة:</b> '+sEsc(typeof lrDateLabel==='function'?lrDateLabel(day):day)+'</div><div class="staff-leave-preview-row"><b>التاريخ والوقت:</b> '+sEsc(now.date)+' — '+sEsc(now.time)+'</div><div class="staff-leave-preview-actions"><button type="button" class="sa-btn sa-btn-success" onclick="confirmStaffLeaveRequest()">✅ تأكيد الإرسال</button><button type="button" class="sa-btn sa-btn-secondary" onclick="document.getElementById(&quot;staffLeavePreviewModal&quot;).remove()">↩ تعديل</button></div></div>';document.body.appendChild(m)};
+window.confirmStaffLeaveRequest=function(){const name=document.getElementById('staffLeaveName')?.value||'',reason=document.getElementById('staffLeaveReason')?.value.trim()||'',day=getStaffLeaveDay();if(!name||!reason||!day)return;const d=new Date(day+'T00:00:00');if(isNaN(d.getTime())||d.getDay()===5||d.getDay()===6){alert('يمكن طلب الإجازة من يوم الأحد إلى يوم الخميس فقط.');return}const t=typeof lrNow==='function'?lrNow():{date:new Date().toLocaleDateString('ar-IQ'),time:new Date().toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit'})};const all=sGet();all.unshift({id:'SLR_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),staffName:name,studentName:name,grade:'',section:'',target:'manager',reason,day,hasExam:false,examSubject:'',status:'pending',createdDate:t.date,createdTime:t.time,decisionBy:'',decisionDate:'',decisionTime:''});sSave(all);document.getElementById('staffLeavePreviewModal')?.remove();document.getElementById('staffLeaveReason').value='';document.getElementById('staffLeaveName').value='';const status=document.getElementById('staffLeaveStatus');if(status){status.textContent='✅ تم إرسال طلب الإجازة إلى المدير بنجاح.';status.style.color='#1b7a43'}if(typeof updateLeaveNotificationMenu==='function')updateLeaveNotificationMenu();alert('✅ تم إرسال طلب الإجازة إلى المدير.')};
+document.addEventListener('DOMContentLoaded',function(){populateStaffLeaveNames();populateStaffLeaveDays()});
+window.__initStaffLeaveRequest=function(){populateStaffLeaveNames();populateStaffLeaveDays()};
+})();
+</script>
 <script>
 /* =========================================================
    تسجيل حضور الكادر — بصمة وجه + تحديد موقع المدرسة
@@ -9455,14 +9683,21 @@ window.openLeaveNotifications=function(){const modal=document.getElementById('le
 window.closeLeaveNotifications=function(){const modal=document.getElementById('leaveNotificationsModal');if(modal){modal.classList.add('hidden');modal.style.setProperty('display','none','important')}updateLeaveNotificationMenu()}
 window.clearLeaveNotifications=function(){const all=lrGet(LR_KEY,[]);const mine=all.filter(r=>(r.target==='manager'&&cleanStaffName(currentUser.name)===LR_APPROVERS.manager)||(r.target==='assistant'&&cleanStaffName(currentUser.name)===LR_APPROVERS.assistant)).map(r=>r.id);const read=new Set(lrGet(LR_READ_KEY,[]));const next=mine.filter(id=>read.has(id));lrSave(LR_READ_KEY,[...read].filter(id=>!mine.includes(id)).concat(next));openLeaveNotifications()}
 window.decideLeaveRequest=function(id,status){if(!lrIsRecipient())return;const all=lrGet(LR_KEY,[]);const r=all.find(x=>x.id===id);if(!r||r.status!=='pending')return;r.status=status;r.decisionBy=cleanStaffName(currentUser.name);const t=lrNow();r.decisionDate=t.date;r.decisionTime=t.time;lrSave(LR_KEY,all);openLeaveNotifications();alert(status==='approved'?'تمت الموافقة على الإجازة.':'تم رفض طلب الإجازة.')}
-function lrNotifyStudent(r){try{if('Notification' in window&&Notification.permission==='default')Notification.requestPermission();if('Notification' in window&&Notification.permission==='granted')new Notification(r.status==='approved'?'✅ تمت الموافقة على الإجازة':'❌ تم رفض طلب الإجازة',{body:'قرار '+(r.target==='manager'?'المدير':'المعاون')+' بشأن إجازتك ليوم '+lrDateLabel(r.day)})}catch(e){};lrBeep();if(typeof renderStudentLeaveStatus==='function'&&isStudentMode)renderStudentLeaveStatus()}
+const LR_DECISION_NOTIFIED_KEY='SCHOOL_LEAVE_DECISION_NOTIFIED_V1';
+function lrDecisionNotifiedGet(){try{return JSON.parse(localStorage.getItem(LR_DECISION_NOTIFIED_KEY)||'{}')}catch(e){return{}}}
+function lrDecisionNotifiedSave(v){try{localStorage.setItem(LR_DECISION_NOTIFIED_KEY,JSON.stringify(v))}catch(e){}}
+function lrRequesterName(){try{return currentUser?cleanStaffName(currentUser.name):''}catch(e){return''}}
+function lrIsRequester(r){const n=lrRequesterName();if(!n)return false;if(isStudentMode)return cleanStaffName(r.studentName)===n;return !!r.staffName&&cleanStaffName(r.staffName)===n}
+function lrNotifyStudent(r){try{const approved=r.status==='approved';const title=approved?'✅ تمت الموافقة على طلب الإجازة':'❌ تم رفض طلب الإجازة';const body='قرار '+(r.target==='manager'?'المدير':'المعاون')+' بشأن إجازتك ليوم '+lrDateLabel(r.day);if('Notification' in window&&Notification.permission==='default')Notification.requestPermission();if('Notification' in window&&Notification.permission==='granted')new Notification(title,{body})}catch(e){};lrBeep();lrShowDecisionNotification(r);if(typeof renderStudentLeaveStatus==='function'&&isStudentMode)renderStudentLeaveStatus()}
+function lrShowDecisionNotification(r){if(!lrIsRequester(r))return;document.getElementById('leaveDecisionNotificationModal')?.remove();const approved=r.status==='approved';const x=document.createElement('div');x.id='leaveDecisionNotificationModal';x.className='activity-modal-overlay';x.style.setProperty('display','flex','important');x.innerHTML='<div class="activity-modal" style="max-width:520px;width:100%;text-align:right"><h3 style="text-align:center;color:'+(approved?'#198754':'#dc3545')+'">'+(approved?'✅ تمت الموافقة على طلب الإجازة':'❌ تم رفض طلب الإجازة')+'</h3><p><b>الجهة:</b> '+lrEsc(r.target==='manager'?'السيد المدير المحترم':'السيد المعاون المحترم')+'</p><p><b>تاريخ الإجازة:</b> '+lrEsc(lrDateLabel(r.day))+'</p><p><b>الحالة:</b> '+(approved?'تمت الموافقة على طلب إجازتك.':'تم رفض طلب إجازتك.')+'</p>'+(r.decisionReason?'<p><b>سبب الرفض:</b> '+lrEsc(r.decisionReason)+'</p>':'')+(r.decisionDate?'<p><b>تاريخ القرار:</b> '+lrEsc(r.decisionDate)+' — '+lrEsc(r.decisionTime)+'</p>':'')+'<div class="feature-actions"><button class="feature-primary" onclick="document.getElementById(\'leaveDecisionNotificationModal\').remove()">إغلاق</button></div></div>';document.body.appendChild(x)}
+function lrCheckRequesterDecisionNotifications(){if(!currentUser)return;const all=lrGet(LR_KEY,[]);const sent=lrDecisionNotifiedGet();const key=lrRequesterName();if(!key)return;const mine=all.filter(r=>lrIsRequester(r)&&(r.status==='approved'||r.status==='rejected'));mine.forEach(r=>{if(!sent[key]||!sent[key][r.id]){if(!sent[key])sent[key]={};sent[key][r.id]=r.status;lrDecisionNotifiedSave(sent);lrNotifyStudent(r)}})}
 window.renderStudentLeaveStatus=function(){const box=document.getElementById('studentLeaveStatusBox');if(!box||!isStudentMode||!currentUser)return;const mine=lrGet(LR_KEY,[]).filter(r=>r.studentName===currentUser.name).slice(0,10);if(!mine.length){box.innerHTML='';return}box.innerHTML='<h4 style="margin:8px 0;color:var(--primary-color);">📌 حالة طلبات الإجازة</h4>'+mine.map(r=>{const status=r.status==='approved'?'<span class="leave-status-approved">موافق عليها</span>':r.status==='rejected'?'<span class="leave-status-rejected">غير موافق عليها</span>':'<b>قيد الانتظار</b>';return '<div class="leave-status-card"><div><b>إلى:</b> '+(r.target==='manager'?'المدير':'المعاون')+'</div><div><b>اليوم:</b> '+lrEsc(lrDateLabel(r.day))+'</div><div><b>السبب:</b> '+lrEsc(r.reason)+'</div><div>الحالة: '+status+(r.decisionBy?' — '+lrEsc(r.decisionBy):'')+'</div></div>'}).join('')}
 let lrKnownPendingIds=new Set();let lrKnownStudentStatuses={};let lrDeliveryTrackerReady=false;
 async function lrRegisterSystemNotifications(){try{lrUnlockAudio();if(!('Notification' in window))return false;if(Notification.permission==='default')await Notification.requestPermission().catch(()=>{});return Notification.permission==='granted'}catch(e){return false}}
 function lrStaffCanReceiveSystemNotifications(){return !!currentUser&&!isStudentMode&&LR_NOTIFICATION_NAMES.includes(cleanStaffName(currentUser.name))}
 function lrRelevantPendingRequests(){if(!lrIsRecipient())return[];const me=cleanStaffName(currentUser.name);return lrGet(LR_KEY,[]).filter(r=>r.status==='pending'&&((r.target==='manager'&&me===LR_APPROVERS.manager)||(r.target==='assistant'&&me===LR_APPROVERS.assistant)||(![LR_APPROVERS.manager,LR_APPROVERS.assistant].includes(me)&&LR_NOTIFICATION_NAMES.includes(me))))}
 function lrInitDeliveryTracker(){const all=lrGet(LR_KEY,[]);if(lrIsRecipient()){lrKnownPendingIds=new Set(lrRelevantPendingRequests().map(r=>r.id))}else if(isStudentMode&&currentUser){lrKnownStudentStatuses={};all.filter(r=>r.studentName===currentUser.name).forEach(r=>{lrKnownStudentStatuses[r.id]=r.status})}lrDeliveryTrackerReady=true}
-function lrCheckDeliveredNotifications(){if(!lrDeliveryTrackerReady){lrInitDeliveryTracker();return}const all=lrGet(LR_KEY,[]);if(lrIsRecipient()){const pending=lrRelevantPendingRequests();const currentIds=new Set(pending.map(r=>r.id));pending.forEach(r=>{if(!lrKnownPendingIds.has(r.id))lrNotifyRecipient(r)});lrKnownPendingIds=currentIds}else if(isStudentMode&&currentUser){all.filter(r=>r.studentName===currentUser.name).forEach(r=>{const old=lrKnownStudentStatuses[r.id];if(old&&old!==r.status&&(r.status==='approved'||r.status==='rejected'))lrNotifyStudent(r);lrKnownStudentStatuses[r.id]=r.status})}}
+function lrCheckDeliveredNotifications(){if(!lrDeliveryTrackerReady){lrInitDeliveryTracker();}const all=lrGet(LR_KEY,[]);if(lrIsRecipient()){const pending=lrRelevantPendingRequests();const currentIds=new Set(pending.map(r=>r.id));pending.forEach(r=>{if(!lrKnownPendingIds.has(r.id))lrNotifyRecipient(r)});lrKnownPendingIds=currentIds}lrCheckRequesterDecisionNotifications()}
 lrInitDeliveryTracker();
 /* يصل هذا الاستدعاء من مستمع Firebase عند وصول طلب جديد إلى جهاز المدير/المعاون. */
 window.__schoolLeaveCloudChanged=function(remoteText){
@@ -9479,6 +9714,7 @@ window.__schoolLeaveCloudChanged=function(remoteText){
       lrCheckDeliveredNotifications();
     }
     updateLeaveNotificationMenu();
+    lrCheckRequesterDecisionNotifications();
     if(document.getElementById('leaveNotificationsModal')&&!document.getElementById('leaveNotificationsModal').classList.contains('hidden')&&lrIsRecipient())openLeaveNotifications();
   }catch(e){console.error('Leave cloud notification error',e)}
 };
@@ -9583,14 +9819,16 @@ function renderStudentBooks(){const box=document.getElementById('studentHubBooks
 window.renderStudentBookKinds=function(kind){document.getElementById('studentBookBtn')?.classList.toggle('active',kind==='book');document.getElementById('studentBinderBtn')?.classList.toggle('active',kind==='binder');document.getElementById('studentBookKinds').innerHTML=`<div class="feature-grade-grid">${GRADES.map(g=>`<button data-grade="${esc(g)}" data-kind="${kind}" onclick="renderStudentGradeBooks(this.dataset.grade,this.dataset.kind)">${esc(g)}</button>`).join('')}</div>`};
 window.renderStudentGradeBooks=function(grade,kind){const list=((getArchive().books||{})[grade]||[]).filter(x=>(x.kind||'book')===kind);let html=`<button class="feature-back" data-kind="${kind}" onclick="renderStudentBookKinds(this.dataset.kind)">⬅️ رجوع للصفوف</button><h4 style="margin-bottom:10px;color:var(--primary-color)">${esc(grade)} — ${kind==='book'?'الكتب':'الملازم'}</h4>`;if(!list.length)html+=`<div class="schedule-empty">لا توجد ${kind==='book'?'كتب':'ملازم'} مضافة حالياً.</div>`;list.forEach((x,i)=>{html+=`<div class="feature-item"><b>${i+1}. ${esc(x.title||x.fileName||'ملف')}</b><div style="color:#666;margin-top:4px">${esc(x.uploader||'')}</div><div class="feature-actions"><a class="feature-primary" href="${x.fileUrl}" target="_blank">👁️ فتح ومعاينة</a>${x.isLink?'':`<a class="feature-orange" href="${x.fileUrl}" download="${esc(x.fileName||'file')}">📥 تحميل</a>`}</div></div>`});document.getElementById('studentBookKinds').innerHTML=html};
 function scheduleKindLabel(k){return k==='weekly'?'الجدول الأسبوعي':k==='midyear'?'جدول نصف السنة':'جدول نهاية السنة'}
-function scheduleViewHtml(item,kind){if(!item)return `<div class="schedule-empty">${kind==='midyear'?'سيتوفر في امتحانات نصف السنة':kind==='final'?'سيتوفر في امتحانات نهاية السنة':'سيتوفر قريباً'}</div>`;return `<div class="schedule-preview-card"><h4>${esc(item.title||scheduleKindLabel(kind))}</h4>${item.fileType==='images'?`<img src="${item.fileUrl}">`:`<div class="feature-actions"><a class="feature-primary" href="${item.fileUrl}" target="_blank">👁️ فتح ومعاينة</a></div>`}</div>`}
+function schedulePublishedDate(item){if(!item||!item.publishedAt)return '';const d=new Date(item.publishedAt);if(isNaN(d.getTime()))return String(item.publishedAt);return d.toLocaleDateString('ar-IQ',{year:'numeric',month:'long',day:'numeric'})+' — '+d.toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit'});}
+function scheduleViewHtml(item,kind,studentView=false){if(!item)return `<div class="schedule-empty">${kind==='midyear'?'سيتوفر في امتحانات نصف السنة':kind==='final'?'سيتوفر في امتحانات نهاية السنة':'سيتوفر قريباً'}</div>`;const date=schedulePublishedDate(item);return `<div class="schedule-preview-card"><h4>${esc(item.title||scheduleKindLabel(kind))}</h4>${date?`<div style="margin:6px 0 12px;color:#666;font-weight:800">📅 تاريخ نشر الجدول: ${esc(date)}</div>`:''}<div class="feature-actions">${studentView?`<button type="button" class="feature-primary" onclick="openSchedulePreview('${kind}')">👁️ فتح الجدول</button>`:`<button type="button" class="feature-primary" onclick="openSchedulePreview('${kind}')">👁️ فتح ومعاينة</button>`}<a class="feature-orange" href="${item.fileUrl}" download="${esc(item.fileName||('جدول-'+kind))}">💾 ${studentView?'حفظ الجدول':'تصدير كملف'}</a></div></div>`}
 function renderStudentSchedules(){const b=document.getElementById('studentHubSchedules');b.innerHTML=`<div class="feature-sub-buttons"><button class="active" data-kind="weekly" onclick="renderStudentScheduleKind(this.dataset.kind)">الجدول الأسبوعي</button><button data-kind="midyear" onclick="renderStudentScheduleKind(this.dataset.kind)">جدول نصف السنة</button><button data-kind="final" onclick="renderStudentScheduleKind(this.dataset.kind)">جدول نهاية السنة</button></div><div id="studentScheduleView"></div>`;renderStudentScheduleKind('weekly')}
-window.renderStudentScheduleKind=function(kind){document.querySelectorAll('#studentHubSchedules .feature-sub-buttons button').forEach(b=>b.classList.toggle('active',b.dataset.kind===kind));document.getElementById('studentScheduleView').innerHTML=scheduleViewHtml(getPublished()[kind]||null,kind)};
-window.toggleArchiveSchedulesMenu=function(){if(isStudentMode)return;switchArchiveTab('schedule')};window.openArchiveScheduleManager=function(kind,back){if(isStudentMode)return;const p=document.getElementById('archiveScheduleManagerPanel');if(!p)return;const sub=document.getElementById('archiveSchedulesSubButtons');if(sub)sub.classList.remove('hidden');document.querySelectorAll('#archiveSchedulesSubButtons button').forEach(b=>{b.classList.toggle('active',b.dataset.kind===kind);b.classList.toggle('hidden',b.dataset.kind!==kind)});if(!back)pushNav('staff-'+kind);const old=getPublished()[kind]||null;p.innerHTML=`<div class="staff-schedule-manager"><h3 style="color:var(--primary-color);margin-bottom:10px">${scheduleKindLabel(kind)}</h3><div class="form-group"><label>أنشئ جدولاً:</label><input id="newPublishedScheduleTitle" placeholder="عنوان الجدول"></div><div class="form-group"><button class="btn-save" style="width:100%;padding:11px" onclick="document.getElementById('publishedScheduleFile').click()">📁 رفع الجدول</button><input class="hidden" id="publishedScheduleFile" type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" data-kind="${kind}"><div id="publishedScheduleInfo" style="margin-top:7px;font-weight:bold;color:var(--secondary-color)"></div></div><div class="schedule-actions"><button data-kind="${kind}" onclick="previewStaffSchedule(this.dataset.kind)">👁️ فتح ومعاينة</button><button data-kind="${kind}" onclick="exportStaffSchedule(this.dataset.kind)">📥 تصدير كملف</button><button data-kind="${kind}" onclick="publishStaffSchedule(this.dataset.kind)">📢 انشر الجدول</button></div><div id="staffSchedulePreview">${old?scheduleViewHtml(old,kind):'<div class="schedule-empty">لم يتم إنشاء جدول بعد.</div>'}</div></div>`;document.getElementById('publishedScheduleFile').onchange=function(){handlePublishedScheduleFile(this,kind)}};window.openStaffScheduleManager=window.openArchiveScheduleManager;
-window.handlePublishedScheduleFile=function(input,kind){if(!input.files?.[0])return;const f=input.files[0],r=new FileReader();r.onload=e=>{tempPublishedSchedule={kind,title:document.getElementById('newPublishedScheduleTitle').value.trim()||scheduleKindLabel(kind),fileName:f.name,fileType:f.type.startsWith('image/')?'images':'files',fileUrl:e.target.result,isLink:false};document.getElementById('publishedScheduleInfo').textContent='✅ تم إرفاق: '+f.name};r.readAsDataURL(f)};
-window.previewStaffSchedule=function(kind){const x=getPublished()[kind]||tempPublishedSchedule;document.getElementById('staffSchedulePreview').innerHTML=x?scheduleViewHtml(x,kind):'<div class="schedule-empty">أرفق جدولاً أولاً.</div>'};
-window.publishStaffSchedule=function(kind){if(!tempPublishedSchedule||tempPublishedSchedule.kind!==kind){alert(getPublished()[kind]?'هذا الجدول منشور مسبقاً.':'أنشئ جدولاً وأرفقه أولاً.');return}const p=getPublished();p[kind]={...tempPublishedSchedule,publishedAt:new Date().toISOString()};savePublished(p);tempPublishedSchedule=null;alert('✅ تم نشر الجدول في صفحة الطالب.');openStaffScheduleManager(kind,true)};
-window.exportStaffSchedule=function(kind){const x=getPublished()[kind]||tempPublishedSchedule;if(!x){alert('لا يوجد جدول لتصديره.');return}const a=document.createElement('a');a.href=x.fileUrl;a.download=x.fileName||('جدول-'+kind);a.target='_blank';a.click()};
+window.renderStudentScheduleKind=function(kind){document.querySelectorAll('#studentHubSchedules .feature-sub-buttons button').forEach(b=>b.classList.toggle('active',b.dataset.kind===kind));document.getElementById('studentScheduleView').innerHTML=scheduleViewHtml(getPublished()[kind]||null,kind,true)};
+window.openSchedulePreview=function(kind){const x=getPublished()[kind]||tempPublishedSchedule;if(!x){alert('لا يوجد جدول لعرضه.');return}const old=document.getElementById('schedulePreviewModal');if(old)old.remove();const modal=document.createElement('div');modal.id='schedulePreviewModal';modal.className='activity-modal-overlay';let body='';if(x.fileType==='images'){body=`<img src="${x.fileUrl}" style="max-width:100%;max-height:75vh;object-fit:contain;border-radius:10px;display:block;margin:auto">`;}else if((x.fileName||'').toLowerCase().endsWith('.pdf') || String(x.fileUrl||'').startsWith('data:application/pdf')){body=`<iframe src="${x.fileUrl}" style="width:100%;height:70vh;border:0;border-radius:10px;background:#fff"></iframe>`;}else{body=`<div style="padding:20px;text-align:center"><p style="font-weight:900;margin-bottom:12px">${esc(x.fileName||'الجدول')}</p><button type="button" class="feature-primary" onclick="window.open(${JSON.stringify(x.fileUrl)},'_blank')">📂 فتح الملف</button></div>`;}modal.innerHTML=`<div class="activity-modal" style="max-width:900px;width:95%"><h3 style="text-align:center;color:var(--primary-color);margin-bottom:8px">${esc(x.title||scheduleKindLabel(kind))}</h3>${schedulePublishedDate(x)?`<div style="text-align:center;color:#666;font-weight:800;margin-bottom:10px">📅 تاريخ نشر الجدول: ${esc(schedulePublishedDate(x))}</div>`:''}<div>${body}</div><div class="feature-actions" style="margin-top:12px"><a class="feature-orange" href="${x.fileUrl}" download="${esc(x.fileName||('جدول-'+kind))}">💾 حفظ الجدول</a><button type="button" onclick="document.getElementById('schedulePreviewModal')?.remove()">✖ إغلاق</button></div></div>`;document.body.appendChild(modal)};
+window.toggleArchiveSchedulesMenu=function(){if(isStudentMode)return;switchArchiveTab('schedule')};window.openArchiveScheduleManager=function(kind,back){if(isStudentMode)return;const p=document.getElementById('archiveScheduleManagerPanel');if(!p)return;const sub=document.getElementById('archiveSchedulesSubButtons');if(sub)sub.classList.remove('hidden');document.querySelectorAll('#archiveSchedulesSubButtons button').forEach(b=>{b.classList.toggle('active',b.dataset.kind===kind);b.classList.toggle('hidden',b.dataset.kind!==kind)});if(!back)pushNav('staff-'+kind);const old=getPublished()[kind]||null;p.innerHTML=`<div class="staff-schedule-manager"><h3 style="color:var(--primary-color);margin-bottom:10px">${scheduleKindLabel(kind)}</h3><div class="form-group"><label>أنشئ جدولاً:</label><input id="newPublishedScheduleTitle" placeholder="عنوان الجدول"></div><div class="form-group"><button class="btn-save" style="width:100%;padding:11px" onclick="document.getElementById('publishedScheduleFile').click()">📁 رفع الجدول</button><input class="hidden" id="publishedScheduleFile" type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" data-kind="${kind}"><div id="publishedScheduleInfo" style="margin-top:7px;font-weight:bold;color:var(--secondary-color)"></div></div><div class="schedule-actions"><button data-kind="${kind}" onclick="previewStaffSchedule(this.dataset.kind)">👁️ فتح ومعاينة</button><button data-kind="${kind}" onclick="exportStaffSchedule(this.dataset.kind)">📥 تصدير كملف</button><button data-kind="${kind}" onclick="publishStaffSchedule(this.dataset.kind)">📢 انشر الجدول</button></div><div id="staffSchedulePreview">${old?scheduleViewHtml(old,kind,false):'<div class="schedule-empty">لم يتم إنشاء جدول بعد.</div>'}</div></div>`;document.getElementById('publishedScheduleFile').onchange=function(){handlePublishedScheduleFile(this,kind)}};window.openStaffScheduleManager=window.openArchiveScheduleManager;
+window.handlePublishedScheduleFile=function(input,kind){if(!input.files?.[0])return;const f=input.files[0],r=new FileReader();r.onload=e=>{tempPublishedSchedule={kind,title:document.getElementById('newPublishedScheduleTitle').value.trim()||scheduleKindLabel(kind),fileName:f.name,fileType:f.type.startsWith('image/')?'images':'files',fileUrl:e.target.result,isLink:false};document.getElementById('publishedScheduleInfo').textContent='✅ تم إرفاق: '+f.name;document.getElementById('staffSchedulePreview').innerHTML=scheduleViewHtml(tempPublishedSchedule,kind,false)};r.readAsDataURL(f)};
+window.previewStaffSchedule=function(kind){const x=tempPublishedSchedule&&tempPublishedSchedule.kind===kind?tempPublishedSchedule:getPublished()[kind]||null;if(!x){document.getElementById('staffSchedulePreview').innerHTML='<div class="schedule-empty">أرفق جدولاً أولاً.</div>';return}document.getElementById('staffSchedulePreview').innerHTML=scheduleViewHtml(x,kind,false);openSchedulePreview(kind)};
+window.publishStaffSchedule=function(kind){if(!tempPublishedSchedule||tempPublishedSchedule.kind!==kind){alert(getPublished()[kind]?'أرفق جدولاً جديداً أولاً.':'أنشئ جدولاً وأرفقه أولاً.');return}const p=getPublished(),old=p[kind]||null;const doPublish=()=>{p[kind]={...tempPublishedSchedule,publishedAt:new Date().toISOString()};savePublished(p);tempPublishedSchedule=null;alert('✅ تم نشر الجدول في صفحة الطالب.');openArchiveScheduleManager(kind,true)};if(old){const ok=confirm('يوجد جدول قديم منشور. هل تريد استبدال الجدول القديم بالجدول الجديد؟\n\nنعم = استبدال الجدول القديم\nلا = إلغاء النشر والإبقاء على الجدول القديم');if(!ok)return}doPublish()};
+window.exportStaffSchedule=function(kind){const x=tempPublishedSchedule&&tempPublishedSchedule.kind===kind?tempPublishedSchedule:getPublished()[kind]||null;if(!x){alert('لا يوجد جدول لتصديره.');return}const a=document.createElement('a');a.href=x.fileUrl;a.download=x.fileName||('جدول-'+kind);a.target='_blank';a.click()};
 function prepareBookKinds(){let a=getArchive(),changed=false;Object.keys(a.books||{}).forEach(g=>(a.books[g]||[]).forEach(x=>{if(!x.kind){x.kind='book';changed=true}}));if(changed)saveArchive(a)}prepareBookKinds();
 function populateGrades(){const s=document.getElementById('leaveStudentGradeSelect');if(s)s.innerHTML='<option value="">-- اختر الصف --</option>'+GRADES.map(g=>`<option value="${esc(g)}">${esc(g)}</option>`).join('')}
 window.openLeaveIdentityFlow=function(target){if(!isStudentMode)return;leaveTarget=target;document.getElementById('leaveRequestChooser').classList.add('hidden');document.getElementById('leaveIdentityFlow').classList.remove('hidden');document.getElementById('leaveIdentityTitle').textContent='طلب إجازة من '+(target==='manager'?'المدير':'المعاون');document.getElementById('leaveDetailsPanel').classList.add('hidden');document.getElementById('leaveIdentityStatus').textContent='';populateGrades();document.getElementById('leaveStudentNameSelect').innerHTML='<option value="">-- اختر اسمك الشخصي --</option>';stopLeaveCamera();pushNav('leave-'+target)};
@@ -9607,7 +9845,69 @@ const oldStudent=window.showMainPlatformForStudent,oldStaff=window.showMainPlatf
 window.showMainPlatformForStudent=function(){oldStudent();document.getElementById('studentNewHub').classList.remove('hidden');document.getElementById('staffNewHub').classList.add('hidden');document.getElementById('mainTabsContainer').classList.add('hidden');openStudentHub('books',true)};
 window.showMainPlatform=function(){oldStaff();document.getElementById('studentNewHub').classList.add('hidden');document.getElementById('staffNewHub').classList.add('hidden');document.getElementById('mainTabsContainer').classList.remove('hidden')};
 window.switchMainTab=function(name){if(isStudentMode&&name==='leaveRequest'){oldSwitch(name);document.getElementById('studentNewHub').classList.remove('hidden');showOnlyHubPanel(null);document.getElementById('tabContentLeaveRequest').classList.remove('hidden');document.querySelectorAll('.student-hub-btn').forEach((b,i)=>b.classList.toggle('active',i===2));return}oldSwitch(name)};
-window.addEventListener('popstate',function(){if(isStudentMode){const h=location.hash;if(h==='student-books'||h==='')openStudentHub('books',true);else if(h==='student-schedules')openStudentHub('schedules',true);else openStudentHub('leave',true)}else{const h=location.hash;const kind=h==='staff-midyear'?'midyear':h==='staff-final'?'final':'weekly';oldSwitch('archive');setTimeout(function(){openArchiveScheduleManager(kind,true)},0)}});
+window.addEventListener('popstate',function(){if(isStudentMode){const h=location.hash;if(h.indexOf('#leave-notifications')===0)return;if(h==='student-books'||h==='')openStudentHub('books',true);else if(h==='student-schedules')openStudentHub('schedules',true);else openStudentHub('leave',true)}else{const h=location.hash;if(h.indexOf('#leave-notifications')===0)return;const staffTab=document.getElementById('tabContentStaffAttendance');if(staffTab&&!staffTab.classList.contains('hidden')&&(h===''||h.indexOf('#staff-attendance-')===0)){if(typeof window.openStaffAttendanceChoice==='function'){const mode=h==='#staff-attendance-register'?'register':h==='#staff-attendance-attendance'?'attendance':h==='#staff-attendance-leave'?'leave':'choice';window.openStaffAttendanceChoice(mode,true)}return}const kind=h==='staff-midyear'?'midyear':h==='staff-final'?'final':'weekly';oldSwitch('archive');setTimeout(function(){openArchiveScheduleManager(kind,true)},0)}});
+})();
+</script>
+<style>.leave-notification-greeting{background:#f6fbf7;border:1px solid #dcefe1;border-radius:10px;padding:10px;margin-bottom:10px;line-height:1.8;font-weight:700}.leave-notification-section{margin:14px 0}.leave-notification-section h4{margin:0 0 8px;padding:10px 12px;border-radius:10px;background:#f3f7f4;color:var(--primary-color);font-weight:900}.leave-reject-box{margin-top:10px;padding:12px;border:1px solid #eee;border-radius:12px;background:#fff}.leave-reject-box textarea{width:100%;min-height:85px;resize:vertical}.leave-archive-meta{font-size:.82rem;color:#666}.leave-notification-head{position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:12px}.leave-notification-head h3{margin:0;color:var(--primary-color)}.leave-notification-close-x{position:absolute;left:0;top:0;width:38px;height:38px;border:0;border-radius:50%;background:#dc3545;color:#fff;font-size:1.2rem;font-weight:900;cursor:pointer}.leave-notification-choices{display:flex;flex-direction:column;gap:12px}.leave-notification-choices button{width:100%;padding:15px 12px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff;font-weight:900;font-size:1rem;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.1)}.leave-notification-hint{text-align:center;color:#777;font-weight:700;margin-top:12px}.leave-notification-section{margin:0}.leave-notification-section h4{margin-top:0}</style>
+<script>
+(function(){
+const K='SCHOOL_LEAVE_REQUESTS_V1';
+const names=['سعدون حزين فرحان','سفان محمد إبراهيم','أحمد عباس جمعه','احمد عباس جمعه'];
+const get=()=>{try{return JSON.parse(localStorage.getItem(K)||'[]')}catch(e){return[]}};
+const save=a=>localStorage.setItem(K,JSON.stringify(a));
+const me=()=>{let n=typeof cleanStaffName==='function'?cleanStaffName(currentUser.name):String(currentUser.name||'');return n.replace(/\s+/g,' ').trim()};
+const allowed=()=>!!currentUser&&!isStudentMode&&names.includes(me());
+const rec=r=>r.target==='manager'?'السيد المدير المحترم':'السيد المعاون المحترم';
+const isStaff=r=>!!r.staffName||r.requestType==='staff';
+window.lrUnread=()=>allowed()?get().filter(r=>r.status==='pending').length:0;
+window.lrRelevantPendingRequests=()=>allowed()?get().filter(r=>r.status==='pending'):[];
+window.lrFullText=r=>{const staff=isStaff(r),who=staff?'المدرس':'الطالب',name=r.staffName||r.studentName||'',to=rec(r);return '<div class="leave-notification-greeting">السلام عليكم ورحمة الله وبركاته،<br>إلى '+localLeaveEsc(to)+'،<br>أرجو التفضل بالنظر في هذا الطلب، مع خالص الاحترام والتقدير.</div><div><b>'+who+':</b> '+localLeaveEsc(name)+'</div>'+(staff?'':'<div><b>الصف:</b> '+localLeaveEsc(r.grade||'-')+(r.section?' — <b>الشعبة:</b> '+localLeaveEsc(r.section):'')+'</div>')+'<div><b>الجهة المرسل إليها:</b> '+localLeaveEsc(to)+'</div><div><b>اليوم:</b> '+localLeaveEsc(localLeaveDateLabel(r.day))+'</div><div><b>سبب الإجازة:</b> '+localLeaveEsc(r.reason)+'</div>'+(staff?'':'<div><b>هل لديه امتحان؟</b> '+(r.hasExam?'نعم':'لا')+(r.hasExam?' — <b>مادة الامتحان:</b> '+localLeaveEsc(r.examSubject):'')+'</div>')+(r.decisionReason?'<div><b>سبب الرفض:</b> '+localLeaveEsc(r.decisionReason)+'</div>':'')+'<div class="leave-archive-meta">أُرسل في '+localLeaveEsc(r.createdDate)+' — '+localLeaveEsc(r.createdTime)+'</div>'};
+function localLeaveEsc(v){const d=document.createElement('div');d.textContent=String(v??'');return d.innerHTML}function localLeaveNow(){const d=new Date();return {date:d.toLocaleDateString('ar-IQ'),time:d.toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit'})}}function localLeaveDateLabel(iso){if(!iso)return '';const d=new Date(iso+'T00:00:00');return d.toLocaleDateString('ar-IQ',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}window.previewStaffLeaveRequest=function(){const n=typeof currentUser!=='undefined'&&currentUser?cleanStaffName(currentUser.name):'',reason=document.getElementById('staffLeaveReason')?.value.trim()||'',day=(document.getElementById('staffLeaveDay')?.value==='custom'?(document.getElementById('staffLeaveCustomDay')?.value||''):(document.getElementById('staffLeaveDay')?.value||'')),target=document.getElementById('staffLeaveTarget')?.value||'manager';if(!n){alert('تعذر تحديد اسم المدرس من جلسة الدخول. يرجى تسجيل الدخول من جديد.');return}if(!reason||!day){alert('يرجى إكمال البيانات المطلوبة.');return}const d=new Date(day+'T00:00:00');if(isNaN(d.getTime())||d.getDay()===5||d.getDay()===6){alert('يمكن طلب الإجازة من يوم الأحد إلى يوم الخميس فقط.');return}const to=target==='manager'?'السيد المدير المحترم':'السيد المعاون المحترم',t=localLeaveNow();document.getElementById('staffLeavePreviewModal')?.remove();const m=document.createElement('div');m.id='staffLeavePreviewModal';m.className='activity-modal-overlay';m.style.setProperty('display','flex','important');m.innerHTML='<div class="staff-leave-preview-card" style="background:#fff;padding:22px;border-radius:16px;max-width:560px;width:100%;line-height:1.9"><h3 style="text-align:center;color:var(--primary-color)">🔎 معاينة طلب الإجازة</h3><div class="leave-notification-greeting">السلام عليكم ورحمة الله وبركاته،<br>إلى '+to+'،<br>أرجو التفضل بالنظر في طلب إجازتي، مع خالص الاحترام والتقدير.</div><div><b>اسم المدرس:</b> '+localLeaveEsc(n)+'</div><div><b>الجهة المرسل إليها:</b> '+localLeaveEsc(to)+'</div><div><b>سبب الإجازة:</b> '+localLeaveEsc(reason)+'</div><div><b>تاريخ الإجازة:</b> '+localLeaveEsc(localLeaveDateLabel(day))+'</div><div><b>التاريخ والوقت:</b> '+localLeaveEsc(t.date)+' — '+localLeaveEsc(t.time)+'</div><div style="display:flex;gap:8px;margin-top:16px"><button type="button" class="sa-btn sa-btn-success" style="flex:1" onclick="confirmStaffLeaveRequest()">✅ تأكيد الإرسال</button><button type="button" class="sa-btn sa-btn-secondary" style="flex:1" onclick="document.getElementById(\'staffLeavePreviewModal\').remove()">↩ تعديل</button></div></div>';document.body.appendChild(m)};
+window.confirmStaffLeaveRequest=function(){const n=typeof currentUser!=='undefined'&&currentUser?cleanStaffName(currentUser.name):'',reason=document.getElementById('staffLeaveReason')?.value.trim()||'',day=(document.getElementById('staffLeaveDay')?.value==='custom'?(document.getElementById('staffLeaveCustomDay')?.value||''):(document.getElementById('staffLeaveDay')?.value||'')),target=document.getElementById('staffLeaveTarget')?.value||'manager';if(!n||!reason||!day)return;const d=new Date(day+'T00:00:00');if(isNaN(d.getTime())||d.getDay()===5||d.getDay()===6){alert('يمكن طلب الإجازة من يوم الأحد إلى يوم الخميس فقط.');return}const t=localLeaveNow(),a=get();a.unshift({id:'SLR_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),staffName:n,requestType:'staff',studentName:n,grade:'',section:'',target,reason,day,hasExam:false,examSubject:'',status:'pending',createdDate:t.date,createdTime:t.time,decisionBy:'',decisionDate:'',decisionTime:'',decisionReason:''});save(a);document.getElementById('staffLeavePreviewModal')?.remove();document.getElementById('staffLeaveReason').value='';if(typeof updateLeaveNotificationMenu==='function')updateLeaveNotificationMenu();alert('✅ تم إرسال طلب الإجازة إلى '+(target==='manager'?'المدير':'المعاون')+'.')};
+let leaveNotificationView='chooser';
+let leaveNotificationPreviousUrl='';
+function renderLeaveNotificationView(view,back){
+ const modal=document.getElementById('leaveNotificationsModal'),list=document.getElementById('leaveNotificationsList');
+ if(!modal||!list||!allowed())return;
+ leaveNotificationView=view||'chooser';
+ if(!back){if(leaveNotificationView==='chooser')leaveNotificationPreviousUrl=location.href;history.pushState({leaveNotifications:leaveNotificationView},'', '#leave-notifications'+(leaveNotificationView==='chooser'?'':'-'+leaveNotificationView));}
+ const a=get(),pending=a.filter(r=>r.status==='pending'),archive=a.filter(r=>r.status==='approved'||r.status==='rejected'),m=me(),manager=m==='سعدون حزين فرحان',assistant=m==='سفان محمد إبراهيم';
+ const card=r=>{const can=r.status==='pending'&&((r.target==='manager'&&manager)||(r.target==='assistant'&&assistant));const status=r.status==='approved'?'<span class="leave-status-approved">تمت الموافقة</span>':r.status==='rejected'?'<span class="leave-status-rejected">تم الرفض</span>':'<b>بانتظار القرار</b>';const actions=can?'<div class="leave-notification-actions"><button class="leave-approve" onclick="decideLeaveRequest(\''+r.id+'\',\'approved\')">موافقة</button><button class="leave-reject" onclick="decideLeaveRequest(\''+r.id+'\',\'rejected\')">رفض</button></div>':'';return '<div class="leave-notification-card '+(r.status==='approved'?'approved':r.status==='rejected'?'rejected':'pending')+'">'+(r.identityPhoto&&!isStaff(r)?'<img src="'+r.identityPhoto+'" style="width:120px;height:120px;object-fit:cover;border-radius:10px;display:block;margin:0 auto 10px;border:2px solid #ddd">':'')+lrFullText(r)+'<div style="margin-top:6px"><b>الحالة:</b> '+status+(r.decisionBy?' — '+localLeaveEsc(r.decisionBy):'')+'</div>'+(r.decisionDate?'<div class="leave-archive-meta">تم اتخاذ القرار: '+localLeaveEsc(r.decisionDate)+' — '+localLeaveEsc(r.decisionTime)+'</div>':'')+actions+'</div>'};
+ const ps=pending.filter(isStaff),pu=pending.filter(r=>!isStaff(r));
+ const content=view==='staff'?'<div class="leave-notification-section"><h4>👨‍🏫 طلبات إجازة الكادر</h4>'+(ps.length?ps.map(card).join(''):'<div class="leave-status-card">لا توجد طلبات إجازة كادر معلقة.</div>')+'</div>':view==='students'?'<div class="leave-notification-section"><h4>🎓 طلبات إجازة الطلاب</h4>'+(pu.length?pu.map(card).join(''):'<div class="leave-status-card">لا توجد طلبات إجازة طلاب معلقة.</div>')+'</div>':view==='archive'?'<div class="leave-notification-section"><h4>🗂️ أرشيف الإشعارات</h4>'+(archive.length?archive.map(card).join(''):'<div class="leave-status-card">لا يوجد أرشيف للطلبات حتى الآن.</div>')+'</div>':'<div class="leave-notification-choices"><button type="button" onclick="openLeaveNotificationSection(\'staff\')">👨‍🏫 طلبات إجازة الكادر</button><button type="button" onclick="openLeaveNotificationSection(\'students\')">🎓 طلبات إجازة الطلاب</button><button type="button" onclick="openLeaveNotificationSection(\'archive\')">🗂️ أرشيف الإشعارات</button></div><div class="leave-notification-hint">اختر القسم لعرض محتواه.</div>';
+ list.innerHTML='<div class="leave-notification-head"><button type="button" class="leave-notification-close-x" aria-label="إغلاق" onclick="closeLeaveNotifications()">✕</button><h3>🔔 إشعارات طلبات الإجازة</h3></div>'+content;
+ modal.classList.remove('hidden');modal.style.setProperty('display','flex','important');updateLeaveNotificationMenu();
+}
+window.openLeaveNotificationSection=function(view){if(!allowed())return;renderLeaveNotificationView(view,false)};
+window.openLeaveNotifications=function(){if(!allowed())return;renderLeaveNotificationView('chooser',false)};
+window.closeLeaveNotifications=function(fromBack){const modal=document.getElementById('leaveNotificationsModal');if(modal){modal.classList.add('hidden');modal.style.setProperty('display','none','important')}leaveNotificationView='chooser';updateLeaveNotificationMenu();if(!fromBack&&location.hash.indexOf('#leave-notifications')===0){const prev=leaveNotificationPreviousUrl;leaveNotificationPreviousUrl='';if(prev){history.replaceState(history.state,'',prev)}else{history.back()}}};
+window.addEventListener('popstate',function(){if(location.hash.indexOf('#leave-notifications')!==0)return;if(!allowed()){return}if(location.hash==='#leave-notifications-staff'){renderLeaveNotificationView('staff',true)}else if(location.hash==='#leave-notifications-students'){renderLeaveNotificationView('students',true)}else if(location.hash==='#leave-notifications-archive'){renderLeaveNotificationView('archive',true)}else{renderLeaveNotificationView('chooser',true)}});
+window.decideLeaveRequest=function(id,status){if(!allowed())return;const a=get(),r=a.find(x=>x.id===id);if(!r||r.status!=='pending')return;const m=me(),can=(r.target==='manager'&&m==='سعدون حزين فرحان')||(r.target==='assistant'&&m==='سفان محمد إبراهيم');if(!can)return;if(status==='rejected'){document.getElementById('leaveRejectReasonModal')?.remove();const x=document.createElement('div');x.id='leaveRejectReasonModal';x.className='activity-modal-overlay';x.innerHTML='<div class="activity-modal" style="max-width:500px"><h3 style="text-align:center;color:#dc3545">❌ رفض طلب الإجازة</h3><p>سبب الرفض <span style="color:#777">(اختياري)</span></p><div class="leave-reject-box"><textarea id="leaveRejectReasonInput" placeholder="يمكن كتابة سبب الرفض هنا..."></textarea></div><div class="feature-actions"><button class="feature-primary" style="background:#dc3545" onclick="confirmRejectLeaveRequest(\''+id+'\')">تأكيد الرفض</button><button onclick="document.getElementById(\'leaveRejectReasonModal\').remove()">إلغاء</button></div></div>';document.body.appendChild(x);return}r.status='approved';r.decisionBy=m;const t=localLeaveNow();r.decisionDate=t.date;r.decisionTime=t.time;r.decisionReason='';save(a);openLeaveNotifications();updateLeaveNotificationMenu()};
+window.confirmRejectLeaveRequest=function(id){if(!allowed())return;const a=get(),r=a.find(x=>x.id===id);if(!r||r.status!=='pending')return;const m=me(),can=(r.target==='manager'&&m==='سعدون حزين فرحان')||(r.target==='assistant'&&m==='سفان محمد إبراهيم');if(!can)return;r.status='rejected';r.decisionBy=m;r.decisionReason=document.getElementById('leaveRejectReasonInput')?.value.trim()||'';const t=localLeaveNow();r.decisionDate=t.date;r.decisionTime=t.time;save(a);document.getElementById('leaveRejectReasonModal')?.remove();openLeaveNotifications();updateLeaveNotificationMenu()};
+})();
+</script>
+<script>
+(function(){
+'use strict';
+const choice=document.getElementById('staffAttendanceChoice');
+const registerPanel=document.getElementById('staffFaceManagementPanel');
+const attendancePanel=document.getElementById('staffAttendancePanel');
+const leavePanel=document.getElementById('staffLeaveRequestPanel');
+const locationCard=document.getElementById('staffSchoolLocationCard');
+const todayPanel=document.getElementById('staffTodayAttendancePanel');
+const registerBtn=document.getElementById('staffRegisterFaceBtn');
+const attendanceBtn=document.getElementById('staffTakeAttendanceBtn');
+const leaveBtn=document.getElementById('staffLeaveRequestBtn');
+const hidePanels=()=>{if(registerPanel)registerPanel.classList.add('hidden');if(attendancePanel)attendancePanel.classList.add('hidden');if(leavePanel)leavePanel.classList.add('hidden');if(locationCard)locationCard.classList.add('hidden')};
+const showChoice=()=>{if(choice)choice.classList.remove('hidden');hidePanels();if(todayPanel)todayPanel.classList.remove('hidden')};
+const enter=(mode,back)=>{if(choice)choice.classList.add('hidden');hidePanels();if(todayPanel)todayPanel.classList.add('hidden');if(mode==='register'&&registerPanel)registerPanel.classList.remove('hidden');if(mode==='attendance'&&attendancePanel){attendancePanel.classList.remove('hidden');if(locationCard)locationCard.classList.remove('hidden')}if(mode==='leave'&&leavePanel)leavePanel.classList.remove('hidden');if(!back)history.pushState({staffAttendanceChoice:mode},'', '#staff-attendance-'+mode)};
+if(registerBtn)registerBtn.addEventListener('click',()=>enter('register',false));
+if(attendanceBtn)attendanceBtn.addEventListener('click',()=>enter('attendance',false));
+if(leaveBtn)leaveBtn.addEventListener('click',()=>enter('leave',false));
+const oldInit=window.__initStaffAttendanceOnOpen;
+window.__initStaffAttendanceOnOpen=function(){if(typeof oldInit==='function')oldInit();showChoice()};
+window.openStaffAttendanceChoice=function(mode,back){if(mode==='choice')showChoice();else enter(mode,back)};
+window.addEventListener('popstate',function(){if(!currentUser||isStudentMode)return;const h=location.hash||'';if(h.indexOf('#leave-notifications')===0)return;if(h==='#staff-attendance-register'){enter('register',true)}else if(h==='#staff-attendance-attendance'){enter('attendance',true)}else if(h==='#staff-attendance-leave'){enter('leave',true)}else if(document.getElementById('tabContentStaffAttendance')&&!document.getElementById('tabContentStaffAttendance').classList.contains('hidden')){showChoice()}});
 })();
 </script>
 </body>
