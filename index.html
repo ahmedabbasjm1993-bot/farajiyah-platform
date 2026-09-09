@@ -2305,6 +2305,7 @@
   ]);
   let db=null, ready=false, applyingRemote=false, reloadTimer=null;
   const pendingCloudWrites=new Map();
+  const pendingTickerOperations=[];
   const originalSet=Storage.prototype.setItem;
   const originalRemove=Storage.prototype.removeItem;
   function scheduleReload(){
@@ -2329,12 +2330,70 @@
   }
   Storage.prototype.setItem=function(key,value){
     originalSet.call(this,key,value);
-    if(this===localStorage&&!applyingRemote&&validKey(key))cloudWrite(key,String(value));
+    if(this===localStorage&&!applyingRemote&&validKey(key)){
+      if(String(key)==='SCHOOL_PLATFORM_TICKER_V1'&&window.__skipTickerAutoCloudOnce){
+        window.__skipTickerAutoCloudOnce=false;
+        return;
+      }
+      cloudWrite(key,String(value));
+    }
   };
   Storage.prototype.removeItem=function(key){
     originalRemove.call(this,key);
     if(this===localStorage&&!applyingRemote&&validKey(key))cloudWrite(key,null);
   };
+  function parseTickerCloudValue(item){
+    try{
+      const raw=item&&Object.prototype.hasOwnProperty.call(item,'value')?item.value:item;
+      return JSON.parse(String(raw||'{}'));
+    }catch(e){return {};}
+  }
+  function normalizeTickerCloudData(data){
+    const staff=Array.isArray(data&&data.staff)?data.staff.map(x=>String(x||'').trim()).filter(Boolean):[];
+    const student=Array.isArray(data&&data.student)?data.student.map(x=>String(x||'').trim()).filter(Boolean):[];
+    return {staff,student};
+  }
+  async function applyTickerOperation(op){
+    if(!db||!ready){pendingTickerOperations.push(op);return;}
+    try{
+      const ref=cloudRef('SCHOOL_PLATFORM_TICKER_V1');
+      let resultData=null;
+      await ref.transaction(current=>{
+        let data=normalizeTickerCloudData(parseTickerCloudValue(current));
+        const type=op.type==='student'?'student':'staff';
+        const list=data[type];
+        if(op.action==='add'){
+          const value=String(op.value||'').trim();
+          if(value&&!list.includes(value)) list.push(value);
+        }else if(op.action==='edit'){
+          const oldText=String(op.oldText||'');
+          const newText=String(op.newText||'').trim();
+          const idx=list.indexOf(oldText);
+          if(idx>=0&&newText) list[idx]=newText;
+        }else if(op.action==='delete'){
+          const idx=list.indexOf(String(op.oldText||''));
+          if(idx>=0) list.splice(idx,1);
+        }else if(op.action==='move'){
+          const idx=list.indexOf(String(op.text||''));
+          const target=idx+Number(op.direction||0);
+          if(idx>=0&&target>=0&&target<list.length){
+            const moved=list.splice(idx,1)[0];
+            list.splice(target,0,moved);
+          }
+        }
+        resultData=data;
+        return {value:JSON.stringify(data),updatedAt:firebase.database.ServerValue.TIMESTAMP};
+      });
+      if(resultData){
+        applyingRemote=true;
+        try{originalSet.call(localStorage,'SCHOOL_PLATFORM_TICKER_V1',JSON.stringify(resultData));}finally{applyingRemote=false;}
+        if(typeof window.updatePlatformTicker==='function')window.updatePlatformTicker();
+        if(typeof window.renderPlatformTickerSettings==='function')window.renderPlatformTickerSettings();
+      }
+    }catch(e){console.error('Ticker operation sync failed',e);}
+  }
+  window.schoolCloudApplyTickerOperation=applyTickerOperation;
+
   async function initCloud(){
     if(!configured){window.schoolCloudStatus='not-configured';return;}
     try{
@@ -2348,6 +2407,10 @@
         const queued=[...pendingCloudWrites.entries()];
         pendingCloudWrites.clear();
         for(const [key,value] of queued) await cloudWrite(key,value);
+      }
+      if(pendingTickerOperations.length){
+        const queuedTicker=pendingTickerOperations.splice(0,pendingTickerOperations.length);
+        for(const op of queuedTicker) await applyTickerOperation(op);
       }
       const root=db.ref('schoolPlatformState');
       const snap=await root.once('value');
@@ -3432,14 +3495,26 @@
             return d.innerHTML;
         }
 
+        function queueTickerCloudOperation(op) {
+            window.__skipTickerAutoCloudOnce = true;
+            if (typeof window.schoolCloudApplyTickerOperation === 'function') {
+                window.schoolCloudApplyTickerOperation(op);
+            }
+        }
+
         function addPlatformTickerText(type) {
             type = type === 'student' ? 'student' : 'staff';
             const input = document.getElementById(type === 'student' ? 'tickerStudentNewText' : 'tickerStaffNewText');
             const value = String(input?.value || '').trim();
             if (!value) { alert('يرجى كتابة النص أولاً.'); return; }
             const data = getPlatformTickerData();
+            if (data[type].includes(value)) { alert('هذا النص موجود مسبقاً.'); return; }
             data[type].push(value);
-            savePlatformTickerData(data);
+            window.__skipTickerAutoCloudOnce = true;
+            localStorage.setItem(PLATFORM_TICKER_KEY, JSON.stringify(data));
+            updatePlatformTicker();
+            renderPlatformTickerSettings();
+            queueTickerCloudOperation({action:'add',type,value});
             if (input) input.value = '';
         }
 
@@ -3448,12 +3523,17 @@
             const data = getPlatformTickerData();
             const texts = data[type];
             if (index < 0 || index >= texts.length) return;
-            const value = prompt('تعديل النص:', texts[index]);
+            const oldText = texts[index];
+            const value = prompt('تعديل النص:', oldText);
             if (value === null) return;
             const clean = String(value).trim();
             if (!clean) { alert('لا يمكن حفظ نص فارغ.'); return; }
             texts[index] = clean;
-            savePlatformTickerData(data);
+            window.__skipTickerAutoCloudOnce = true;
+            localStorage.setItem(PLATFORM_TICKER_KEY, JSON.stringify(data));
+            updatePlatformTicker();
+            renderPlatformTickerSettings();
+            queueTickerCloudOperation({action:'edit',type,oldText,newText:clean});
         }
 
         function deletePlatformTickerText(type, index) {
@@ -3462,8 +3542,13 @@
             const texts = data[type];
             if (index < 0 || index >= texts.length) return;
             if (!confirm('هل أنت متأكد من حذف هذا النص من الشريط المتحرك؟')) return;
+            const oldText = texts[index];
             texts.splice(index, 1);
-            savePlatformTickerData(data);
+            window.__skipTickerAutoCloudOnce = true;
+            localStorage.setItem(PLATFORM_TICKER_KEY, JSON.stringify(data));
+            updatePlatformTicker();
+            renderPlatformTickerSettings();
+            queueTickerCloudOperation({action:'delete',type,oldText});
         }
 
         function movePlatformTickerText(type, index, direction) {
@@ -3472,8 +3557,13 @@
             const texts = data[type];
             const target = index + direction;
             if (index < 0 || index >= texts.length || target < 0 || target >= texts.length) return;
+            const text = texts[index];
             [texts[index], texts[target]] = [texts[target], texts[index]];
-            savePlatformTickerData(data);
+            window.__skipTickerAutoCloudOnce = true;
+            localStorage.setItem(PLATFORM_TICKER_KEY, JSON.stringify(data));
+            updatePlatformTicker();
+            renderPlatformTickerSettings();
+            queueTickerCloudOperation({action:'move',type,text,direction});
         }
 
         let tickerDragType = null;
