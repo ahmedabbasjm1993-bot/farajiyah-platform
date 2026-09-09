@@ -10110,10 +10110,11 @@ function lrPopulateDays(){
  base.setHours(0,0,0,0);
  const localIso=d=>{const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+day};
  let added=0, offset=0;
- while(added<5){
+ while(added<5 && offset<20){
   const d=new Date(base);
   d.setDate(base.getDate()+offset++);
   const dow=d.getDay();
+  // الجمعة = 5، السبت = 6: لا يضاف أي منهما إلى القائمة.
   if(dow===5 || dow===6) continue;
   const o=document.createElement('option');
   o.value=localIso(d);
@@ -10123,13 +10124,14 @@ function lrPopulateDays(){
   added++;
  }
  s.disabled=false;
- s.selectedIndex=0;
+ s.selectedIndex=s.options.length?0:-1;
 }
 window.lrPopulateDays=lrPopulateDays;
 function getStudentLeaveDay(){
  const select=document.getElementById('leaveDaySelect');
  return select ? String(select.value||'') : '';
 }
+window.getStudentLeaveDay=getStudentLeaveDay;
 
 window.openLeaveForm=function(target){if(!isStudentMode||!currentUser)return;document.getElementById('leaveRequestChooser').classList.add('hidden');document.getElementById('leaveRequestForm').classList.remove('hidden');document.getElementById('leaveFormTitle').textContent='طلب إجازة من '+(target==='manager'?'المدير':'المعاون');document.getElementById('leaveRequestForm').dataset.target=target;document.getElementById('leaveReason').value='';document.getElementById('leaveHasExam').value='no';document.getElementById('leaveExamSubjectBox').classList.add('hidden');lrPopulateDays();}
 window.backToLeaveChooser=function(){document.getElementById('leaveRequestForm').classList.add('hidden');document.getElementById('leaveRequestChooser').classList.remove('hidden')}
