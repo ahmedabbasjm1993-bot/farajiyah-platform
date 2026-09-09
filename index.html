@@ -10105,23 +10105,20 @@ function lrDateLabel(iso){if(!iso)return '';const p=String(iso).split('-').map(N
 function lrPopulateDays(){
  const s=document.getElementById('leaveDaySelect');
  if(!s)return;
- s.innerHTML='<option value="">-- اختر اليوم والتاريخ --</option>';
+ s.innerHTML='';
  const base=new Date();
  base.setHours(0,0,0,0);
  const localIso=d=>{const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+day};
- let added=0;
- for(let i=0;i<14&&added<5;i++){
+ for(let i=0;i<5;i++){
   const d=new Date(base);
   d.setDate(base.getDate()+i);
-  const dayOfWeek=d.getDay();
-  if(dayOfWeek===5||dayOfWeek===6)continue;
   const iso=localIso(d);
   const o=document.createElement('option');
   o.value=iso;
   o.textContent=d.toLocaleDateString('ar-IQ',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   s.appendChild(o);
-  added++;
  }
+ s.selectedIndex=0;
 }
 function getStudentLeaveDay(){
  const select=document.getElementById('leaveDaySelect');
@@ -10140,7 +10137,10 @@ async function lrNotifyRecipient(req){try{const title='📝 طلب إجازة ج
 function lrIsRecipient(){return !!currentUser&&LR_NOTIFICATION_NAMES.includes(cleanStaffName(currentUser.name))&&!isStudentMode}
 function lrUnread(){if(!lrIsRecipient())return 0;const me=cleanStaffName(currentUser.name);return lrGet(LR_KEY,[]).filter(r=>r.status==='pending'&&((r.target==='manager'&&me===LR_APPROVERS.manager)||(r.target==='assistant'&&me===LR_APPROVERS.assistant)||(![LR_APPROVERS.manager,LR_APPROVERS.assistant].includes(me)&&LR_NOTIFICATION_NAMES.includes(me)))).length}
 window.updateLeaveNotificationMenu=function(){const item=document.getElementById('leaveNotificationsMenuItem');const badge=document.getElementById('leaveNotificationBadge');const topBadge=document.getElementById('topLeaveNotificationBadge');if(!item||!badge)return;const show=lrIsRecipient();item.classList.toggle('hidden',!show);const n=lrUnread();badge.textContent=n;badge.classList.toggle('hidden',n===0);if(topBadge){topBadge.textContent=n;topBadge.classList.toggle('hidden',!show||n===0)}if(n>0)item.classList.add('leave-notification-menu-dot');else item.classList.remove('leave-notification-menu-dot')}
-function lrFullText(r){const photo=r.identityPhoto ? `<div style="text-align:center;margin:0 0 12px;"><img src="${lrEsc(r.identityPhoto)}" alt="صورة الطالب" style="width:140px;height:140px;object-fit:cover;border-radius:12px;border:2px solid #ddd;display:inline-block;"></div>` : '';return photo+`<div><b>الطالب:</b> ${lrEsc(r.studentName)}</div><div><b>الصف:</b> ${lrEsc(r.grade||'-')}${r.section?' — <b>الشعبة:</b> '+lrEsc(r.section):''}</div><div><b>اليوم:</b> ${lrEsc(lrDateLabel(r.day))}</div><div><b>سبب الإجازة:</b> ${lrEsc(r.reason)}</div><div><b>هل لديه امتحان؟</b> ${r.hasExam?'نعم':'لا'}${r.hasExam?' — <b>مادة الامتحان:</b> '+lrEsc(r.examSubject):''}</div><div style="font-size:.8rem;color:#666;margin-top:5px;">أُرسل في ${lrEsc(r.createdDate)} — ${lrEsc(r.createdTime)}</div>`}
+function lrFullText(r){
+ const photo=r.identityPhoto?`<div style="text-align:center;margin:0 0 12px;"><img src="${lrEsc(r.identityPhoto)}" alt="صورة الطالب" style="width:140px;height:140px;object-fit:cover;border-radius:12px;border:2px solid #ddd;display:inline-block;"></div>`:'';
+ return photo+`<div><b>الطالب:</b> ${lrEsc(r.studentName)}</div><div><b>الصف:</b> ${lrEsc(r.grade||'-')}${r.section?` — <b>الشعبة:</b> ${lrEsc(r.section)}`:''}</div><div><b>اليوم:</b> ${lrEsc(lrDateLabel(r.day))}</div><div><b>سبب الإجازة:</b> ${lrEsc(r.reason)}</div><div><b>هل لديه امتحان؟</b> ${r.hasExam?'نعم':'لا'}${r.hasExam?` — <b>مادة الامتحان:</b> ${lrEsc(r.examSubject)}`:''}</div><div style="font-size:.8rem;color:#666;margin-top:5px;">أُرسل في ${lrEsc(r.createdDate)} — ${lrEsc(r.createdTime)}</div>`;
+}
 window.openLeaveNotifications=function(){const modal=document.getElementById('leaveNotificationsModal');const list=document.getElementById('leaveNotificationsList');if(!modal||!list)return;if(typeof currentUser==='undefined'||!currentUser||typeof isStudentMode==='undefined'||isStudentMode){return;}const all=lrGet(LR_KEY,[]);const me=cleanStaffName(currentUser.name);const isApprover=me===LR_APPROVERS.manager||me===LR_APPROVERS.assistant;const mine=isApprover?all.filter(r=>(r.target==='manager'&&me===LR_APPROVERS.manager)||(r.target==='assistant'&&me===LR_APPROVERS.assistant)):all.filter(r=>r.status==='pending');if(!mine.length)list.innerHTML='<div class="leave-status-card">لا توجد إشعارات حالياً.</div>';else list.innerHTML=mine.map(r=>{const cls=r.status==='approved'?'approved':r.status==='rejected'?'rejected':'pending';const status=r.status==='approved'?'<span class="leave-status-approved">تمت الموافقة</span>':r.status==='rejected'?'<span class="leave-status-rejected">غير موافق</span>':'<b>بانتظار القرار</b>';const canDecide=r.status==='pending'&&((r.target==='manager'&&me===LR_APPROVERS.manager)||(r.target==='assistant'&&me===LR_APPROVERS.assistant));const actions=canDecide?'<div class="leave-notification-actions"><button class="leave-approve" onclick="decideLeaveRequest(&quot;'+r.id+'&quot;,&quot;approved&quot;)">موافق</button><button class="leave-reject" onclick="decideLeaveRequest(&quot;'+r.id+'&quot;,&quot;rejected&quot;)">غير موافق</button></div>':'';return '<div class="leave-notification-card '+cls+'">'+lrFullText(r)+'<div style="margin-top:6px;">الحالة: '+status+'</div>'+actions+'</div>'}).join('');modal.classList.remove('hidden');modal.style.setProperty('display','flex','important');updateLeaveNotificationMenu()}
 window.closeLeaveNotifications=function(){const modal=document.getElementById('leaveNotificationsModal');if(modal){modal.classList.add('hidden');modal.style.setProperty('display','none','important')}updateLeaveNotificationMenu()}
 window.clearLeaveNotifications=function(){const all=lrGet(LR_KEY,[]);const mine=all.filter(r=>(r.target==='manager'&&cleanStaffName(currentUser.name)===LR_APPROVERS.manager)||(r.target==='assistant'&&cleanStaffName(currentUser.name)===LR_APPROVERS.assistant)).map(r=>r.id);const read=new Set(lrGet(LR_READ_KEY,[]));const next=mine.filter(id=>read.has(id));lrSave(LR_READ_KEY,[...read].filter(id=>!mine.includes(id)).concat(next));openLeaveNotifications()}
@@ -10307,6 +10307,7 @@ const oldStudent=window.showMainPlatformForStudent,oldStaff=window.showMainPlatf
 window.showMainPlatformForStudent=function(){oldStudent();document.getElementById('studentNewHub').classList.remove('hidden');document.getElementById('staffNewHub').classList.add('hidden');document.getElementById('mainTabsContainer').classList.add('hidden');openStudentHub('books',true)};
 window.showMainPlatform=function(){oldStaff();document.getElementById('studentNewHub').classList.add('hidden');document.getElementById('staffNewHub').classList.add('hidden');document.getElementById('mainTabsContainer').classList.remove('hidden')};
 window.switchMainTab=function(name){if(isStudentMode&&name==='leaveRequest'){oldSwitch(name);document.getElementById('studentNewHub').classList.remove('hidden');showOnlyHubPanel(null);document.getElementById('tabContentLeaveRequest').classList.remove('hidden');document.querySelectorAll('.student-hub-btn').forEach((b,i)=>b.classList.toggle('active',i===2));return}oldSwitch(name)};
+document.addEventListener('DOMContentLoaded',function(){try{lrPopulateDays()}catch(e){console.error('Leave date list init failed',e)}});
 window.addEventListener('popstate',function(){if(isStudentMode){const h=location.hash;if(h.indexOf('#leave-notifications')===0)return;if(h==='student-books'||h==='')openStudentHub('books',true);else if(h==='student-schedules')openStudentHub('schedules',true);else openStudentHub('leave',true)}else{const h=location.hash;if(h.indexOf('#leave-notifications')===0)return;const staffTab=document.getElementById('tabContentStaffAttendance');if(staffTab&&!staffTab.classList.contains('hidden')&&(h===''||h.indexOf('#staff-attendance-')===0)){if(typeof window.openStaffAttendanceChoice==='function'){const mode=h==='#staff-attendance-register'?'register':h==='#staff-attendance-attendance'?'attendance':h==='#staff-attendance-leave'?'leave':'choice';window.openStaffAttendanceChoice(mode,true)}return}const kind=h==='staff-midyear'?'midyear':h==='staff-final'?'final':'weekly';oldSwitch('archive');setTimeout(function(){openArchiveScheduleManager(kind,true)},0)}});
 })();
 </script>
