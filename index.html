@@ -2379,6 +2379,10 @@
           if(k==='SCHOOL_LEAVE_REQUESTS_V1' && typeof window.__schoolLeaveCloudChanged==='function'){
             try{window.__schoolLeaveCloudChanged(remote);}catch(e){console.error('Leave notification dispatch failed',e);}
           }
+          /* تحديث الشريط المتحرك فوراً على جميع الأجهزة عند وصول النص المنشور من السحابة. */
+          if(k==='SCHOOL_PLATFORM_TICKER_V1' && typeof window.updatePlatformTicker==='function'){
+            try{window.updatePlatformTicker();}catch(e){console.error('Ticker cloud update failed',e);}
+          }
           scheduleReload();
         },e=>console.error('Realtime Database listener failed',k,e));
       }
@@ -3504,6 +3508,7 @@
             tickerDragIndex = -1;
         }
 
+        window.updatePlatformTicker = updatePlatformTicker;
         window.renderPlatformTickerSettings = renderPlatformTickerSettings;
         window.addPlatformTickerText = addPlatformTickerText;
         window.editPlatformTickerText = editPlatformTickerText;
