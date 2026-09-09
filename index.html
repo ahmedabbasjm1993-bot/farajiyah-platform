@@ -10109,13 +10109,18 @@ function lrPopulateDays(){
  const base=new Date();
  base.setHours(0,0,0,0);
  const localIso=d=>{const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+day};
- for(let i=0;i<5;i++){
+ let added=0, offset=0;
+ while(added<5){
   const d=new Date(base);
-  d.setDate(base.getDate()+i);
+  d.setDate(base.getDate()+offset++);
+  const dow=d.getDay();
+  if(dow===5 || dow===6) continue;
   const o=document.createElement('option');
   o.value=localIso(d);
-  o.textContent=(i===0?'اليوم — ':i===1?'غداً — ':'')+d.toLocaleDateString('ar-IQ',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const prefix=added===0?'اليوم — ':added===1?'غداً — ':'';
+  o.textContent=prefix+d.toLocaleDateString('ar-IQ',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   s.appendChild(o);
+  added++;
  }
  s.disabled=false;
  s.selectedIndex=0;
@@ -10294,7 +10299,7 @@ window.publishStaffSchedule=function(kind){if(!tempPublishedSchedule||tempPublis
 window.exportStaffSchedule=function(kind){const x=tempPublishedSchedule&&tempPublishedSchedule.kind===kind?tempPublishedSchedule:getPublished()[kind]||null;if(!x){alert('لا يوجد جدول لتصديره.');return}const a=document.createElement('a');a.href=x.fileUrl;a.download=x.fileName||('جدول-'+kind);a.target='_blank';a.click()};
 function prepareBookKinds(){let a=getArchive(),changed=false;Object.keys(a.books||{}).forEach(g=>(a.books[g]||[]).forEach(x=>{if(!x.kind){x.kind='book';changed=true}}));if(changed)saveArchive(a)}prepareBookKinds();
 function populateGrades(){const s=document.getElementById('leaveStudentGradeSelect');if(s)s.innerHTML='<option value="">-- اختر الصف --</option>'+GRADES.map(g=>`<option value="${esc(g)}">${esc(g)}</option>`).join('')}
-window.openLeaveIdentityFlow=function(target){if(!isStudentMode)return;leaveTarget=target;document.getElementById('leaveRequestChooser').classList.add('hidden');document.getElementById('leaveIdentityFlow').classList.remove('hidden');document.getElementById('leaveIdentityTitle').textContent='طلب إجازة من '+(target==='manager'?'المدير':'المعاون');document.getElementById('leaveDetailsPanel').classList.add('hidden');document.getElementById('leaveIdentityStatus').textContent='';populateGrades();document.getElementById('leaveStudentNameSelect').innerHTML='<option value="">-- اختر اسمك الشخصي --</option>';stopLeaveCamera();pushNav('leave-'+target)};
+window.openLeaveIdentityFlow=function(target){if(!isStudentMode)return;leaveTarget=target;window.__studentLeaveTarget=target;window.__studentLeavePhoto='';leavePhoto='';document.getElementById('leaveRequestChooser').classList.add('hidden');document.getElementById('leaveIdentityFlow').classList.remove('hidden');document.getElementById('leaveIdentityTitle').textContent='طلب إجازة من '+(target==='manager'?'المدير':'المعاون');document.getElementById('leaveDetailsPanel').classList.add('hidden');document.getElementById('leaveIdentityStatus').textContent='';populateGrades();document.getElementById('leaveStudentNameSelect').innerHTML='<option value="">-- اختر اسمك الشخصي --</option>';stopLeaveCamera();pushNav('leave-'+target)};
 window.populateLeaveFaceStudents=function(){const grade=document.getElementById('leaveStudentGradeSelect').value,s=document.getElementById('leaveStudentNameSelect'),school=typeof studentsData!=='undefined'?studentsData:[];let eligible=school.map(st=>{const face=typeof getStudentFaceRecord==='function'?getStudentFaceRecord(st):null;return st.grade===grade&&face&&Array.isArray(face.descriptor)?{st,face}:null}).filter(Boolean).sort((a,b)=>a.st.name.localeCompare(b.st.name,'ar'));s.innerHTML='<option value="">-- اختر اسمك الشخصي --</option>'+eligible.map((x,i)=>`<option value="${esc(x.st.id)}">${i+1}. ${esc(x.st.name)}</option>`).join('')};
 function stopLeaveCamera(){leaveCameraRun++;clearTimeout(leaveCaptureTimer);leaveCaptureTimer=null;leaveCaptureBusy=false;if(leaveStream){leaveStream.getTracks().forEach(t=>t.stop());leaveStream=null}const v=document.getElementById('leaveIdentityVideo');if(v)v.srcObject=null}
 window.startLeaveIdentityCamera=async function(){const id=document.getElementById('leaveStudentNameSelect').value;if(!id)return;const st=(typeof studentsData!=='undefined'?studentsData:[]).find(x=>x.id===id);leaveFaceRecord=st&&typeof getStudentFaceRecord==='function'?getStudentFaceRecord(st):null;if(!leaveFaceRecord){alert('هذا الطالب لم يسجل بصمة وجه.');return}stopLeaveCamera();leavePhoto='';const box=document.getElementById('leaveIdentityCameraBox'),v=document.getElementById('leaveIdentityVideo');box.classList.remove('hidden');document.getElementById('leaveIdentityStatus').textContent='⏳ يرجى إبقاء الوجه أمام الكاميرا... سيتم إعادة المحاولة تلقائياً عند الخطأ.';const run=leaveCameraRun;try{leaveStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});if(run!==leaveCameraRun){leaveStream.getTracks().forEach(t=>t.stop());return}v.srcObject=leaveStream;await v.play();clearTimeout(leaveCaptureTimer);leaveCaptureTimer=setTimeout(captureLeaveIdentity,800)}catch(e){box.classList.add('hidden');document.getElementById('leaveIdentityStatus').textContent='❌ تعذر تشغيل الكاميرا. اسمح للمنصة باستخدام الكاميرا.'}};
@@ -10310,7 +10315,7 @@ async function captureLeaveIdentity(){
   if(!d){document.getElementById('leaveIdentityStatus').textContent='⏳ لم يتم التقاط الوجه بوضوح، جاري المحاولة تلقائياً...';return}
   const dist=faceapi.euclideanDistance(d.descriptor,new Float32Array(leaveFaceRecord.descriptor));
   if(dist>=.48){document.getElementById('leaveIdentityStatus').textContent='⏳ البصمة غير مطابقة، جاري إعادة المحاولة تلقائياً...';return}
-  const c=document.createElement('canvas');c.width=v.videoWidth||640;c.height=v.videoHeight||480;c.getContext('2d').drawImage(v,0,0,c.width,c.height);leavePhoto=c.toDataURL('image/jpeg',.82);
+  const c=document.createElement('canvas');c.width=v.videoWidth||640;c.height=v.videoHeight||480;c.getContext('2d').drawImage(v,0,0,c.width,c.height);leavePhoto=c.toDataURL('image/jpeg',.82);window.__studentLeavePhoto=leavePhoto;window.__studentLeaveTarget=leaveTarget;
   clearTimeout(leaveCaptureTimer);leaveCaptureTimer=null;stopLeaveCamera();document.getElementById('leaveIdentityCameraBox').classList.add('hidden');document.getElementById('leaveIdentityStatus').textContent='✅ تم إثبات الشخصية والتقاط الصورة تلقائياً.';document.getElementById('leaveDetailsPanel').classList.remove('hidden');
   if(typeof lrPopulateDays==='function'){lrPopulateDays();const daySelect=document.getElementById('leaveDaySelect');if(daySelect&&daySelect.options.length)daySelect.selectedIndex=0;}
  }catch(e){if(run===leaveCameraRun)document.getElementById('leaveIdentityStatus').textContent='⏳ تعذر التقاط الوجه الآن، جاري المحاولة تلقائياً...';}
@@ -10319,8 +10324,56 @@ async function captureLeaveIdentity(){
   if(run===leaveCameraRun&&leaveStream&&!leavePhoto){clearTimeout(leaveCaptureTimer);leaveCaptureTimer=setTimeout(captureLeaveIdentity,700)}
  }
 }
-window.previewEnhancedLeaveRequest=function(){if(!leavePhoto){alert('يجب إثبات الشخصية والتقاط صورة الطالب أولاً.');return}const reason=document.getElementById('leaveReason').value.trim();let day=getStudentLeaveDay();const hasExam=document.getElementById('leaveHasExam').value==='yes',subject=hasExam?document.getElementById('leaveExamSubject').value:'';if(!reason||!day||(hasExam&&!subject)){alert('يرجى إكمال تفاصيل الإجازة.');return}const st=studentsData.find(x=>x.id===document.getElementById('leaveStudentNameSelect').value),m=document.createElement('div');m.id='leavePreviewModal';m.className='activity-modal-overlay';m.innerHTML=`<div class="activity-modal" style="max-width:520px"><h3 style="text-align:center;color:var(--primary-color)">📋 تأكيد إرسال طلب الإجازة</h3><div class="leave-preview"><img src="${leavePhoto}"><div><b>اسم الطالب:</b> ${esc(st?.name||'')}</div><div><b>الصف:</b> ${esc(st?.grade||'')}</div><div><b>طلب الإجازة من:</b> ${leaveTarget==='manager'?'المدير':'المعاون'}</div><div><b>اليوم:</b> ${esc(typeof lrDateLabel==='function'?lrDateLabel(day):day)}</div><div><b>سبب الإجازة:</b> ${esc(reason)}</div><div><b>هل لديه امتحان:</b> ${hasExam?'نعم':'لا'}${hasExam?' — '+esc(subject):''}</div></div><div class="feature-actions"><button class="feature-primary" onclick="confirmEnhancedLeaveRequest()">✅ تأكيد وإرسال</button><button type="button" onclick="document.getElementById('leavePreviewModal')?.remove()">❌ إلغاء</button></div></div>`;document.body.appendChild(m)};
-window.confirmEnhancedLeaveRequest=function(){const st=studentsData.find(x=>x.id===document.getElementById('leaveStudentNameSelect').value);if(!st)return;const reason=document.getElementById('leaveReason').value.trim();let day=getStudentLeaveDay();const hasExam=document.getElementById('leaveHasExam').value==='yes',subject=hasExam?document.getElementById('leaveExamSubject').value:'';const d=new Date(day+'T00:00:00');if(isNaN(d)||d.getDay()===5||d.getDay()===6){alert('يمكن طلب الإجازة من يوم الأحد إلى يوم الخميس فقط.');return}let all=[];try{all=JSON.parse(localStorage.getItem('SCHOOL_LEAVE_REQUESTS_V1')||'[]')}catch(e){}const t=typeof lrNow==='function'?lrNow():{date:new Date().toLocaleDateString('ar-IQ'),time:new Date().toLocaleTimeString('ar-IQ')};all.unshift({id:'LR_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),studentName:st.name,grade:st.grade,section:st.section||'',target:leaveTarget,reason,day,hasExam,examSubject:subject,status:'pending',createdDate:t.date,createdTime:t.time,decisionBy:'',decisionDate:'',decisionTime:'',identityPhoto:leavePhoto});localStorage.setItem('SCHOOL_LEAVE_REQUESTS_V1',JSON.stringify(all));document.getElementById('leavePreviewModal')?.remove();backToLeaveChooser();renderStudentLeaveStatus();alert('✅ تم إرسال طلب الإجازة مع صورة إثبات الشخصية إلى '+(leaveTarget==='manager'?'المدير':'المعاون')+'.')};
+window.previewEnhancedLeaveRequest=function(){
+ try{
+  const photo=leavePhoto||window.__studentLeavePhoto||'';
+  const reason=document.getElementById('leaveReason')?.value.trim()||'';
+  const day=getStudentLeaveDay();
+  const hasExam=document.getElementById('leaveHasExam')?.value==='yes';
+  const subject=hasExam?(document.getElementById('leaveExamSubject')?.value||''):'';
+  const studentId=document.getElementById('leaveStudentNameSelect')?.value||'';
+  const st=(typeof studentsData!=='undefined'?studentsData:[]).find(x=>String(x.id)===String(studentId));
+  if(!photo){alert('يجب أولاً تسجيل/إثبات بصمة وجه الطالب والتقاط الصورة.');return false}
+  if(!st){alert('يرجى اختيار اسم الطالب أولاً.');return false}
+  if(!reason){alert('يرجى كتابة سبب الإجازة.');return false}
+  if(!day){alert('يرجى اختيار يوم الإجازة من القائمة المنسدلة.');return false}
+  if(hasExam&&!subject){alert('يرجى اختيار مادة الامتحان.');return false}
+  const d=new Date(day+'T00:00:00');
+  if(isNaN(d.getTime())||d.getDay()===5||d.getDay()===6){alert('الجمعة والسبت لا يدخلان في قائمة أيام الإجازة.');lrPopulateDays();return false}
+  leavePhoto=photo;
+  const target=leaveTarget||window.__studentLeaveTarget||'manager';
+  const old=document.getElementById('leavePreviewModal');if(old)old.remove();
+  const m=document.createElement('div');m.id='leavePreviewModal';m.className='activity-modal-overlay';
+  m.innerHTML='<div class="activity-modal" style="max-width:520px;width:calc(100% - 24px);max-height:90vh;overflow:auto"><h3 style="text-align:center;color:var(--primary-color)">📋 معاينة طلب الإجازة</h3><div class="leave-preview"><img src="'+lrEsc(photo)+'" alt="صورة الطالب"><div><b>اسم الطالب:</b> '+lrEsc(st.name||'')+'</div><div><b>الصف:</b> '+lrEsc(st.grade||'')+'</div><div><b>طلب الإجازة من:</b> '+(target==='manager'?'المدير':'المعاون')+'</div><div><b>اليوم:</b> '+lrEsc(lrDateLabel(day))+'</div><div><b>سبب الإجازة:</b> '+lrEsc(reason)+'</div><div><b>هل لديه امتحان:</b> '+(hasExam?'نعم — '+lrEsc(subject):'لا')+'</div></div><div class="feature-actions"><button type="button" class="feature-primary" id="leaveConfirmSendBtn">✅ تأكيد الإرسال</button><button type="button" id="leaveCancelPreviewBtn">❌ إلغاء</button></div></div>';
+  document.body.appendChild(m);
+  document.getElementById('leaveConfirmSendBtn').onclick=function(){window.confirmEnhancedLeaveRequest()};
+  document.getElementById('leaveCancelPreviewBtn').onclick=function(){m.remove()};
+  return true;
+ }catch(e){console.error('Leave preview error',e);alert('تعذر فتح المعاينة. حاول مرة أخرى.');return false}
+};
+window.confirmEnhancedLeaveRequest=function(){
+ try{
+  const st=(typeof studentsData!=='undefined'?studentsData:[]).find(x=>String(x.id)===String(document.getElementById('leaveStudentNameSelect')?.value||''));
+  const photo=leavePhoto||window.__studentLeavePhoto||'';
+  const reason=document.getElementById('leaveReason')?.value.trim()||'';
+  const day=getStudentLeaveDay();
+  const hasExam=document.getElementById('leaveHasExam')?.value==='yes';
+  const subject=hasExam?(document.getElementById('leaveExamSubject')?.value||''):'';
+  const d=new Date(day+'T00:00:00');
+  if(!st||!photo||!reason||!day){alert('يرجى إكمال بيانات طلب الإجازة أولاً.');return}
+  if(isNaN(d.getTime())||d.getDay()===5||d.getDay()===6){alert('الجمعة والسبت لا يدخلان في قائمة أيام الإجازة.');lrPopulateDays();return}
+  if(hasExam&&!subject){alert('يرجى اختيار مادة الامتحان.');return}
+  let all=[];try{all=JSON.parse(localStorage.getItem('SCHOOL_LEAVE_REQUESTS_V1')||'[]')}catch(e){}
+  const t=typeof lrNow==='function'?lrNow():{date:new Date().toLocaleDateString('ar-IQ'),time:new Date().toLocaleTimeString('ar-IQ')};
+  const target=leaveTarget||window.__studentLeaveTarget||'manager';
+  all.unshift({id:'LR_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),studentName:st.name,grade:st.grade,section:st.section||'',target,reason,day,hasExam,examSubject:subject,status:'pending',createdDate:t.date,createdTime:t.time,decisionBy:'',decisionDate:'',decisionTime:'',identityPhoto:photo});
+  localStorage.setItem('SCHOOL_LEAVE_REQUESTS_V1',JSON.stringify(all));
+  document.getElementById('leavePreviewModal')?.remove();
+  if(typeof backToLeaveChooser==='function')backToLeaveChooser();
+  if(typeof renderStudentLeaveStatus==='function')renderStudentLeaveStatus();
+  alert('✅ تم تأكيد وإرسال طلب الإجازة بنجاح.');
+ }catch(e){console.error('Leave send error',e);alert('تعذر إرسال الطلب، حاول مرة أخرى.')}
+};
 window.backToLeaveChooser=function(){stopLeaveCamera();document.getElementById('leaveIdentityFlow').classList.add('hidden');document.getElementById('leaveRequestChooser').classList.remove('hidden');document.getElementById('leaveDetailsPanel').classList.add('hidden');history.back()};
 window.openLeaveNotifications=function(){const modal=document.getElementById('leaveNotificationsModal'),list=document.getElementById('leaveNotificationsList');if(!modal||!list||!currentUser||isStudentMode)return;let all=[];try{all=JSON.parse(localStorage.getItem('SCHOOL_LEAVE_REQUESTS_V1')||'[]')}catch(e){}const me=cleanStaffName(currentUser.name),target=me==='سعدون حزين فرحان'?'manager':me==='سفان محمد إبراهيم'?'assistant':'';const mine=target?all.filter(r=>r.target===target):all.filter(r=>r.status==='pending');list.innerHTML=mine.length?mine.map(r=>`<div class="leave-notification-card ${r.status==='approved'?'approved':r.status==='rejected'?'rejected':'pending'}">${r.identityPhoto?`<img src="${r.identityPhoto}" style="width:120px;height:120px;object-fit:cover;border-radius:10px;display:block;margin:0 auto 10px;border:2px solid #ddd">`:''}<div><b>الطالب:</b> ${esc(r.studentName)}</div><div><b>الصف:</b> ${esc(r.grade)}</div><div><b>من:</b> ${r.target==='manager'?'المدير':'المعاون'}</div><div><b>اليوم:</b> ${esc(typeof lrDateLabel==='function'?lrDateLabel(r.day):r.day)}</div><div><b>السبب:</b> ${esc(r.reason)}</div><div><b>الامتحان:</b> ${r.hasExam?'نعم — '+esc(r.examSubject):'لا'}</div><div>الحالة: ${r.status==='approved'?'<span class="leave-status-approved">تمت الموافقة</span>':r.status==='rejected'?'<span class="leave-status-rejected">غير موافق</span>':'<b>بانتظار القرار</b>'}</div>${r.status==='pending'&&target===r.target?`<div class="leave-notification-actions"><button class="leave-approve" onclick="decideLeaveRequest('${r.id}','approved')">موافق</button><button class="leave-reject" onclick="decideLeaveRequest('${r.id}','rejected')">غير موافق</button></div>`:''}</div>`).join(''):'<div class="leave-status-card">لا توجد إشعارات حالياً.</div>';modal.classList.remove('hidden');modal.style.setProperty('display','flex','important')};
 const originalAddBookItem=window.addBookItem;window.addBookItem=function(){const kind=document.getElementById('newBookKind')?.value||'book';if(!currentSelectedBookGrade){alert('اختر الصف أولاً.');return}const name=document.getElementById('newBookName')?.value.trim();if(!name){alert('أدخل اسم الكتاب أو الملزمة.');return}if(typeof tempBookFilePayload==='undefined'||!tempBookFilePayload){alert('أرفق الملف أو الرابط أولاً.');return}let a=getArchive();a.books=a.books||{};a.books[currentSelectedBookGrade]=a.books[currentSelectedBookGrade]||[];a.books[currentSelectedBookGrade].push({id:typeof generateId==='function'?generateId():'_'+Date.now(),title:name,uploader:currentUser?getStaffDisplayName(currentUser.name):'الإدارة',kind,...tempBookFilePayload,date:new Date().toLocaleDateString('ar-IQ')});saveArchive(a);tempBookFilePayload=null;document.getElementById('newBookName').value='';document.getElementById('newBookKind').value='book';document.getElementById('bookAttachedFileInfo').innerText='';if(typeof renderBooksTable==='function')renderBooksTable();alert('تم حفظ '+(kind==='binder'?'الملزمة':'الكتاب')+' بنجاح في الأرشيف الداخلي للمنصة!')};
