@@ -1366,7 +1366,7 @@
 <div id="leaveIdentityFlow" class="hidden">
 <div class="leave-form-title" id="leaveIdentityTitle">طلب إجازة</div>
 <div class="form-group"><label>الصف:</label><select id="leaveStudentGradeSelect" onchange="populateLeaveFaceStudents()"><option value="">-- اختر الصف --</option></select></div>
-<div class="form-group"><label>اختر اسمك الشخصي:</label><select id="leaveStudentNameSelect" onchange="startLeaveIdentityCamera()"><option value="">-- اختر اسمك الشخصي --</option></select></div>
+<div class="form-group leave-student-name-picker"><label for="leaveStudentNameInput">اكتب أول حرفين من اسمك:</label><input id="leaveStudentNameInput" type="text" autocomplete="off" inputmode="text" placeholder="اكتب أول حرفين أو اسمك الكامل" oninput="filterLeaveStudentNames()" onkeydown="handleLeaveStudentNameKey(event)" onblur="setTimeout(()=>hideLeaveStudentSuggestions(),180)"><input id="leaveStudentNameSelect" type="hidden" value=""><div id="leaveStudentNameSuggestions" class="leave-student-name-suggestions hidden"></div><div id="leaveSelectedStudentHint" class="leave-selected-student-hint"></div></div>
 <div class="leave-camera-box hidden" id="leaveIdentityCameraBox"><div class="leave-camera-label">📷 جارٍ إثبات الشخصية بالوجه...</div><video id="leaveIdentityVideo" autoplay muted playsinline></video></div>
 <div id="leaveIdentityStatus" class="leave-identity-status"></div>
 <div class="hidden" id="leaveDetailsPanel">
@@ -5056,7 +5056,6 @@
                     pdf.save(`${fileName}.pdf`);
                 }else if(type==='word'){
                     const docHtml=`<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${exportCss}</style></head><body>${printWrap.innerHTML}<script>
-
 </body></html>`;
                     const blob=new Blob(['\ufeff',docHtml],{type:'application/msword'});
                     const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${fileName}.doc`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
@@ -9428,8 +9427,7 @@ function() {
         <body>
 
             ${content}
-
-        </body>
+</body>
 
         </html>
     `;
@@ -10270,7 +10268,7 @@ self.addEventListener('notificationclick',event=>{event.notification.close();eve
 })();
 </script>
 <style id="requestedFeaturesCSS">
-.student-new-hub,.staff-new-hub{margin-bottom:15px}.student-hub-buttons,.staff-schedule-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.student-hub-btn,.staff-schedule-buttons button{border:0;border-radius:12px;padding:15px 10px;background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff;font-weight:900;font-size:1rem;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.12)}.student-hub-btn.active,.staff-schedule-buttons button.active{background:var(--gold);color:#173d2b}.student-hub-panel,.staff-schedule-manager{background:#fff;border-radius:12px;padding:15px;margin-top:12px;box-shadow:0 4px 10px rgba(0,0,0,.05)}.archive-schedule-choice-buttons{display:flex;flex-direction:column;gap:12px;margin:0 0 15px}.archive-schedule-choice-buttons button{width:100%;padding:15px 12px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff;font-weight:900;font-size:1.05rem;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.12)}.archive-schedule-choice-buttons button.active{background:var(--gold);color:#173d2b}.archive-schedule-choice-buttons button.hidden{display:none!important}.feature-sub-buttons{display:flex;gap:8px;margin-bottom:12px}.feature-sub-buttons button{flex:1;padding:11px;border:2px solid var(--secondary-color);border-radius:9px;background:#fff;color:var(--secondary-color);font-weight:900}.feature-sub-buttons button.active{background:var(--secondary-color);color:#fff}.feature-grade-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.feature-grade-grid button{padding:13px;border:0;border-radius:10px;background:#eef6f0;color:#173d2b;font-weight:900}.feature-item{border:1px solid #ddd;border-radius:10px;padding:12px;margin-bottom:8px;background:#fafafa}.feature-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.feature-actions a,.feature-actions button{flex:1;min-width:130px;text-align:center;padding:9px;border:0;border-radius:8px;font-weight:900;text-decoration:none;cursor:pointer}.feature-primary{background:var(--primary-color);color:#fff}.feature-orange{background:#e67e22;color:#fff}.feature-back{background:#eee;color:#333;border:0;border-radius:8px;padding:9px 14px;font-weight:900;margin-bottom:10px}.schedule-preview-card{border:1px solid #ddd;border-radius:12px;padding:14px;margin-top:10px;text-align:center}.schedule-preview-card img{max-width:100%;max-height:600px;border-radius:8px}.schedule-empty{padding:22px;text-align:center;color:#777;background:#f8f9fa;border-radius:10px;font-weight:800}.staff-schedule-manager input{width:100%;padding:10px;border:1px solid #ccc;border-radius:7px}.staff-schedule-manager .schedule-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.staff-schedule-manager .schedule-actions button{padding:10px;border:0;border-radius:8px;font-weight:900;cursor:pointer}.leave-camera-box{background:#000;border-radius:14px;overflow:hidden;margin:12px auto;max-width:480px;position:relative}.leave-camera-box video{display:block;width:100%;max-height:420px;object-fit:cover}.leave-camera-label{position:absolute;z-index:2;top:8px;right:8px;left:8px;background:rgba(0,0,0,.65);color:#fff;padding:8px;border-radius:8px;text-align:center;font-weight:900}.leave-identity-status{padding:10px;border-radius:9px;text-align:center;margin:8px 0;font-weight:900}.leave-preview{border:2px solid var(--secondary-color);border-radius:12px;padding:14px;background:#fff;line-height:1.9}.leave-preview img{width:150px;height:150px;object-fit:cover;border-radius:10px;display:block;margin:10px auto;border:2px solid #ddd}@media(max-width:700px){.student-hub-buttons,.staff-schedule-buttons{grid-template-columns:1fr}.feature-grade-grid{grid-template-columns:1fr}.staff-schedule-manager .schedule-actions{grid-template-columns:1fr}}
+.student-new-hub,.staff-new-hub{margin-bottom:15px}.student-hub-buttons,.staff-schedule-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.student-hub-btn,.staff-schedule-buttons button{border:0;border-radius:12px;padding:15px 10px;background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff;font-weight:900;font-size:1rem;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.12)}.student-hub-btn.active,.staff-schedule-buttons button.active{background:var(--gold);color:#173d2b}.student-hub-panel,.staff-schedule-manager{background:#fff;border-radius:12px;padding:15px;margin-top:12px;box-shadow:0 4px 10px rgba(0,0,0,.05)}.archive-schedule-choice-buttons{display:flex;flex-direction:column;gap:12px;margin:0 0 15px}.archive-schedule-choice-buttons button{width:100%;padding:15px 12px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff;font-weight:900;font-size:1.05rem;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.12)}.archive-schedule-choice-buttons button.active{background:var(--gold);color:#173d2b}.archive-schedule-choice-buttons button.hidden{display:none!important}.feature-sub-buttons{display:flex;gap:8px;margin-bottom:12px}.feature-sub-buttons button{flex:1;padding:11px;border:2px solid var(--secondary-color);border-radius:9px;background:#fff;color:var(--secondary-color);font-weight:900}.feature-sub-buttons button.active{background:var(--secondary-color);color:#fff}.feature-grade-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.feature-grade-grid button{padding:13px;border:0;border-radius:10px;background:#eef6f0;color:#173d2b;font-weight:900}.feature-item{border:1px solid #ddd;border-radius:10px;padding:12px;margin-bottom:8px;background:#fafafa}.feature-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.feature-actions a,.feature-actions button{flex:1;min-width:130px;text-align:center;padding:9px;border:0;border-radius:8px;font-weight:900;text-decoration:none;cursor:pointer}.feature-primary{background:var(--primary-color);color:#fff}.feature-orange{background:#e67e22;color:#fff}.feature-back{background:#eee;color:#333;border:0;border-radius:8px;padding:9px 14px;font-weight:900;margin-bottom:10px}.schedule-preview-card{border:1px solid #ddd;border-radius:12px;padding:14px;margin-top:10px;text-align:center}.schedule-preview-card img{max-width:100%;max-height:600px;border-radius:8px}.schedule-empty{padding:22px;text-align:center;color:#777;background:#f8f9fa;border-radius:10px;font-weight:800}.staff-schedule-manager input{width:100%;padding:10px;border:1px solid #ccc;border-radius:7px}.staff-schedule-manager .schedule-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.staff-schedule-manager .schedule-actions button{padding:10px;border:0;border-radius:8px;font-weight:900;cursor:pointer}.leave-camera-box{background:#000;border-radius:14px;overflow:hidden;margin:12px auto;max-width:480px;position:relative}.leave-camera-box video{display:block;width:100%;max-height:420px;object-fit:cover}.leave-camera-label{position:absolute;z-index:2;top:8px;right:8px;left:8px;background:rgba(0,0,0,.65);color:#fff;padding:8px;border-radius:8px;text-align:center;font-weight:900}.leave-identity-status{padding:10px;border-radius:9px;text-align:center;margin:8px 0;font-weight:900}.leave-student-name-picker{position:relative}.leave-student-name-picker input[type="text"]{width:100%;box-sizing:border-box}.leave-student-name-suggestions{position:absolute;z-index:10050;top:100%;right:0;left:0;background:#fff;border:1px solid #cfd8dc;border-radius:0 0 10px 10px;box-shadow:0 8px 20px rgba(0,0,0,.14);max-height:230px;overflow-y:auto}.leave-student-name-suggestions button{display:block;width:100%;border:0;border-bottom:1px solid #eee;background:#fff;text-align:right;padding:11px 13px;font-size:1rem;font-weight:800;color:#173d2b;cursor:pointer}.leave-student-name-suggestions button:last-child{border-bottom:0}.leave-student-name-suggestions button:hover,.leave-student-name-suggestions button.active{background:#eef6f0}.leave-selected-student-hint{margin-top:6px;font-size:.9rem;font-weight:800;color:var(--secondary-color);min-height:20px}.leave-student-name-suggestions.hidden{display:none!important}.leave-preview{border:2px solid var(--secondary-color);border-radius:12px;padding:14px;background:#fff;line-height:1.9}.leave-preview img{width:150px;height:150px;object-fit:cover;border-radius:10px;display:block;margin:10px auto;border:2px solid #ddd}@media(max-width:700px){.student-hub-buttons,.staff-schedule-buttons{grid-template-columns:1fr}.feature-grade-grid{grid-template-columns:1fr}.staff-schedule-manager .schedule-actions{grid-template-columns:1fr}}
 </style>
 <script>
 (function(){
@@ -10301,10 +10299,92 @@ window.publishStaffSchedule=function(kind){if(!tempPublishedSchedule||tempPublis
 window.exportStaffSchedule=function(kind){const x=tempPublishedSchedule&&tempPublishedSchedule.kind===kind?tempPublishedSchedule:getPublished()[kind]||null;if(!x){alert('لا يوجد جدول لتصديره.');return}const a=document.createElement('a');a.href=x.fileUrl;a.download=x.fileName||('جدول-'+kind);a.target='_blank';a.click()};
 function prepareBookKinds(){let a=getArchive(),changed=false;Object.keys(a.books||{}).forEach(g=>(a.books[g]||[]).forEach(x=>{if(!x.kind){x.kind='book';changed=true}}));if(changed)saveArchive(a)}prepareBookKinds();
 function populateGrades(){const s=document.getElementById('leaveStudentGradeSelect');if(s)s.innerHTML='<option value="">-- اختر الصف --</option>'+GRADES.map(g=>`<option value="${esc(g)}">${esc(g)}</option>`).join('')}
-window.openLeaveIdentityFlow=function(target){if(!isStudentMode)return;leaveTarget=target;window.__studentLeaveTarget=target;window.__studentLeavePhoto='';leavePhoto='';document.getElementById('leaveRequestChooser').classList.add('hidden');document.getElementById('leaveIdentityFlow').classList.remove('hidden');document.getElementById('leaveIdentityTitle').textContent='طلب إجازة من '+(target==='manager'?'المدير':'المعاون');document.getElementById('leaveDetailsPanel').classList.add('hidden');document.getElementById('leaveIdentityStatus').textContent='';populateGrades();document.getElementById('leaveStudentNameSelect').innerHTML='<option value="">-- اختر اسمك الشخصي --</option>';stopLeaveCamera();pushNav('leave-'+target)};
-window.populateLeaveFaceStudents=function(){const grade=document.getElementById('leaveStudentGradeSelect').value,s=document.getElementById('leaveStudentNameSelect'),school=typeof studentsData!=='undefined'?studentsData:[];let eligible=school.map(st=>{const face=typeof getStudentFaceRecord==='function'?getStudentFaceRecord(st):null;return st.grade===grade&&face&&Array.isArray(face.descriptor)?{st,face}:null}).filter(Boolean).sort((a,b)=>a.st.name.localeCompare(b.st.name,'ar'));s.innerHTML='<option value="">-- اختر اسمك الشخصي --</option>'+eligible.map((x,i)=>`<option value="${esc(x.st.id)}">${i+1}. ${esc(x.st.name)}</option>`).join('')};
+window.openLeaveIdentityFlow=function(target){if(!isStudentMode)return;leaveTarget=target;window.__studentLeaveTarget=target;window.__studentLeavePhoto='';leavePhoto='';document.getElementById('leaveRequestChooser').classList.add('hidden');document.getElementById('leaveIdentityFlow').classList.remove('hidden');document.getElementById('leaveIdentityTitle').textContent='طلب إجازة من '+(target==='manager'?'المدير':'المعاون');document.getElementById('leaveDetailsPanel').classList.add('hidden');document.getElementById('leaveIdentityStatus').textContent='';populateGrades();document.getElementById('leaveStudentNameSelect').value='';document.getElementById('leaveStudentNameInput').value='';document.getElementById('leaveStudentNameSuggestions').innerHTML='';document.getElementById('leaveStudentNameSuggestions').classList.add('hidden');document.getElementById('leaveSelectedStudentHint').textContent='';stopLeaveCamera();pushNav('leave-'+target)};
+window.populateLeaveFaceStudents=function(){
+ const grade=document.getElementById('leaveStudentGradeSelect')?.value||'';
+ const input=document.getElementById('leaveStudentNameInput');
+ const hidden=document.getElementById('leaveStudentNameSelect');
+ const suggestions=document.getElementById('leaveStudentNameSuggestions');
+ const hint=document.getElementById('leaveSelectedStudentHint');
+ if(hidden)hidden.value='';
+ if(input)input.value='';
+ if(hint)hint.textContent='';
+ if(suggestions){suggestions.innerHTML='';suggestions.classList.add('hidden');}
+ leaveFaceRecord=null;
+ stopLeaveCamera();
+ if(!grade)return;
+ if(input)input.disabled=false;
+};
+function normalizeLeaveName(v){return String(v||'').trim().replace(/\s+/g,' ');}
+window.filterLeaveStudentNames=function(){
+ const grade=document.getElementById('leaveStudentGradeSelect')?.value||'';
+ const input=document.getElementById('leaveStudentNameInput');
+ const hidden=document.getElementById('leaveStudentNameSelect');
+ const box=document.getElementById('leaveStudentNameSuggestions');
+ const hint=document.getElementById('leaveSelectedStudentHint');
+ if(!input||!hidden||!box)return;
+ hidden.value='';
+ if(hint)hint.textContent='';
+ stopLeaveCamera();
+ if(!grade){box.innerHTML='';box.classList.add('hidden');return;}
+ const q=normalizeLeaveName(input.value);
+ if(q.length<2){box.innerHTML='';box.classList.add('hidden');return;}
+ const school=typeof studentsData!=='undefined'?studentsData:[];
+ const matches=school.filter(st=>st&&st.grade===grade&&normalizeLeaveName(st.name).toLocaleLowerCase('ar-IQ').startsWith(q.toLocaleLowerCase('ar-IQ')))
+   .sort((a,b)=>normalizeLeaveName(a.name).localeCompare(normalizeLeaveName(b.name),'ar'))
+   .slice(0,12);
+ if(!matches.length){
+   box.innerHTML='<div style="padding:12px;text-align:center;color:#777;font-weight:800">لا توجد أسماء مطابقة في هذا الصف.</div>';
+   box.classList.remove('hidden');
+   return;
+ }
+ box.innerHTML=matches.map((st,i)=>`<button type="button" data-student-id="${esc(st.id)}" onmousedown="selectLeaveStudentSuggestion('${String(st.id).replace(/'/g,"\\'")}')">${i+1}. ${esc(st.name)}</button>`).join('');
+ box.classList.remove('hidden');
+};
+window.selectLeaveStudentSuggestion=function(id){
+ const school=typeof studentsData!=='undefined'?studentsData:[];
+ const st=school.find(x=>String(x.id)===String(id));
+ const grade=document.getElementById('leaveStudentGradeSelect')?.value||'';
+ const input=document.getElementById('leaveStudentNameInput');
+ const hidden=document.getElementById('leaveStudentNameSelect');
+ const box=document.getElementById('leaveStudentNameSuggestions');
+ const hint=document.getElementById('leaveSelectedStudentHint');
+ if(!st||st.grade!==grade)return;
+ if(input)input.value=st.name||'';
+ if(hidden)hidden.value=st.id;
+ if(box)box.classList.add('hidden');
+ if(hint)hint.textContent='✅ تم اختيار: '+(st.name||'');
+ startLeaveIdentityCamera();
+};
+window.handleLeaveStudentNameKey=function(event){
+ if(event.key==='Enter'){
+   event.preventDefault();
+   const box=document.getElementById('leaveStudentNameSuggestions');
+   const first=box?.querySelector('button[data-student-id]');
+   if(first){selectLeaveStudentSuggestion(first.getAttribute('data-student-id'));return;}
+   resolveLeaveStudentName(true);
+ }
+};
+function resolveLeaveStudentName(showAlert){
+ const grade=document.getElementById('leaveStudentGradeSelect')?.value||'';
+ const input=document.getElementById('leaveStudentNameInput');
+ const hidden=document.getElementById('leaveStudentNameSelect');
+ const box=document.getElementById('leaveStudentNameSuggestions');
+ const hint=document.getElementById('leaveSelectedStudentHint');
+ const q=normalizeLeaveName(input?.value||'');
+ if(!grade||!q)return false;
+ const school=typeof studentsData!=='undefined'?studentsData:[];
+ const exact=school.find(st=>st&&st.grade===grade&&normalizeLeaveName(st.name).toLocaleLowerCase('ar-IQ')===q.toLocaleLowerCase('ar-IQ'));
+ if(!exact){if(showAlert)alert('لم يتم العثور على اسم مطابق في الصف المختار. اختر اسماً من الاقتراحات أو أكمل كتابة الاسم الكامل بشكل صحيح.');return false;}
+ hidden.value=exact.id;
+ if(input)input.value=exact.name;
+ if(box)box.classList.add('hidden');
+ if(hint)hint.textContent='✅ تم اختيار: '+exact.name;
+ startLeaveIdentityCamera();
+ return true;
+}
 function stopLeaveCamera(){leaveCameraRun++;clearTimeout(leaveCaptureTimer);leaveCaptureTimer=null;leaveCaptureBusy=false;if(leaveStream){leaveStream.getTracks().forEach(t=>t.stop());leaveStream=null}const v=document.getElementById('leaveIdentityVideo');if(v)v.srcObject=null}
-window.startLeaveIdentityCamera=async function(){const id=document.getElementById('leaveStudentNameSelect').value;if(!id)return;const st=(typeof studentsData!=='undefined'?studentsData:[]).find(x=>x.id===id);leaveFaceRecord=st&&typeof getStudentFaceRecord==='function'?getStudentFaceRecord(st):null;if(!leaveFaceRecord){alert('هذا الطالب لم يسجل بصمة وجه.');return}stopLeaveCamera();leavePhoto='';const box=document.getElementById('leaveIdentityCameraBox'),v=document.getElementById('leaveIdentityVideo');box.classList.remove('hidden');document.getElementById('leaveIdentityStatus').textContent='⏳ يرجى إبقاء الوجه أمام الكاميرا... سيتم إعادة المحاولة تلقائياً عند الخطأ.';const run=leaveCameraRun;try{leaveStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});if(run!==leaveCameraRun){leaveStream.getTracks().forEach(t=>t.stop());return}v.srcObject=leaveStream;await v.play();clearTimeout(leaveCaptureTimer);leaveCaptureTimer=setTimeout(captureLeaveIdentity,800)}catch(e){box.classList.add('hidden');document.getElementById('leaveIdentityStatus').textContent='❌ تعذر تشغيل الكاميرا. اسمح للمنصة باستخدام الكاميرا.'}};
+window.startLeaveIdentityCamera=async function(){const hidden=document.getElementById('leaveStudentNameSelect');let id=hidden?.value||'';if(!id){resolveLeaveStudentName(false);id=hidden?.value||'';}if(!id)return;const st=(typeof studentsData!=='undefined'?studentsData:[]).find(x=>x.id===id);leaveFaceRecord=st&&typeof getStudentFaceRecord==='function'?getStudentFaceRecord(st):null;if(!leaveFaceRecord){alert('هذا الطالب لم يسجل بصمة وجه.');return}stopLeaveCamera();leavePhoto='';const box=document.getElementById('leaveIdentityCameraBox'),v=document.getElementById('leaveIdentityVideo');box.classList.remove('hidden');document.getElementById('leaveIdentityStatus').textContent='⏳ يرجى إبقاء الوجه أمام الكاميرا... سيتم إعادة المحاولة تلقائياً عند الخطأ.';const run=leaveCameraRun;try{leaveStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});if(run!==leaveCameraRun){leaveStream.getTracks().forEach(t=>t.stop());return}v.srcObject=leaveStream;await v.play();clearTimeout(leaveCaptureTimer);leaveCaptureTimer=setTimeout(captureLeaveIdentity,800)}catch(e){box.classList.add('hidden');document.getElementById('leaveIdentityStatus').textContent='❌ تعذر تشغيل الكاميرا. اسمح للمنصة باستخدام الكاميرا.'}};
 async function captureLeaveIdentity(){
  if(!leaveStream||!leaveFaceRecord||leaveCaptureBusy)return;
  const run=leaveCameraRun, v=document.getElementById('leaveIdentityVideo');
@@ -10458,6 +10538,81 @@ const oldInit=window.__initStaffAttendanceOnOpen;
 window.__initStaffAttendanceOnOpen=function(){if(typeof oldInit==='function')oldInit();showChoice()};
 window.openStaffAttendanceChoice=function(mode,back){if(mode==='choice')showChoice();else enter(mode,back)};
 window.addEventListener('popstate',function(){if(!currentUser||isStudentMode)return;const h=location.hash||'';if(h.indexOf('#leave-notifications')===0)return;if(h==='#staff-attendance-register'){enter('register',true)}else if(h==='#staff-attendance-attendance'){enter('attendance',true)}else if(h==='#staff-attendance-leave'){enter('leave',true)}else if(document.getElementById('tabContentStaffAttendance')&&!document.getElementById('tabContentStaffAttendance').classList.contains('hidden')){showChoice()}});
+})();
+</script>
+
+<!-- SCHOOL_AUTO_UPDATE_V2: يكتشف أي تغيير في بنية index.html ويعيد تحميل النسخة الجديدة مع الحفاظ على جلسة المستخدم -->
+<script>
+(function(){
+  'use strict';
+  const appPath = location.pathname || '/';
+  let initialFingerprint = '';
+  let checking = false;
+  let reloading = false;
+  let firstCheckDone = false;
+
+  function hashText(text){
+    // FNV-1a 32-bit سريع ولا يحتاج مكتبة خارجية.
+    let h = 2166136261;
+    for(let i=0;i<text.length;i++){
+      h ^= text.charCodeAt(i);
+      h += (h<<1)+(h<<4)+(h<<7)+(h<<8)+(h<<24);
+    }
+    return (h>>>0).toString(16)+'_'+text.length;
+  }
+
+  async function getCurrentPublishedFingerprint(){
+    try{
+      const sep = appPath.includes('?') ? '&' : '?';
+      const url = appPath + sep + '__school_live_version=' + Date.now() + '_' + Math.random().toString(36).slice(2);
+      const response = await fetch(url,{
+        method:'GET',
+        cache:'no-store',
+        credentials:'same-origin',
+        headers:{'Cache-Control':'no-cache, no-store, max-age=0, must-revalidate','Pragma':'no-cache'}
+      });
+      if(!response.ok) return '';
+      const text = await response.text();
+      return hashText(text);
+    }catch(e){
+      return '';
+    }
+  }
+
+  async function checkForPlatformUpdate(force){
+    if(checking || reloading || (!force && document.hidden)) return;
+    checking=true;
+    try{
+      const fingerprint=await getCurrentPublishedFingerprint();
+      if(!fingerprint)return;
+      if(!initialFingerprint){
+        initialFingerprint=fingerprint;
+        firstCheckDone=true;
+        return;
+      }
+      if(fingerprint!==initialFingerprint){
+        reloading=true;
+        // لا نمسح localStorage ولا جلسة الكادر/المدرس. بعد إعادة التحميل
+        // ستستعيد المنصة teacherProfile أو studentProfile تلقائياً.
+        const sep=appPath.includes('?')?'&':'?';
+        location.replace(appPath+sep+'__school_updated='+Date.now());
+      }
+    }finally{
+      checking=false;
+    }
+  }
+
+  // نأخذ بصمة النسخة الحالية أولاً حتى لا نعيد تحميل الصفحة فور فتحها.
+  getCurrentPublishedFingerprint().then(function(fp){
+    if(fp){initialFingerprint=fp;firstCheckDone=true;}
+  });
+
+  // فحص سريع ومتكرر حتى تظهر أي إضافة زر أو تعديل في بنية المنصة بدون تسجيل خروج.
+  setInterval(function(){checkForPlatformUpdate(false)},10000);
+  document.addEventListener('visibilitychange',function(){
+    if(!document.hidden)checkForPlatformUpdate(true);
+  });
+  window.addEventListener('focus',function(){checkForPlatformUpdate(true)});
 })();
 </script>
 </body>
