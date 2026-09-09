@@ -10328,6 +10328,8 @@ async function captureLeaveIdentity(){
 }
 window.previewEnhancedLeaveRequest=function(){
  try{
+  const leaveEsc=v=>{const d=document.createElement('div');d.textContent=String(v??'');return d.innerHTML};
+  const leaveDateLabel=iso=>{if(!iso)return '';const p=String(iso).split('-').map(Number);const d=p.length===3?new Date(p[0],p[1]-1,p[2]):new Date(iso);return d.toLocaleDateString('ar-IQ',{weekday:'long',year:'numeric',month:'long',day:'numeric'})};
   const photo=leavePhoto||window.__studentLeavePhoto||'';
   const reason=document.getElementById('leaveReason')?.value.trim()||'';
   const day=getStudentLeaveDay();
@@ -10346,7 +10348,7 @@ window.previewEnhancedLeaveRequest=function(){
   const target=leaveTarget||window.__studentLeaveTarget||'manager';
   const old=document.getElementById('leavePreviewModal');if(old)old.remove();
   const m=document.createElement('div');m.id='leavePreviewModal';m.className='activity-modal-overlay';
-  m.innerHTML='<div class="activity-modal" style="max-width:520px;width:calc(100% - 24px);max-height:90vh;overflow:auto"><h3 style="text-align:center;color:var(--primary-color)">📋 معاينة طلب الإجازة</h3><div class="leave-preview"><img src="'+lrEsc(photo)+'" alt="صورة الطالب"><div><b>اسم الطالب:</b> '+lrEsc(st.name||'')+'</div><div><b>الصف:</b> '+lrEsc(st.grade||'')+'</div><div><b>طلب الإجازة من:</b> '+(target==='manager'?'المدير':'المعاون')+'</div><div><b>اليوم:</b> '+lrEsc(lrDateLabel(day))+'</div><div><b>سبب الإجازة:</b> '+lrEsc(reason)+'</div><div><b>هل لديه امتحان:</b> '+(hasExam?'نعم — '+lrEsc(subject):'لا')+'</div></div><div class="feature-actions"><button type="button" class="feature-primary" id="leaveConfirmSendBtn">✅ تأكيد الإرسال</button><button type="button" id="leaveCancelPreviewBtn">❌ إلغاء</button></div></div>';
+  m.innerHTML='<div class="activity-modal" style="max-width:520px;width:calc(100% - 24px);max-height:90vh;overflow:auto"><h3 style="text-align:center;color:var(--primary-color)">📋 معاينة طلب الإجازة</h3><div class="leave-preview"><img src="'+leaveEsc(photo)+'" alt="صورة الطالب"><div><b>اسم الطالب:</b> '+leaveEsc(st.name||'')+'</div><div><b>الصف:</b> '+leaveEsc(st.grade||'')+'</div><div><b>طلب الإجازة من:</b> '+(target==='manager'?'المدير':'المعاون')+'</div><div><b>اليوم:</b> '+leaveEsc(leaveDateLabel(day))+'</div><div><b>سبب الإجازة:</b> '+leaveEsc(reason)+'</div><div><b>هل لديه امتحان:</b> '+(hasExam?'نعم — '+leaveEsc(subject):'لا')+'</div></div><div class="feature-actions"><button type="button" class="feature-primary" id="leaveConfirmSendBtn">✅ تأكيد الإرسال</button><button type="button" id="leaveCancelPreviewBtn">❌ إلغاء</button></div></div>';
   document.body.appendChild(m);
   document.getElementById('leaveConfirmSendBtn').onclick=function(){window.confirmEnhancedLeaveRequest()};
   document.getElementById('leaveCancelPreviewBtn').onclick=function(){m.remove()};
@@ -10355,6 +10357,7 @@ window.previewEnhancedLeaveRequest=function(){
 };
 window.confirmEnhancedLeaveRequest=function(){
  try{
+  const leaveNow=()=>{const d=new Date();return {date:d.toLocaleDateString('ar-IQ'),time:d.toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit'})}};
   const st=(typeof studentsData!=='undefined'?studentsData:[]).find(x=>String(x.id)===String(document.getElementById('leaveStudentNameSelect')?.value||''));
   const photo=leavePhoto||window.__studentLeavePhoto||'';
   const reason=document.getElementById('leaveReason')?.value.trim()||'';
@@ -10366,7 +10369,7 @@ window.confirmEnhancedLeaveRequest=function(){
   if(isNaN(d.getTime())||d.getDay()===5||d.getDay()===6){alert('الجمعة والسبت لا يدخلان في قائمة أيام الإجازة.');lrPopulateDays();return}
   if(hasExam&&!subject){alert('يرجى اختيار مادة الامتحان.');return}
   let all=[];try{all=JSON.parse(localStorage.getItem('SCHOOL_LEAVE_REQUESTS_V1')||'[]')}catch(e){}
-  const t=typeof lrNow==='function'?lrNow():{date:new Date().toLocaleDateString('ar-IQ'),time:new Date().toLocaleTimeString('ar-IQ')};
+  const t=leaveNow();
   const target=leaveTarget||window.__studentLeaveTarget||'manager';
   all.unshift({id:'LR_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),studentName:st.name,grade:st.grade,section:st.section||'',target,reason,day,hasExam,examSubject:subject,status:'pending',createdDate:t.date,createdTime:t.time,decisionBy:'',decisionDate:'',decisionTime:'',identityPhoto:photo});
   localStorage.setItem('SCHOOL_LEAVE_REQUESTS_V1',JSON.stringify(all));
