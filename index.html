@@ -310,7 +310,7 @@
         .student-sheet-table th,.student-sheet-table td{border:1px solid #444;padding:6px 4px;text-align:center;vertical-align:middle;font-size:12px;line-height:1.35;word-wrap:break-word;}
         .student-sheet-table th{background:#fff;color:#111;font-weight:900;}
         .student-sheet-table .col-no{width:5%;}.student-sheet-table .col-name{width:34%;}.student-sheet-table .col-phone{width:28%;}.student-sheet-table .col-face{width:10%;}.student-sheet-table .col-edit{width:7.5%;}.student-sheet-table .col-delete{width:7.5%;}.student-sheet-table .col-move{width:8%;}
-        .student-sheet-table .face-ok{color:#16823a;font-size:20px;font-weight:900;}.student-sheet-table .face-controls{display:flex;align-items:center;justify-content:center;gap:2px;flex-wrap:wrap}.student-sheet-table .face-mini-edit,.student-sheet-table .face-mini-delete{border:0;background:transparent;cursor:pointer;font-size:14px;padding:1px 2px;line-height:1}.student-sheet-table .face-mini-edit{color:#0d6efd}.student-sheet-table .face-mini-delete{color:#dc3545}.student-sheet-table .face-mini-edit:hover,.student-sheet-table .face-mini-delete:hover{transform:scale(1.12)}
+        .student-sheet-table .face-ok{color:#16823a;font-size:20px;font-weight:900;border:0;background:transparent;cursor:pointer;padding:1px 4px;line-height:1}.student-sheet-table .face-ok:hover{transform:scale(1.08)}.student-sheet-table .face-controls{display:flex;align-items:center;justify-content:center;gap:2px;flex-wrap:wrap}.student-sheet-table .face-controls-hidden{display:none!important}.student-sheet-table .face-mini-edit,.student-sheet-table .face-mini-delete{border:0;background:transparent;cursor:pointer;font-size:14px;padding:1px 2px;line-height:1}.student-sheet-table .face-mini-edit{color:#0d6efd}.student-sheet-table .face-mini-delete{color:#dc3545}.student-sheet-table .face-mini-edit:hover,.student-sheet-table .face-mini-delete:hover{transform:scale(1.12)}
         .student-sheet-table .face-btn{border:0;background:transparent;cursor:pointer;font-size:20px;line-height:1;padding:2px;}
         .student-sheet-table .face-btn:hover{transform:scale(1.08);}
         .student-sheet-table .action-mini{border:0;border-radius:5px;padding:4px 3px;font-size:10px;font-weight:800;cursor:pointer;width:100%;}
@@ -2297,7 +2297,7 @@
   const SYNC_KEYS=new Set([
     'schoolStudentsData','schoolArchiveData','activeStudentsList','loggedOutStudentsList',
     'activeStaffList','loggedOutStaffList','staffActivities','studentActivities',
-    'FACE_ATTENDANCE_STUDENTS','FACE_ATTENDANCE_RECORDS','FACE_ATTENDANCE_TEACHER',
+    'FACE_ATTENDANCE_STUDENTS','FACE_ATTENDANCE_RECORDS','FACE_ATTENDANCE_TEACHER','SCHOOL_STAFF_FACE_RECORDS_V1',
     'schoolWhatsappGroups','schoolWhatsappSenderNumber','schoolWhatsappBulkApiEndpoint',
     'schoolWhatsappBulkApiKey','schoolWhatsappMessageMode','schoolWhatsappTemplateName',
     'schoolWhatsappTemplateLanguage','SCHOOL_LEAVE_REQUESTS_V1',
@@ -4558,6 +4558,13 @@
             } catch(e) { return null; }
         }
 
+        function toggleStudentFaceControls(button) {
+            try {
+                const controls = button && button.parentElement ? button.parentElement : null;
+                if (controls) controls.classList.toggle("face-controls-hidden");
+            } catch(e) {}
+        }
+
         function openFaceRegistrationForStudent(id) {
             if(typeof window.openFaceRegistrationForSchoolStudent === 'function') window.openFaceRegistrationForSchoolStudent(id);
             else alert('صفحة تسجيل بصمة الوجه غير جاهزة الآن.');
@@ -4621,7 +4628,7 @@
                 sheet.innerHTML=`<div class="student-sheet-head"><div class="student-sheet-school">إدارة ثانوية الفراجية للبنين<span>منصة إلكترونية</span></div><div class="student-sheet-logo">${logoMarkup}</div><div class="student-sheet-grade"><span>الصف</span><br>${escapeHtml(grade)}</div></div><div class="student-sheet-title">قائمة معلومات الطلبة</div><div class="student-sheet-year">للعام الدراسي 2026-2027</div><table class="student-sheet-table"><thead><tr><th class="col-no">ت</th><th class="col-name">اسم الطالب الثلاثي</th><th class="col-phone">هاتف ولي الأمر</th><th class="col-face">بصمة الوجه</th><th class="col-edit no-print">تعديل</th><th class="col-delete no-print">حذف</th><th class="col-move no-print">نقل</th></tr></thead><tbody></tbody></table><div class="student-sheet-footer"><div class="principal"><span>المدير</span><br>د. سعدون حزين فرحان</div><div class="developer"><span>إعداد وبرمجة</span><br>د. أحمد عباس جمعه 2026</div></div>`;
                 const tbody=sheet.querySelector('tbody'); const count=Math.max(30,list.length);
                 for(let i=0;i<count;i++){ const st=list[i]; const tr=document.createElement('tr');
-                    if(st){ const face=getStudentFaceRecord(st); tr.innerHTML=`<td>${i+1}</td><td style="font-weight:800;text-align:right;">${escapeHtml(st.name||'')}${st.section?`<div style="font-size:8px;font-weight:600;color:#555;">شعبة ${escapeHtml(st.section)}</div>`:''}</td><td class="phone-cell">${escapeHtml(st.phone||'-')}</td><td>${face?`<div class="face-controls"><span class="face-ok" title="تم تسجيل بصمة الوجه">✓</span><button type="button" class="face-mini-edit" title="تعديل بصمة الوجه" onclick="editStudentFace('${st.id}')">✏️</button><button type="button" class="face-mini-delete" title="مسح بصمة الوجه" onclick="deleteStudentFace('${st.id}')">🗑️</button></div>`:`<button class="face-btn" title="تسجيل بصمة الوجه" onclick="openFaceRegistrationForStudent('${st.id}')">📷</button>`}</td><td class="no-print"><button class="action-mini action-edit" onclick="editStudent('${st.id}')">تعديل</button></td><td class="no-print"><button class="action-mini action-delete" onclick="deleteStudent('${st.id}')">حذف</button></td><td class="no-print"><button class="action-mini action-move" onclick="moveStudent('${st.id}')">نقل</button></td>`;
+                    if(st){ const face=getStudentFaceRecord(st); tr.innerHTML=`<td>${i+1}</td><td style="font-weight:800;text-align:right;">${escapeHtml(st.name||'')}${st.section?`<div style="font-size:8px;font-weight:600;color:#555;">شعبة ${escapeHtml(st.section)}</div>`:''}</td><td class="phone-cell">${escapeHtml(st.phone||'-')}</td><td>${face?`<div class="face-controls"><button type="button" class="face-ok" title="اضغط لإظهار خيارات البصمة" onclick="toggleStudentFaceControls(this)">✓</button><span class="face-controls-hidden" style="display:inline-flex;align-items:center;gap:2px;"><button type="button" class="face-mini-edit" title="تعديل بصمة الوجه" onclick="editStudentFace('${st.id}')">✏️</button><button type="button" class="face-mini-delete" title="مسح بصمة الوجه" onclick="deleteStudentFace('${st.id}')">🗑️</button></span></div>`:`<button class="face-btn" title="تسجيل بصمة الوجه" onclick="openFaceRegistrationForStudent('${st.id}')">📷</button>`}</td><td class="no-print"><button class="action-mini action-edit" onclick="editStudent('${st.id}')">تعديل</button></td><td class="no-print"><button class="action-mini action-delete" onclick="deleteStudent('${st.id}')">حذف</button></td><td class="no-print"><button class="action-mini action-move" onclick="moveStudent('${st.id}')">نقل</button></td>`;
                     } else { tr.className='student-empty-row'; tr.innerHTML=`<td>${i+1}</td><td></td><td></td><td></td><td class="no-print"></td><td class="no-print"></td><td class="no-print"></td>`; }
                     tbody.appendChild(tr); }
                 sheets.appendChild(sheet);
@@ -5059,6 +5066,20 @@ const ATTENDANCE_KEY =
 
 const TEACHER_KEY =
 "FACE_ATTENDANCE_TEACHER";
+
+/* تنظيف بصمات الوجه القديمة مرة واحدة لإعادة التسجيل من جديد */
+const FACE_DATA_RESET_VERSION = "2026-09-09-RESET-1";
+(function resetAllOldFaceRecordsOnce(){
+    try {
+        if (localStorage.getItem("FACE_DATA_RESET_VERSION") !== FACE_DATA_RESET_VERSION) {
+            localStorage.removeItem(STUDENTS_KEY);
+            localStorage.removeItem(TEACHER_KEY);
+            localStorage.removeItem("SCHOOL_STAFF_FACE_RECORDS_V1");
+            localStorage.setItem("FACE_DATA_RESET_VERSION", FACE_DATA_RESET_VERSION);
+            console.log("Old face records cleared for fresh registration.");
+        }
+    } catch(e) { console.error("Face data reset failed", e); }
+})();
 
 const SCHOOL_NAME =
 "ثانوية الفراجية للبنين";
