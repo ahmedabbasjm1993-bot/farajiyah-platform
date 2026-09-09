@@ -310,7 +310,7 @@
         .student-sheet-table th,.student-sheet-table td{border:1px solid #444;padding:6px 4px;text-align:center;vertical-align:middle;font-size:12px;line-height:1.35;word-wrap:break-word;}
         .student-sheet-table th{background:#fff;color:#111;font-weight:900;}
         .student-sheet-table .col-no{width:5%;}.student-sheet-table .col-name{width:34%;}.student-sheet-table .col-phone{width:28%;}.student-sheet-table .col-face{width:10%;}.student-sheet-table .col-edit{width:7.5%;}.student-sheet-table .col-delete{width:7.5%;}.student-sheet-table .col-move{width:8%;}
-        .student-sheet-table .face-ok{color:#16823a;font-size:20px;font-weight:900;}
+        .student-sheet-table .face-ok{color:#16823a;font-size:20px;font-weight:900;}.student-sheet-table .face-controls{display:flex;align-items:center;justify-content:center;gap:2px;flex-wrap:wrap}.student-sheet-table .face-mini-edit,.student-sheet-table .face-mini-delete{border:0;background:transparent;cursor:pointer;font-size:14px;padding:1px 2px;line-height:1}.student-sheet-table .face-mini-edit{color:#0d6efd}.student-sheet-table .face-mini-delete{color:#dc3545}.student-sheet-table .face-mini-edit:hover,.student-sheet-table .face-mini-delete:hover{transform:scale(1.12)}
         .student-sheet-table .face-btn{border:0;background:transparent;cursor:pointer;font-size:20px;line-height:1;padding:2px;}
         .student-sheet-table .face-btn:hover{transform:scale(1.08);}
         .student-sheet-table .action-mini{border:0;border-radius:5px;padding:4px 3px;font-size:10px;font-weight:800;cursor:pointer;width:100%;}
@@ -1735,12 +1735,6 @@
 <div class="card">
 <h2>👨‍🎓 تسجيل طالب جديد</h2>
 <div class="input-group">
-<label for="studentName">
-            اسم الطالب كاملًا
-        </label>
-<input autocomplete="off" id="studentName" placeholder="اكتب اسم الطالب كاملًا" type="text"/>
-</div>
-<div class="input-group">
 <label for="studentClass">
             الصف
         </label>
@@ -1755,6 +1749,12 @@
 <option value="الخامس الأدبي">الخامس الأدبي</option>
 <option value="السادس العلمي">السادس العلمي</option>
 <option value="السادس الأدبي">السادس الأدبي</option>
+</select>
+</div>
+<div class="input-group">
+<label for="studentName">اسم الطالب</label>
+<select id="studentName" disabled>
+<option value="">اختر الصف أولاً</option>
 </select>
 </div>
 <div class="button-row">
@@ -4552,8 +4552,9 @@
             try {
                 const faces = JSON.parse(localStorage.getItem('FACE_ATTENDANCE_STUDENTS') || '[]');
                 const norm = v => String(v || '').trim().replace(/\s+/g,' ');
-                return faces.find(f => f && f.schoolStudentId === st.id && Array.isArray(f.descriptor)) ||
-                       faces.find(f => f && Array.isArray(f.descriptor) && norm(f.name) === norm(st.name) && norm(f.className) === norm(st.grade)) || null;
+                const sid = st && st.id != null ? String(st.id) : '';
+                return faces.find(f => f && sid && f.schoolStudentId != null && String(f.schoolStudentId) === sid && (Array.isArray(f.descriptor) || Array.isArray(f.descriptors))) ||
+                       faces.find(f => f && (Array.isArray(f.descriptor) || Array.isArray(f.descriptors)) && norm(f.name) === norm(st.name) && norm(f.className) === norm(st.grade)) || null;
             } catch(e) { return null; }
         }
 
@@ -4620,7 +4621,7 @@
                 sheet.innerHTML=`<div class="student-sheet-head"><div class="student-sheet-school">إدارة ثانوية الفراجية للبنين<span>منصة إلكترونية</span></div><div class="student-sheet-logo">${logoMarkup}</div><div class="student-sheet-grade"><span>الصف</span><br>${escapeHtml(grade)}</div></div><div class="student-sheet-title">قائمة معلومات الطلبة</div><div class="student-sheet-year">للعام الدراسي 2026-2027</div><table class="student-sheet-table"><thead><tr><th class="col-no">ت</th><th class="col-name">اسم الطالب الثلاثي</th><th class="col-phone">هاتف ولي الأمر</th><th class="col-face">بصمة الوجه</th><th class="col-edit no-print">تعديل</th><th class="col-delete no-print">حذف</th><th class="col-move no-print">نقل</th></tr></thead><tbody></tbody></table><div class="student-sheet-footer"><div class="principal"><span>المدير</span><br>د. سعدون حزين فرحان</div><div class="developer"><span>إعداد وبرمجة</span><br>د. أحمد عباس جمعه 2026</div></div>`;
                 const tbody=sheet.querySelector('tbody'); const count=Math.max(30,list.length);
                 for(let i=0;i<count;i++){ const st=list[i]; const tr=document.createElement('tr');
-                    if(st){ const face=getStudentFaceRecord(st); tr.innerHTML=`<td>${i+1}</td><td style="font-weight:800;text-align:right;">${escapeHtml(st.name||'')}${st.section?`<div style="font-size:8px;font-weight:600;color:#555;">شعبة ${escapeHtml(st.section)}</div>`:''}</td><td class="phone-cell">${escapeHtml(st.phone||'-')}</td><td>${face?'<span class="face-ok" title="تم تسجيل بصمة الوجه">✓</span>':`<button class="face-btn" title="تسجيل بصمة الوجه" onclick="openFaceRegistrationForStudent('${st.id}')">📷</button>`}</td><td class="no-print"><button class="action-mini action-edit" onclick="editStudent('${st.id}')">تعديل</button></td><td class="no-print"><button class="action-mini action-delete" onclick="deleteStudent('${st.id}')">حذف</button></td><td class="no-print"><button class="action-mini action-move" onclick="moveStudent('${st.id}')">نقل</button></td>`;
+                    if(st){ const face=getStudentFaceRecord(st); tr.innerHTML=`<td>${i+1}</td><td style="font-weight:800;text-align:right;">${escapeHtml(st.name||'')}${st.section?`<div style="font-size:8px;font-weight:600;color:#555;">شعبة ${escapeHtml(st.section)}</div>`:''}</td><td class="phone-cell">${escapeHtml(st.phone||'-')}</td><td>${face?`<div class="face-controls"><span class="face-ok" title="تم تسجيل بصمة الوجه">✓</span><button type="button" class="face-mini-edit" title="تعديل بصمة الوجه" onclick="editStudentFace('${st.id}')">✏️</button><button type="button" class="face-mini-delete" title="مسح بصمة الوجه" onclick="deleteStudentFace('${st.id}')">🗑️</button></div>`:`<button class="face-btn" title="تسجيل بصمة الوجه" onclick="openFaceRegistrationForStudent('${st.id}')">📷</button>`}</td><td class="no-print"><button class="action-mini action-edit" onclick="editStudent('${st.id}')">تعديل</button></td><td class="no-print"><button class="action-mini action-delete" onclick="deleteStudent('${st.id}')">حذف</button></td><td class="no-print"><button class="action-mini action-move" onclick="moveStudent('${st.id}')">نقل</button></td>`;
                     } else { tr.className='student-empty-row'; tr.innerHTML=`<td>${i+1}</td><td></td><td></td><td></td><td class="no-print"></td><td class="no-print"></td><td class="no-print"></td>`; }
                     tbody.appendChild(tr); }
                 sheets.appendChild(sheet);
@@ -5293,6 +5294,62 @@ function() {
 
 });
 
+function loadFaceRegistrationStudentNames(selectedId = "") {
+    const classValue = studentClass.value;
+    const select = studentName;
+    if (!select) return;
+    let schoolStudents = [];
+    try { schoolStudents = JSON.parse(localStorage.getItem("schoolStudentsData") || "[]"); } catch(e) {}
+    const list = schoolStudents.filter(st => st && String(st.grade || "") === String(classValue || ""))
+        .sort((a,b) => String(a.name || "").localeCompare(String(b.name || ""), "ar"));
+    if (!classValue) {
+        select.innerHTML = '<option value="">اختر الصف أولاً</option>';
+        select.disabled = true;
+        return;
+    }
+    if (!list.length) {
+        select.innerHTML = '<option value="">لا يوجد طلاب محفوظون في هذا الصف</option>' +
+            '<option value="__ADD_NEW_STUDENT__">➕ إضافة طالب جديد</option>';
+        select.disabled = false;
+        return;
+    }
+    select.innerHTML = '<option value="">-- اختر اسم الطالب --</option>' + list.map(st =>
+        `<option value="${String(st.id).replace(/"/g, '&quot;')}">${escapeHtml(st.name || "")}${st.section ? ` — شعبة ${escapeHtml(st.section)}` : ""}</option>`
+    ).join("") + '<option value="__ADD_NEW_STUDENT__">➕ إضافة طالب جديد</option>';
+    select.disabled = false;
+    if (selectedId && list.some(st => String(st.id) === String(selectedId))) select.value = String(selectedId);
+}
+
+function openAddNewStudentFromFaceRegistration() {
+    const selectedGrade = studentClass.value || '';
+    linkedSchoolStudentId = null;
+    editingFaceStudentId = null;
+    if (typeof switchMainTab === 'function') switchMainTab('students');
+    if (typeof switchSubTab === 'function') switchSubTab('add');
+    const gradeInput = document.getElementById('addStudentGrade');
+    if (gradeInput && selectedGrade) gradeInput.value = selectedGrade;
+    const nameInput = document.getElementById('addStudentName');
+    if (nameInput) {
+        nameInput.focus();
+        try { nameInput.scrollIntoView({behavior:'smooth', block:'center'}); } catch(e) {}
+    }
+}
+
+studentClass.addEventListener("change", function() {
+    linkedSchoolStudentId = null;
+    loadFaceRegistrationStudentNames();
+});
+
+studentName.addEventListener("change", function() {
+    if (studentName.value === "__ADD_NEW_STUDENT__") {
+        openAddNewStudentFromFaceRegistration();
+        return;
+    }
+    if (studentName.value) {
+        linkedSchoolStudentId = studentName.value;
+    }
+});
+
 showRegisterStudent.addEventListener(
 "click",
 function() {
@@ -5300,6 +5357,14 @@ function() {
     hideAllSections();
 
     registerSection.classList.add("active");
+
+    if (!editingFaceStudentId && !linkedSchoolStudentId) {
+        studentClass.value = "";
+        studentName.innerHTML = '<option value="">اختر الصف أولاً</option>';
+        studentName.disabled = true;
+    } else {
+        loadFaceRegistrationStudentNames(linkedSchoolStudentId || "");
+    }
 
     attendanceSubMenu.style.display =
     "none";
@@ -6304,11 +6369,12 @@ async function() {
 
     }
 
-    const name =
-    studentName.value.trim();
-
-    const className =
-    studentClass.value;
+    const selectedSchoolStudentId = String(studentName.value || "").trim();
+    const className = studentClass.value;
+    let schoolStudents = [];
+    try { schoolStudents = JSON.parse(localStorage.getItem("schoolStudentsData") || "[]"); } catch(e) {}
+    const selectedSchoolStudent = schoolStudents.find(st => String(st.id) === selectedSchoolStudentId);
+    const name = selectedSchoolStudent ? String(selectedSchoolStudent.name || "").trim() : "";
 
     if (!name || !className) {
 
@@ -6374,6 +6440,8 @@ async function() {
             detection.descriptor
         );
 
+        linkedSchoolStudentId = selectedSchoolStudentId;
+
         const students =
         getStudents();
 
@@ -6411,7 +6479,7 @@ async function() {
                         )
                     );
 
-                    if (distance < 0.48) {
+                    if (distance < 0.55) {
 
                         showMessage(
                             registerMessage,
@@ -6464,6 +6532,8 @@ async function() {
 
                 studentClass.value =
                 "";
+                studentName.innerHTML = '<option value="">اختر الصف أولاً</option>';
+                studentName.disabled = true;
 
                 renderStudents();
                 if (typeof loadStudents === "function") loadStudents();
@@ -6526,7 +6596,7 @@ async function() {
                 )
             );
 
-            if (distance < 0.48) {
+            if (distance < 0.55) {
 
                 showMessage(
                     registerMessage,
@@ -6595,6 +6665,8 @@ async function() {
 
         studentClass.value =
         "";
+        studentName.innerHTML = '<option value="">اختر الصف أولاً</option>';
+        studentName.disabled = true;
 
         renderStudents();
 
@@ -6739,8 +6811,8 @@ window.openFaceRegistrationForSchoolStudent = function(schoolStudentId) {
         if (!st) return;
 
         const faces = getStudents();
-        const existing = faces.find(f => f && f.schoolStudentId === schoolStudentId) ||
-            faces.find(f => f && String(f.name || '').trim() === String(st.name || '').trim() &&
+        const existing = faces.find(f => f && f.schoolStudentId != null && String(f.schoolStudentId) === String(schoolStudentId) && (Array.isArray(f.descriptor) || Array.isArray(f.descriptors))) ||
+            faces.find(f => f && (Array.isArray(f.descriptor) || Array.isArray(f.descriptors)) && String(f.name || '').trim() === String(st.name || '').trim() &&
                               String(f.className || '').trim() === String(st.grade || '').trim());
 
         linkedSchoolStudentId = schoolStudentId;
@@ -6755,8 +6827,8 @@ window.openFaceRegistrationForSchoolStudent = function(schoolStudentId) {
         }
 
         // تعبئة بيانات الطالب تلقائيًا بعد فتح الصفحة
-        studentName.value = st.name || '';
         studentClass.value = st.grade || '';
+        loadFaceRegistrationStudentNames(schoolStudentId);
         if (typeof attendanceSubMenu !== 'undefined' && attendanceSubMenu) attendanceSubMenu.style.display = 'none';
 
         if (typeof loadModels === 'function') loadModels();
@@ -6771,6 +6843,9 @@ window.openFaceRegistrationForSchoolStudent = function(schoolStudentId) {
         alert('تعذر فتح صفحة تسجيل بصمة الوجه للطالب.');
     }
 };
+
+window.editStudentFace=function(schoolStudentId){if(typeof window.openFaceRegistrationForSchoolStudent==='function')window.openFaceRegistrationForSchoolStudent(schoolStudentId)};
+window.deleteStudentFace=function(schoolStudentId){try{const schoolStudents=JSON.parse(localStorage.getItem('schoolStudentsData')||'[]');const st=schoolStudents.find(x=>String(x.id)===String(schoolStudentId));if(!st)return;const faces=getStudents();const sid=String(schoolStudentId);const next=faces.filter(f=>!(f&&f.schoolStudentId!=null&&String(f.schoolStudentId)===sid));if(next.length===faces.length){const norm=v=>String(v||'').trim().replace(/\s+/g,' ');const n=norm(st.name),g=norm(st.grade);const filtered=faces.filter(f=>!(f&&norm(f.name)===n&&norm(f.className)===g));if(filtered.length===faces.length){alert('لا توجد بصمة وجه مسجلة لهذا الطالب.');return}if(!confirm('هل تريد مسح بصمة وجه الطالب «'+st.name+'»؟'))return;saveStudents(filtered);}else{if(!confirm('هل تريد مسح بصمة وجه الطالب «'+st.name+'»؟'))return;saveStudents(next)}if(typeof renderStudents==='function')renderStudents();if(typeof loadStudents==='function')loadStudents();alert('✅ تم مسح بصمة وجه الطالب فقط، وبقيت بياناته محفوظة.')}catch(e){console.error(e);alert('تعذر مسح بصمة الوجه.')}};
 
 function reRegisterFace(id) {
 
@@ -10239,7 +10314,7 @@ window.populateLeaveFaceStudents=function(){const grade=document.getElementById(
 function stopLeaveCamera(){if(leaveStream){leaveStream.getTracks().forEach(t=>t.stop());leaveStream=null}const v=document.getElementById('leaveIdentityVideo');if(v)v.srcObject=null}
 function leaveIdentityRetryButton(){return '<button type="button" class="btn-action btn-view" style="margin-top:8px;width:100%;" onclick="startLeaveIdentityCamera()">🔄 إعادة المحاولة</button>'}
 window.startLeaveIdentityCamera=async function(){const id=document.getElementById('leaveStudentNameSelect').value;if(!id)return;const st=(typeof studentsData!=='undefined'?studentsData:[]).find(x=>x.id===id);leaveFaceRecord=st&&typeof getStudentFaceRecord==='function'?getStudentFaceRecord(st):null;if(!leaveFaceRecord){alert('هذا الطالب لم يسجل بصمة وجه.');return}stopLeaveCamera();leaveFaceAttempts=0;leavePhoto='';document.getElementById('leaveDetailsPanel').classList.add('hidden');const box=document.getElementById('leaveIdentityCameraBox'),v=document.getElementById('leaveIdentityVideo'),status=document.getElementById('leaveIdentityStatus');box.classList.remove('hidden');status.innerHTML='⏳ يرجى إبقاء الوجه أمام الكاميرا...';try{leaveStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});v.srcObject=leaveStream;await v.play();setTimeout(captureLeaveIdentity,700)}catch(e){stopLeaveCamera();box.classList.add('hidden');status.innerHTML='❌ تعذر تشغيل الكاميرا. اسمح للمنصة باستخدام الكاميرا.'+leaveIdentityRetryButton()}};
-async function captureLeaveIdentity(){if(!leaveStream||!leaveFaceRecord)return;const v=document.getElementById('leaveIdentityVideo'),status=document.getElementById('leaveIdentityStatus');try{leaveFaceAttempts++;const d=await faceapi.detectSingleFace(v,new faceapi.TinyFaceDetectorOptions({inputSize:416,scoreThreshold:.5})).withFaceLandmarks().withFaceDescriptor();if(!d){if(leaveFaceAttempts>=10){stopLeaveCamera();document.getElementById('leaveIdentityCameraBox').classList.add('hidden');status.innerHTML='❌ لم يتم التعرف على الوجه بوضوح. حاول مرة أخرى.'+leaveIdentityRetryButton();return}status.textContent='❌ لم يتم التعرف على الوجه بوضوح، حاول مرة أخرى.';setTimeout(captureLeaveIdentity,700);return}const dist=faceapi.euclideanDistance(d.descriptor,new Float32Array(leaveFaceRecord.descriptor));if(dist>=.48){stopLeaveCamera();document.getElementById('leaveIdentityCameraBox').classList.add('hidden');status.innerHTML='❌ بصمة الوجه لا تطابق الطالب المحدد.'+leaveIdentityRetryButton();return}const c=document.createElement('canvas');c.width=v.videoWidth||640;c.height=v.videoHeight||480;c.getContext('2d').drawImage(v,0,0,c.width,c.height);leavePhoto=c.toDataURL('image/jpeg',.82);stopLeaveCamera();document.getElementById('leaveIdentityCameraBox').classList.add('hidden');status.textContent='✅ تم إثبات الشخصية والتقاط الصورة تلقائياً.';document.getElementById('leaveDetailsPanel').classList.remove('hidden');if(typeof lrPopulateDays==='function')lrPopulateDays();const daySelect=document.getElementById('leaveDaySelect');if(daySelect){daySelect.disabled=false;daySelect.style.pointerEvents='auto';daySelect.focus()}}catch(e){stopLeaveCamera();document.getElementById('leaveIdentityCameraBox').classList.add('hidden');status.innerHTML='❌ تعذر تحليل الوجه. حاول مرة أخرى.'+leaveIdentityRetryButton()}}
+async function captureLeaveIdentity(){if(!leaveStream||!leaveFaceRecord)return;const v=document.getElementById('leaveIdentityVideo'),status=document.getElementById('leaveIdentityStatus');try{leaveFaceAttempts++;const d=await faceapi.detectSingleFace(v,new faceapi.TinyFaceDetectorOptions({inputSize:416,scoreThreshold:.5})).withFaceLandmarks().withFaceDescriptor();if(!d){if(leaveFaceAttempts>=10){stopLeaveCamera();document.getElementById('leaveIdentityCameraBox').classList.add('hidden');status.innerHTML='❌ لم يتم التعرف على الوجه بوضوح. حاول مرة أخرى.'+leaveIdentityRetryButton();return}status.textContent='❌ لم يتم التعرف على الوجه بوضوح، حاول مرة أخرى.';setTimeout(captureLeaveIdentity,700);return}const refs=[];if(Array.isArray(leaveFaceRecord.descriptor))refs.push(leaveFaceRecord.descriptor);if(Array.isArray(leaveFaceRecord.descriptors))leaveFaceRecord.descriptors.forEach(x=>{if(Array.isArray(x))refs.push(x)});const distances=refs.map(x=>{try{return faceapi.euclideanDistance(d.descriptor,new Float32Array(x))}catch(e){return 999}});const dist=distances.length?Math.min(...distances):999;if(dist>=.58){if(leaveFaceAttempts>=10){stopLeaveCamera();document.getElementById('leaveIdentityCameraBox').classList.add('hidden');status.innerHTML='❌ بصمة الوجه لا تطابق الطالب المحدد. تأكد من الإضاءة وظهور الوجه كاملاً ثم حاول مرة أخرى.'+leaveIdentityRetryButton();return}status.textContent='⏳ يتم التحقق من الوجه... أبقِ الوجه أمام الكاميرا.';setTimeout(captureLeaveIdentity,700);return}const c=document.createElement('canvas');c.width=v.videoWidth||640;c.height=v.videoHeight||480;c.getContext('2d').drawImage(v,0,0,c.width,c.height);leavePhoto=c.toDataURL('image/jpeg',.82);stopLeaveCamera();document.getElementById('leaveIdentityCameraBox').classList.add('hidden');status.textContent='✅ تم إثبات الشخصية والتقاط الصورة تلقائياً.';document.getElementById('leaveDetailsPanel').classList.remove('hidden');if(typeof lrPopulateDays==='function')lrPopulateDays();const daySelect=document.getElementById('leaveDaySelect');if(daySelect){daySelect.disabled=false;daySelect.style.pointerEvents='auto'}}catch(e){stopLeaveCamera();document.getElementById('leaveIdentityCameraBox').classList.add('hidden');status.innerHTML='❌ تعذر تحليل الوجه. حاول مرة أخرى.'+leaveIdentityRetryButton()}}
 window.previewEnhancedLeaveRequest=function(){if(!leaveFaceRecord||!leavePhoto){alert('يجب إثبات الشخصية أولاً.');return}const reason=document.getElementById('leaveReason').value.trim();let day=document.getElementById('leaveDaySelect').value;if(day==='custom')day=document.getElementById('leaveCustomDay').value;const hasExam=document.getElementById('leaveHasExam').value==='yes',subject=hasExam?document.getElementById('leaveExamSubject').value:'';if(!reason||!day||(hasExam&&!subject)){alert('يرجى إكمال تفاصيل الإجازة.');return}const st=studentsData.find(x=>x.id===document.getElementById('leaveStudentNameSelect').value),m=document.createElement('div');m.id='leavePreviewModal';m.className='activity-modal-overlay';m.innerHTML=`<div class="activity-modal" style="max-width:520px"><h3 style="text-align:center;color:var(--primary-color)">🔎 معاينة طلب الإجازة</h3><div class="leave-preview"><img src="${leavePhoto}"><div><b>اسم الطالب:</b> ${esc(st?.name||'')}</div><div><b>الصف:</b> ${esc(st?.grade||'')}</div><div><b>طلب الإجازة من:</b> ${leaveTarget==='manager'?'المدير':'المعاون'}</div><div><b>اليوم:</b> ${esc(typeof lrDateLabel==='function'?lrDateLabel(day):day)}</div><div><b>سبب الإجازة:</b> ${esc(reason)}</div><div><b>هل لديه امتحان:</b> ${hasExam?'نعم':'لا'}${hasExam?' — '+esc(subject):''}</div></div><div class="feature-actions"><button class="feature-primary" onclick="confirmEnhancedLeaveRequest()">✅ تأكيد وإرسال</button><button onclick="document.getElementById('leavePreviewModal').remove()">↩ تعديل</button></div></div>`;document.body.appendChild(m)};
 window.confirmEnhancedLeaveRequest=function(){const st=studentsData.find(x=>x.id===document.getElementById('leaveStudentNameSelect').value);if(!st)return;const reason=document.getElementById('leaveReason').value.trim();let day=document.getElementById('leaveDaySelect').value;if(day==='custom')day=document.getElementById('leaveCustomDay').value;const hasExam=document.getElementById('leaveHasExam').value==='yes',subject=hasExam?document.getElementById('leaveExamSubject').value:'';const d=new Date(day+'T00:00:00');if(isNaN(d)||d.getDay()===5||d.getDay()===6){alert('يمكن طلب الإجازة من يوم الأحد إلى يوم الخميس فقط.');return}let all=[];try{all=JSON.parse(localStorage.getItem('SCHOOL_LEAVE_REQUESTS_V1')||'[]')}catch(e){}const t=typeof lrNow==='function'?lrNow():{date:new Date().toLocaleDateString('ar-IQ'),time:new Date().toLocaleTimeString('ar-IQ')};all.unshift({id:'LR_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),studentName:st.name,grade:st.grade,section:st.section||'',target:leaveTarget,reason,day,hasExam,examSubject:subject,status:'pending',createdDate:t.date,createdTime:t.time,decisionBy:'',decisionDate:'',decisionTime:'',identityPhoto:leavePhoto});localStorage.setItem('SCHOOL_LEAVE_REQUESTS_V1',JSON.stringify(all));document.getElementById('leavePreviewModal')?.remove();backToLeaveChooser();renderStudentLeaveStatus();alert('✅ تم إرسال طلب الإجازة مع صورة إثبات الشخصية إلى '+(leaveTarget==='manager'?'المدير':'المعاون')+'.')};
 window.backToLeaveChooser=function(){stopLeaveCamera();document.getElementById('leaveIdentityFlow').classList.add('hidden');document.getElementById('leaveRequestChooser').classList.remove('hidden');document.getElementById('leaveDetailsPanel').classList.add('hidden');history.back()};
