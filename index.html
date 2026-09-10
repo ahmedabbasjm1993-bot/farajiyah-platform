@@ -407,6 +407,19 @@
 #settingsTickerPanel.ticker-panel-fullscreen .ls-ticker-add-box,#settingsTickerPanel.ticker-panel-fullscreen .ls-ticker-list,#settingsTickerPanel.ticker-panel-fullscreen .ls-ticker-save-actions,#settingsTickerPanel.ticker-panel-fullscreen .ls-ticker-status,#settingsTickerPanel.ticker-panel-fullscreen .settings-back-btn{display:block!important}
 #settingsTickerPanel.ticker-panel-fullscreen .ls-ticker-save-actions{display:flex!important}
 #settingsTickerPanel.ticker-panel-fullscreen .settings-back-btn{width:100%!important;margin-top:14px!important}
+#settingsModal.attendance-shift-fullscreen{padding:0!important;align-items:stretch!important;justify-content:stretch!important}
+#settingsModal.attendance-shift-fullscreen>div{width:100%!important;max-width:none!important;height:100vh!important;max-height:none!important;min-height:100vh!important;box-sizing:border-box;border-radius:0!important;border-left:0!important;border-right:0!important;padding:24px 18px 40px!important;overflow-y:auto!important}
+#settingsModal.attendance-shift-fullscreen>div>h3{display:none!important}
+#settingsAttendanceShiftPanel.attendance-shift-panel-fullscreen{display:block!important;position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;min-height:100vh!important;max-height:none!important;box-sizing:border-box!important;margin:0!important;padding:24px 18px 40px!important;background:var(--white)!important;border:0!important;border-radius:0!important;overflow-y:auto!important;overflow-x:hidden!important;z-index:30001!important}
+#settingsAttendanceShiftPanel.attendance-shift-panel-fullscreen>div:first-child{font-size:1.35rem!important;margin-bottom:18px!important;padding-top:8px!important}
+#settingsAttendanceShiftPanel.attendance-shift-panel-fullscreen .settings-back-btn{width:100%!important;margin-top:14px!important}
+#settingsModal.customize-fullscreen{padding:0!important;align-items:stretch!important;justify-content:stretch!important}
+#settingsModal.customize-fullscreen>div{width:100%!important;max-width:none!important;height:100vh!important;max-height:none!important;min-height:100vh!important;box-sizing:border-box;border-radius:0!important;border-left:0!important;border-right:0!important;padding:24px 18px 40px!important;overflow-y:auto!important}
+#settingsModal.customize-fullscreen>div>h3{display:none!important}
+#settingsCustomizePanel.customize-panel-fullscreen{display:block!important;position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;min-height:100vh!important;max-height:none!important;box-sizing:border-box!important;margin:0!important;padding:24px 18px 40px!important;background:var(--white)!important;border:0!important;border-radius:0!important;overflow-y:auto!important;overflow-x:hidden!important;z-index:30001!important}
+#settingsCustomizePanel.customize-panel-fullscreen>div:first-child{font-size:1.35rem!important;margin-bottom:18px!important;padding-top:8px!important}
+#settingsCustomizePanel.customize-panel-fullscreen .settings-back-btn{width:100%!important;margin-top:14px!important}
+
 @media(max-width:600px){.ls-ticker-add-row{flex-direction:column}.ls-ticker-item{align-items:flex-start;flex-direction:column}.ls-ticker-actions{width:100%}.ls-ticker-actions button{flex:1}.ls-ticker-save-actions{flex-direction:column}.ls-ticker-save-actions button{width:100%}}
 .ls-ticker-fullscreen-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid #e1e1e1}
 .ls-ticker-title{font-size:1.45rem;font-weight:900;color:var(--primary-color);flex:1;text-align:center}
@@ -930,6 +943,101 @@
     font-size: .9rem;
 }
 
+ .student-attendance-app .weekly-fixed-sheet{background:#fff;box-sizing:border-box;width:210mm;min-height:297mm;padding:10mm 7mm 8mm;margin:0 auto 25px;direction:rtl;color:#111;font-family:Arial,"Tahoma",sans-serif}
+.student-attendance-app .fixed-paper-head{display:grid;grid-template-columns:1fr 92px 1fr;align-items:center;gap:8px;text-align:center;margin-bottom:3px}
+.student-attendance-app .fixed-paper-school{font-weight:900;font-size:19px;line-height:1.35}
+.student-attendance-app .fixed-paper-school span{display:block;font-size:17px;margin-top:2px}
+.student-attendance-app .fixed-paper-logo{width:92px;height:105px;display:flex;align-items:center;justify-content:center;margin:auto}
+.student-attendance-app .fixed-paper-logo svg{width:100%;height:100%}
+.student-attendance-app .fixed-paper-grade{font-weight:900;font-size:22px;line-height:1.25}
+.student-attendance-app .fixed-paper-title{text-align:center;font-weight:900;font-size:25px;line-height:1.35;margin:7px 0 1px}
+.student-attendance-app .fixed-paper-year{text-align:center;font-weight:900;font-size:22px;margin-bottom:7px;position:relative;padding-bottom:7px}
+.student-attendance-app .fixed-paper-year:after{content:"";position:absolute;bottom:0;left:30%;right:30%;height:3px;background:#198754}
+.student-attendance-app .weekly-fixed-table,.student-attendance-app .daily-fixed-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:14px;margin-top:8px}
+.student-attendance-app .weekly-fixed-table th,.student-attendance-app .weekly-fixed-table td,.student-attendance-app .daily-fixed-table th,.student-attendance-app .daily-fixed-table td{border:1.4px solid #222;padding:6px 4px;text-align:center;height:27px;box-sizing:border-box}
+.student-attendance-app .weekly-fixed-table th,.student-attendance-app .daily-fixed-table th{background:#eef5ef;font-weight:900;font-size:15px}
+.student-attendance-app .weekly-fixed-table th:first-child,.student-attendance-app .weekly-fixed-table td:first-child,.student-attendance-app .daily-fixed-table th:first-child,.student-attendance-app .daily-fixed-table td:first-child{width:7%}
+.student-attendance-app .weekly-fixed-table th:nth-child(2),.student-attendance-app .weekly-fixed-table td:nth-child(2){width:38%}
+.student-attendance-app .weekly-fixed-table th:nth-child(n+3),.student-attendance-app .weekly-fixed-table td:nth-child(n+3){width:11%}
+.student-attendance-app .daily-fixed-table th:nth-child(2),.student-attendance-app .daily-fixed-table td:nth-child(2){width:64%}
+.student-attendance-app .weekly-day-name{display:block;white-space:nowrap;font-size:15px;line-height:1.15}
+.student-attendance-app .weekly-day-date{display:block;white-space:nowrap;font-size:11px;line-height:1.15;margin-top:2px}
+.student-attendance-app .weekly-fixed-table th:nth-child(n+3){padding-left:2px;padding-right:2px}
+.student-attendance-app .fixed-responsible-item{white-space:nowrap;flex:1;text-align:center}
+.student-attendance-app .fixed-responsible-item .responsible-slot{display:inline;border:0;min-width:0;min-height:0}
+.student-attendance-app .fixed-responsible-item .responsible-slot:before{content:': ';}
+.student-attendance-app .fixed-responsible-item .responsible-slot{border-bottom:0}
+.student-attendance-app .weekly-fixed-table .name-cell,.student-attendance-app .daily-fixed-table .name-cell{text-align:right;font-weight:900;font-size:15px}
+.student-attendance-app .weekly-fixed-table .present-mark,.student-attendance-app .daily-fixed-table .present-mark{color:#198754;font-size:22px;font-weight:1000}
+.student-attendance-app .weekly-fixed-table .absent-mark,.student-attendance-app .daily-fixed-table .absent-mark{color:#dc3545;font-size:19px;font-weight:1000}
+.student-attendance-app .weekly-fixed-table .empty-mark{color:#888;font-weight:900}
+.student-attendance-app .fixed-responsibles{margin-top:9px;border:2px solid #198754;border-radius:8px;padding:6px 10px;font-weight:900;line-height:1.9;font-size:15px}
+.student-attendance-app .fixed-responsibles-title{text-align:center;font-size:20px;margin-bottom:2px}
+.student-attendance-app .fixed-responsible-row{display:flex;justify-content:space-between;gap:8px;flex-wrap:nowrap}
+.student-attendance-app .fixed-responsible-item{white-space:nowrap;flex:1;text-align:center}.student-attendance-app .responsible-slot{display:inline-block;min-width:55px;border-bottom:1px dotted #222;min-height:1.1em}.student-attendance-app .single-responsible .responsible-name{display:inline;min-width:0;min-height:0;border-bottom:0}
+.student-attendance-app .fixed-summary{display:flex;justify-content:center;gap:30px;font-weight:900;font-size:16px;margin-top:6px}
+.student-attendance-app .fixed-paper-footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:8px;font-weight:900;font-size:15px;line-height:1.45}
+.student-attendance-app .fixed-paper-footer .principal{text-align:right}.student-attendance-app .fixed-paper-footer .principal span{white-space:nowrap}
+.student-attendance-app .fixed-paper-footer .developer{text-align:left}.student-attendance-app .fixed-paper-footer .developer span{white-space:nowrap}
+.student-attendance-app .daily-fixed-sheet{background:#fff;box-sizing:border-box;width:210mm;min-height:297mm;padding:10mm 7mm 8mm;margin:0 auto 25px;direction:rtl;color:#111;font-family:Arial,"Tahoma",sans-serif}
+
+/* جداول الحضور: نفس عرض شاشة الهاتف مثل قوائم معلومات الطلبة */
+.student-attendance-app #dailyAttendanceSection.active,
+.student-attendance-app #weeklyAttendanceSection.active{
+ width:100vw!important;max-width:100vw!important;
+ margin-left:calc((100% - 100vw)/2)!important;
+ margin-right:calc((100% - 100vw)/2)!important;
+ overflow-x:hidden!important;
+}
+.student-attendance-app #dailyAttendanceSection.active>.card,
+.student-attendance-app #weeklyAttendanceSection.active>.card{
+ width:100%!important;max-width:none!important;
+ margin:0!important;padding:10px 6px 20px!important;
+ border-radius:0!important;box-shadow:none!important;
+}
+.student-attendance-app #dailyAttendanceSection .report-preview,
+.student-attendance-app #weeklyAttendanceSection .report-preview{
+ width:100%!important;max-width:none!important;overflow-x:hidden!important;
+}
+.student-attendance-app .weekly-fixed-sheet,.student-attendance-app .daily-fixed-sheet{
+ width:100%!important;max-width:100%!important;
+ margin-left:auto!important;margin-right:auto!important;
+}
+.student-attendance-app .weekly-fixed-table,.student-attendance-app .daily-fixed-table{
+ width:100%!important;max-width:100%!important;
+ table-layout:fixed!important;
+}
+.student-attendance-app .weekly-fixed-table th,.student-attendance-app .weekly-fixed-table td{
+ overflow:hidden;
+}
+.student-attendance-app .weekly-day-name,.student-attendance-app .weekly-day-date{
+ white-space:normal!important;overflow-wrap:anywhere;word-break:normal;
+}
+.student-attendance-app .fixed-responsible-item .responsible-slot{
+ min-width:0!important;border:0!important;border-bottom:0!important;
+}
+
+@media(max-width:700px){
+ .student-attendance-app .weekly-fixed-sheet,.student-attendance-app .daily-fixed-sheet{width:100%;min-height:0;padding:10px 6px}
+ .student-attendance-app .fixed-paper-head{grid-template-columns:1fr 62px 1fr;gap:3px}
+ .student-attendance-app .fixed-paper-school{font-size:11px}.student-attendance-app .fixed-paper-school span{font-size:10px}
+ .student-attendance-app .fixed-paper-logo{width:62px;height:76px}.student-attendance-app .fixed-paper-grade{font-size:14px}
+ .student-attendance-app .fixed-paper-title{font-size:17px}.student-attendance-app .fixed-paper-year{font-size:15px}
+ .student-attendance-app .weekly-fixed-table,.student-attendance-app .daily-fixed-table{font-size:9px;width:100%;table-layout:fixed}
+ .student-attendance-app .weekly-fixed-table th,.student-attendance-app .weekly-fixed-table td,.student-attendance-app .daily-fixed-table th,.student-attendance-app .daily-fixed-table td{padding:4px 1px;height:24px}
+ .student-attendance-app .weekly-fixed-table th,.student-attendance-app .daily-fixed-table th{font-size:9px}
+ .student-attendance-app .weekly-fixed-table th:first-child,.student-attendance-app .weekly-fixed-table td:first-child,.student-attendance-app .daily-fixed-table th:first-child,.student-attendance-app .daily-fixed-table td:first-child{width:7%}
+ .student-attendance-app .weekly-fixed-table th:nth-child(2),.student-attendance-app .weekly-fixed-table td:nth-child(2){width:38%}
+ .student-attendance-app .weekly-fixed-table th:nth-child(n+3),.student-attendance-app .weekly-fixed-table td:nth-child(n+3){width:11%}
+ .student-attendance-app .daily-fixed-table th:nth-child(2),.student-attendance-app .daily-fixed-table td:nth-child(2){width:64%}
+ .student-attendance-app .weekly-fixed-table .name-cell,.student-attendance-app .daily-fixed-table .name-cell{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .student-attendance-app .weekly-day-name{font-size:8px;line-height:1.05}.student-attendance-app .weekly-day-date{font-size:7px;line-height:1.05;margin-top:1px}
+ .student-attendance-app .fixed-responsibles{font-size:9px;padding:6px 4px}.student-attendance-app .fixed-responsibles-title{font-size:14px}
+ .student-attendance-app .fixed-responsible-row{gap:1px}.student-attendance-app .fixed-responsible-item{font-size:8px}
+ .student-attendance-app .fixed-summary{font-size:11px;gap:12px}.student-attendance-app .fixed-paper-footer{font-size:10px}
+}
+
+
 .student-attendance-app .toast{
     position: fixed;
     bottom: 20px;
@@ -1015,7 +1123,64 @@
         grid-template-columns: repeat(2, 1fr);
     }
 }
-</style></head>
+</style><style>
+
+/* ===== نظام استلام وتسليم الكتب ===== */
+.book-subject-tools{background:#f7faf8;border:1px solid #d4e1d9;border-radius:12px;padding:10px;margin-bottom:12px;direction:rtl}
+.book-subject-actions{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:9px}
+.book-subject-btn{flex:1;min-width:120px;border:1px solid #bfd2c7;background:#fff;color:#164f3a;border-radius:9px;padding:9px;font-weight:900;cursor:pointer}
+.book-subject-btn.active{background:var(--primary-color);color:#fff}
+.book-subject-tools .form-group{margin-bottom:8px}
+
+.book-handover-app{width:100%;max-width:100%;box-sizing:border-box;direction:rtl}
+.book-handover-title{font-size:1.45rem;font-weight:900;color:var(--primary-color);text-align:center;margin-bottom:5px}
+.book-handover-subtitle{text-align:center;color:#666;font-weight:700;margin-bottom:15px;line-height:1.7}
+.book-handover-tabs{display:flex;gap:8px;margin-bottom:14px}
+.book-handover-tab{flex:1;border:1px solid #c8d8cf;background:#f5f8f6;color:#164f3a;border-radius:10px;padding:12px;font-weight:900;cursor:pointer}
+.book-handover-tab.active{background:var(--primary-color);color:#fff}
+.book-handover-controls{background:#f7faf8;border:1px solid #d4e1d9;border-radius:12px;padding:12px;margin-bottom:15px}
+.book-handover-controls .form-group{margin-bottom:10px}
+.book-handover-actions{display:flex;gap:8px;flex-wrap:wrap}
+.book-handover-actions button{flex:1;min-width:130px;padding:10px;border-radius:9px;font-weight:900}
+.book-handover-status{text-align:center;font-weight:900;margin:8px 0}
+.book-handover-sheet{width:100%;box-sizing:border-box;background:#fff;border:1px solid #ddd;margin:0 0 22px;padding:12px;overflow:hidden;page-break-after:always}
+.book-handover-sheet-head{display:grid;grid-template-columns:1fr 1.5fr 1fr;align-items:center;gap:8px;text-align:center;margin-bottom:8px}
+.book-handover-school{font-weight:900;font-size:16px;line-height:1.5}.book-handover-school span{display:block;font-size:11px;font-weight:700}
+.book-handover-logo svg{width:78px;height:88px;object-fit:contain}
+.book-handover-grade{font-weight:900;font-size:17px;line-height:1.5}
+.book-handover-sheet-title{font-size:21px;font-weight:900;text-align:center;margin:3px 0}
+.book-handover-sheet-year{text-align:center;font-weight:900;margin-bottom:8px}
+.book-handover-table-wrap{width:100%;overflow-x:auto}
+.book-handover-table{width:100%;border-collapse:collapse;table-layout:fixed;direction:rtl;font-size:12px}
+.book-handover-table th,.book-handover-table td{border:1px solid #333;text-align:center;padding:4px 3px;height:30px;box-sizing:border-box}
+.book-handover-table th{background:#edf5ef;font-weight:900;line-height:1.25}
+.book-handover-table .no-col{width:34px}.book-handover-table .name-col{width:155px;text-align:center}.book-handover-table td.name-col{text-align:right}
+.book-handover-table .book-cell{cursor:pointer;font-size:20px;font-weight:1000;user-select:none}
+.book-handover-table .book-cell:hover{background:#f1f7f3}.book-handover-table .delivered-check{color:#198754}.book-handover-table .returned-x{color:#dc3545}
+.book-handover-table .empty-student{background:#fff}
+.book-handover-footer{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-top:12px;font-weight:900;font-size:14px;direction:rtl;white-space:nowrap}.book-handover-footer>div{flex:1;text-align:center;padding-top:2px;line-height:1.45}.book-handover-footer>div:nth-child(2){flex:1.1}.book-handover-footer span{display:block;font-weight:800;margin-top:2px}
+@media(max-width:700px){
+ .book-handover-app{width:100vw;max-width:100vw;margin-right:calc(50% - 50vw);padding:0;box-sizing:border-box}.book-handover-app,.book-handover-tables{overflow-x:hidden}.book-handover-sheet{width:100vw;max-width:100vw}
+ .book-handover-tabs{gap:5px}.book-handover-tab{padding:10px 5px;font-size:13px}
+ .book-handover-sheet{padding:6px;margin-bottom:16px;border-left:0;border-right:0}
+ .book-handover-sheet-head{grid-template-columns:1fr 1fr 1fr;gap:3px}.book-handover-school{font-size:12px}.book-handover-school span{font-size:9px}.book-handover-logo svg{width:58px;height:66px}.book-handover-grade{font-size:13px}
+ .book-handover-sheet-title{font-size:17px}.book-handover-sheet-year{font-size:12px}
+ .book-handover-table{font-size:9px;width:100%;table-layout:fixed}
+ .book-handover-table th,.book-handover-table td{padding:2px 1px;height:27px;box-sizing:border-box}
+ .book-handover-table .no-col{width:5%;min-width:0;max-width:none}
+ .book-handover-table .name-col{width:21%;min-width:0;max-width:none;font-size:8.5px;text-align:center;white-space:normal;overflow-wrap:anywhere}
+ .book-handover-table td.name-col{text-align:right}
+ .book-handover-table .subject-col{width:6.727%;min-width:0;max-width:none}
+ .book-handover-sheet[data-grade="الأول المتوسط"] .subject-col:nth-child(9){width:8%;} /* اجتماعيات */
+ .book-handover-sheet[data-grade="الأول المتوسط"] .subject-col:nth-child(10),
+ .book-handover-sheet[data-grade="الأول المتوسط"] .subject-col:nth-child(11){width:6%;} /* احياء، كيمياء */
+ .book-handover-table thead th:not(.no-col):not(.name-col){font-size:6.1px;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:clip;padding:2px 0;word-break:normal}
+ .book-handover-table thead th.short-subject{font-size:6px;white-space:nowrap;letter-spacing:-.35px}
+ .book-handover-table .book-cell{font-size:17px}
+ .book-handover-footer{display:flex;flex-direction:row;align-items:flex-start;gap:3px;font-size:8.5px;white-space:nowrap;padding:0 2px}.book-handover-footer>div{padding-top:2px;line-height:1.35;text-align:center}.book-handover-footer>div:nth-child(2){flex:1.1}.book-handover-footer span{display:block;margin-top:1px}
+}
+</style>
+</head>
 <body>
 <div id="roleSelectionScreen">
 <div class="role-card">
@@ -1215,6 +1380,7 @@
 <button class="staff-menu-item" onclick="handleMenuClick('settings')">⚙️ الإعدادات</button>
 <button class="staff-menu-item" onclick="handleMenuClick('groups')">⚙️ مجموعات الواتساب</button>
 <button class="staff-menu-item" onclick="handleMenuClick('studentManagement')">🎓 معلومات الطلبة</button>
+<button class="staff-menu-item" onclick="handleMenuClick('bookHandover')">📚 استلام وتسليم الكتب</button>
 <button class="staff-menu-item" onclick="handleMenuClick('studentAttendance')">🎓 الطلبة الداخلين والخارجين</button>
 <button class="staff-menu-item" onclick="handleMenuClick('staff')">👨‍🏫 الكادر الداخل والخارج</button>
 <button class="staff-menu-item" onclick="handleMenuClick('staffActivity')">🧾 نشاطات الكادر</button>
@@ -1613,7 +1779,42 @@
 <tbody id="othersTableBody"></tbody>
 </table>
 </div>
-</div><div class="card hidden" id="tabContentStaffAttendance"><div class="staff-attendance-app" id="staffAttendanceApp">
+</div><div class="card hidden" id="tabContentBookHandover">
+<div class="book-handover-app" id="bookHandoverApp">
+  <div class="book-handover-title">📚 نظام استلام وتسليم الكتب</div>
+  <div class="book-subject-tools">
+    <div class="book-subject-actions">
+      <button type="button" id="bookSubjectBtn_add" class="book-subject-btn active" onclick="showBookSubjectAction('add')">➕ إضافة كتاب</button>
+      <button type="button" id="bookSubjectBtn_edit" class="book-subject-btn" onclick="showBookSubjectAction('edit')">✏️ تعديل كتاب</button>
+      <button type="button" id="bookSubjectBtn_delete" class="book-subject-btn" onclick="showBookSubjectAction('delete')">🗑️ حذف كتاب</button>
+    </div>
+    <div id="bookSubjectPanel">
+      <div class="form-group"><label for="bookSubjectGrade">الصف:</label><select id="bookSubjectGrade" onchange="bookSubjectGradeChanged()"></select></div>
+      <div id="bookSubjectAddBox"><div class="form-group"><label for="bookSubjectNew">اسم المادة:</label><input id="bookSubjectNew" type="text" placeholder="اكتب اسم المادة الجديدة" autocomplete="off"></div></div>
+      <div id="bookSubjectEditBox" class="hidden"><div class="form-group"><label for="bookSubjectOld">المادة الموجودة:</label><select id="bookSubjectOld" onchange="document.getElementById('bookSubjectEditNew').value=this.value"></select></div><div class="form-group"><label for="bookSubjectNewLabel">اسم المادة الجديد:</label><input id="bookSubjectEditNew" type="text" placeholder="اكتب الاسم الجديد" autocomplete="off"></div></div>
+      <div id="bookSubjectDeleteBox" class="hidden"><div class="form-group"><label for="bookSubjectDelete">المادة:</label><select id="bookSubjectDelete"></select></div></div>
+      <button type="button" class="btn-save" onclick="manageBookSubjects()">💾 حفظ</button>
+    </div>
+  </div>
+  <div class="book-handover-tabs">
+    <button type="button" class="book-handover-tab active" id="bookDeliveryTabBtn" onclick="showBookHandoverMode('delivery')">📤 التسليم للطالب</button>
+    <button type="button" class="book-handover-tab" id="bookReturnTabBtn" onclick="showBookHandoverMode('return')">📥 الاستلام من الطالب</button>
+  </div>
+  <div class="book-handover-controls">
+    <div class="form-group"><label for="bookHandoverGrade">الصف:</label><select id="bookHandoverGrade" onchange="renderBookHandoverTables()"><option value="all">جميع الصفوف</option></select></div>
+    <div class="form-group"><label id="bookHandoverTeacherLabel" for="bookHandoverTeacher">اسم المدرس:</label><input id="bookHandoverTeacher" type="text" placeholder="اكتب اسم المدرس المسؤول" autocomplete="off"></div>
+    <div class="book-handover-actions">
+      <button type="button" class="btn-save" onclick="saveBookHandover()">💾 حفظ</button>
+      <button type="button" class="btn-secondary" onclick="renderBookHandoverTables()">🔄 تحديث</button>
+      <button type="button" class="btn-danger" onclick="deleteBookHandoverCurrent()">🗑️ حذف البيانات المحددة</button>
+      <button type="button" class="btn-secondary" onclick="switchMainTab('students')">↩ رجوع</button>
+    </div>
+  </div>
+  <div id="bookHandoverStatus" class="book-handover-status"></div>
+  <div id="bookHandoverTables" class="book-handover-tables"></div>
+</div>
+</div>
+<div class="card hidden" id="tabContentStaffAttendance"><div class="staff-attendance-app" id="staffAttendanceApp">
     <div class="sa-header">
         <h2>👨‍🏫 تسجيل حضور الكادر</h2>
         <p>تسجيل بصمة الوجه والتحقق من وجود المدرس داخل المدرسة قبل تسجيل الحضور</p>
@@ -1881,6 +2082,34 @@
 <div class="list" id="todayAttendanceList">
 </div>
 </div>
+</div><div class="section" id="dailyAttendanceSection">
+<div class="card">
+<h2>📌 تثبيت الحضور اليومي للطلاب</h2>
+<div class="small-note">تظهر جميع أسماء الطلبة بالكامل، ويُدرج اليوم والتاريخ تلقائيًا. الطالب الذي تم التعرف عليه بالبصمة يظهر أمامه ✓ باللون الأخضر، ومن لم يسجل حضورًا يظهر أمامه غ باللون الأحمر.</div>
+<div class="button-row">
+<button class="btn-success" id="fixDailyAttendance" type="button">✅ تثبيت الحضور ونقله للأسبوع</button>
+<button class="btn-primary" id="saveDailyAttendance" type="button">🖼️ حفظ كصورة</button>
+<button class="btn-danger" id="deleteDailyAttendance" type="button">🗑️ حذف اليوم</button>
+<button class="btn-secondary" id="refreshDailyAttendance" type="button">🔄 تحديث الجدول</button>
+<button class="btn-secondary" id="openWeeklyAttendance" type="button">📅 الجدول الأسبوعي</button>
+<button class="btn-secondary" id="backFromDailyAttendance" type="button">↩ رجوع</button>
+</div>
+<div class="report-preview" id="dailyAttendancePreview">
+<div class="empty">اضغط «تثبيت حضور اليوم» لإنشاء جدول الحضور اليومي.</div>
+</div>
+</div>
+</div><div class="section" id="weeklyAttendanceSection">
+<div class="card">
+<h2>📅 تثبيت الحضور الأسبوعي للطلاب</h2>
+<div class="small-note">يتم نقل الأيام المثبتة تلقائيًا إلى هذا الجدول. يحتوي الجدول على الأحد إلى الخميس، ويُجمع مسؤول البصمة لكل يوم في نهاية كل ورقة.</div>
+<div class="button-row">
+<button class="btn-primary" id="saveWeeklyAttendance" type="button">🖼️ حفظ الأسبوع كصور</button>
+<button class="btn-danger" id="deleteWeeklyAttendance" type="button">🗑️ حذف أسبوع</button>
+<button class="btn-secondary" id="refreshWeeklyAttendance" type="button">🔄 تحديث</button>
+<button class="btn-secondary" id="backFromWeeklyAttendance" type="button">↩ رجوع</button>
+</div>
+<div class="report-preview" id="weeklyAttendancePreview"><div class="empty">لا توجد أيام مثبتة لهذا الأسبوع.</div></div>
+</div>
 </div><div class="section" id="reportsSection">
 <div class="card">
 <h2>📊 الحضور والتقارير</h2>
@@ -2128,16 +2357,21 @@
 <div style="background:var(--white); padding:25px; border-radius:12px; max-width:420px; width:100%; max-height:90vh; overflow-y:auto; border:2px solid var(--gold); box-shadow:0 10px 25px rgba(0,0,0,0.5); position:relative;">
 <button type="button" onclick="closeSettingsModal()" aria-label="إغلاق الإعدادات" style="position:absolute; left:10px; top:10px; width:42px; height:42px; border:none; border-radius:50%; background:#dc3545; color:#fff; font-size:25px; font-weight:900; line-height:1; cursor:pointer; z-index:5;">✕</button>
 <h3 style="color:var(--primary-color); margin-bottom:15px; text-align:center; padding-left:42px;">⚙️ إعدادات</h3>
-<div id="settingsHomePanel">
-<button class="settings-section-btn" type="button" onclick="openSettingsSection('security')">🔐 الأمان</button>
-<button class="settings-section-btn" type="button" onclick="openSettingsSection('location')">📍 تحديد وتغيير موقع المدرسة</button>
-<button class="settings-section-btn" type="button" onclick="openSettingsSection('phone')">📱 تعيين رقم الهاتف</button>
-<button class="settings-section-btn" type="button" onclick="openSettingsSection('ticker')">📜 الشريط المتحرك</button>
+<div id="settingsHomePanel" class="settings-command-list">
+<div class="settings-command-item" role="button" tabindex="0" onclick="openSettingsSection('security')" onkeydown="if(event.key==='Enter'||event.key===' ')openSettingsSection('security')">🔐 الأمان</div>
+<div class="settings-command-item" role="button" tabindex="0" onclick="openSettingsSection('location')" onkeydown="if(event.key==='Enter'||event.key===' ')openSettingsSection('location')">📍 تحديد وتغيير موقع المدرسة</div>
+<div class="settings-command-item" role="button" tabindex="0" onclick="openSettingsSection('phone')" onkeydown="if(event.key==='Enter'||event.key===' ')openSettingsSection('phone')">📱 تعيين رقم الهاتف</div>
+<div class="settings-command-item" role="button" tabindex="0" onclick="openSettingsSection('attendanceShift')" onkeydown="if(event.key==='Enter'||event.key===' ')openSettingsSection('attendanceShift')">🕒 ضبط الدوام والحضور</div>
+<div class="settings-command-item" role="button" tabindex="0" onclick="openSettingsSection('holidays')" onkeydown="if(event.key==='Enter'||event.key===' ')openSettingsSection('holidays')">📅 العطل الرسمية والمحلية</div>
+<div class="settings-command-item" role="button" tabindex="0" onclick="openSettingsSection('ticker')" onkeydown="if(event.key==='Enter'||event.key===' ')openSettingsSection('ticker')">📜 الشريط المتحرك</div>
+<div class="settings-command-item" role="button" tabindex="0" onclick="openSettingsSection('customize')" onkeydown="if(event.key==='Enter'||event.key===' ')openSettingsSection('customize')">🛠️ تخصيص المنصة</div>
 </div>
 <div class="settings-section-panel hidden" id="settingsSecurityPanel">
 <div style="font-weight:900;color:var(--primary-color);font-size:1.05rem;margin-bottom:10px;text-align:center;">🔐 الأمان</div>
-<button class="settings-section-btn" type="button" onclick="openSettingsSecuritySub('platform')">🔑 تغيير رمز أمان المنصة الرئيسية</button>
-<button class="settings-section-btn" type="button" onclick="openSettingsSecuritySub('admin')">🛡️ تغيير رمز أمان الإدارة</button>
+<div class="settings-command-list settings-command-list-inner">
+<div class="settings-command-item" role="button" tabindex="0" onclick="openSettingsSecuritySub('platform')" onkeydown="if(event.key==='Enter'||event.key===' ')openSettingsSecuritySub('platform')">🔑 تغيير رمز أمان المنصة الرئيسية</div>
+<div class="settings-command-item" role="button" tabindex="0" onclick="openSettingsSecuritySub('admin')" onkeydown="if(event.key==='Enter'||event.key===' ')openSettingsSecuritySub('admin')">🛡️ تغيير رمز أمان الإدارة</div>
+</div>
 <div class="hidden" id="settingsPlatformSecuritySub">
 <div style="margin-top:12px;font-weight:900;text-align:center;">🔑 تغيير رمز أمان المنصة الرئيسية</div>
 <div class="form-group">
@@ -2238,6 +2472,74 @@
 </div>
 
 </div>
+<div class="settings-section-panel hidden" id="settingsAttendanceShiftPanel">
+<div style="font-weight:900;color:var(--primary-color);font-size:1.05rem;margin-bottom:10px;text-align:center;">🕒 ضبط الدوام ووقت تسجيل الحضور</div>
+<div style="background:#eef6f0;border:1px solid #c9dfd0;border-radius:12px;padding:13px;line-height:1.8;margin-bottom:12px;text-align:center;">
+<div style="font-weight:900;">تشغيل أو إيقاف تقييد وقت تسجيل الحضور</div>
+<div id="attendanceShiftCurrentInfo" style="margin-top:5px;font-weight:800;color:#555;"></div>
+</div>
+<div class="form-group">
+<label for="attendanceShiftEnabledSelect">حالة الخاصية:</label>
+<select id="attendanceShiftEnabledSelect">
+<option value="enabled">✅ تشغيل — تقييد تسجيل الحضور حسب وقت الدوام</option>
+<option value="disabled">⏸️ إيقاف — السماح بتسجيل الحضور في أي وقت</option>
+</select>
+</div>
+<div class="form-group">
+<label for="attendanceShiftSelect">نوع الدوام:</label>
+<select id="attendanceShiftSelect">
+<option value="morning">☀️ الدوام الصباحي — من 8:00 صباحًا إلى 12:30 ظهرًا</option>
+<option value="evening">🌙 الدوام المسائي — من 12:30 ظهرًا إلى 4:30 عصرًا</option>
+</select>
+</div>
+<div style="background:#fff8e8;border:1px solid #ead7a1;border-radius:10px;padding:11px;font-size:.9rem;line-height:1.8;margin-top:10px;">
+<strong>ملاحظة:</strong> عند إيقاف الخاصية لن يتم تقييد أزرار تسجيل حضور <b>الطلاب والكادر</b> بالوقت، ويمكن استخدامها في أي وقت. عند تشغيلها تصبح الأوقات المعتمدة: الصباحي من <b>8:00</b> إلى <b>12:30</b>، والمسائي من <b>12:30</b> إلى <b>4:30</b>.
+</div>
+<button class="btn-save" type="button" onclick="saveAttendanceShiftSettings()" style="width:100%;padding:11px;margin-top:12px;">💾 حفظ الإعدادات</button>
+<div id="attendanceShiftSettingsMessage" style="margin-top:9px;text-align:center;font-weight:800;"></div>
+<button class="settings-back-btn" type="button" onclick="showSettingsHome()">✖ إغلاق</button>
+</div>
+<div class="settings-section-panel hidden" id="settingsHolidaysPanel">
+<div style="font-weight:900;color:var(--primary-color);font-size:1.05rem;margin-bottom:10px;text-align:center;">📅 العطل الرسمية والمحلية</div>
+<div style="background:#eef6f0;border:1px solid #c9dfd0;border-radius:12px;padding:13px;line-height:1.8;margin-bottom:12px;text-align:center;">
+<strong>اعتبار يوم معين عطلة</strong><br>اختر التاريخ واكتب سبب العطلة، وسيظهر تلقائيًا في جدول الحضور اليومي والأسبوعي، ولن يُحسب هذا اليوم حضورًا أو غيابًا.
+</div>
+<div class="form-group"><label for="holidayDateInput">📅 تاريخ العطلة:</label><input id="holidayDateInput" type="date"></div>
+<div class="form-group"><label for="holidayReasonInput">📝 سبب العطلة:</label><input id="holidayReasonInput" type="text" placeholder="مثلاً: عطلة محلية بسبب الأمطار"></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+<button class="btn-save" type="button" onclick="saveSchoolHoliday()" style="flex:1;min-width:150px;padding:11px;">💾 حفظ العطلة</button>
+<button class="btn-action btn-view" type="button" onclick="setHolidayToday()" style="flex:1;min-width:150px;padding:11px;">📌 اعتبار اليوم عطلة</button>
+</div>
+<div id="schoolHolidayMessage" style="margin-top:9px;text-align:center;font-weight:800;"></div>
+<div style="margin-top:14px;font-weight:900;color:var(--primary-color);">📋 العطل المسجلة</div>
+<div id="schoolHolidaysList" style="margin-top:7px;"></div>
+<button class="settings-back-btn" type="button" onclick="showSettingsHome()">✖ إغلاق</button>
+</div>
+<div class="settings-section-panel hidden" id="settingsCustomizePanel">
+<div style="font-weight:900;color:var(--primary-color);font-size:1.05rem;margin-bottom:10px;text-align:center;">🛠️ تخصيص المنصة</div>
+<div style="background:#eef6f0;border:1px solid #c9dfd0;border-radius:12px;padding:12px;line-height:1.8;margin-bottom:12px;text-align:center;font-size:.92rem;">
+<strong>تحكم بالجزء السهل من المنصة من هنا</strong><br>يمكنك تغيير أسماء بعض الأوامر وإظهارها أو إخفاؤها. الأجزاء البرمجية المعقدة تبقى عبر الكود.
+</div>
+<div class="form-group"><label>🏫 اسم المنصة الظاهر:</label><input id="customPlatformTitle" type="text" placeholder="منصة المدرسة"></div>
+<div class="form-group"><label>👋 عبارة الترحيب:</label><input id="customPlatformWelcome" type="text" placeholder="مرحباً بكم في منصة المدرسة"></div>
+<div id="customizeSimpleItems" class="customize-simple-items"></div>
+<div class="customize-add-command">
+<div style="font-weight:900;color:var(--primary-color);margin-bottom:7px;">➕ إضافة أمر بسيط جديد</div>
+<div style="display:flex;gap:7px;flex-wrap:wrap;">
+<input id="customNewCommandText" type="text" placeholder="اسم الأمر" style="flex:1;min-width:130px;">
+<input id="customNewCommandUrl" type="url" placeholder="الرابط (اختياري)" style="flex:1;min-width:180px;direction:ltr;text-align:left;">
+<button class="btn-save" type="button" onclick="addSimplePlatformCommand()" style="padding:10px 14px;white-space:nowrap;">➕ إضافة</button>
+</div>
+<div id="customPlatformCommandsList" style="margin-top:8px;"></div>
+</div>
+<div style="background:#fff8e8;border:1px solid #ead7a1;border-radius:10px;padding:10px;font-size:.88rem;line-height:1.7;margin-top:10px;">💡 <b>مهم:</b> إخفاء الأمر يخفيه من الواجهة فقط ولا يحذف وظيفته أو بياناته. الأوامر الجديدة البسيطة تفتح روابط فقط؛ الوظائف البرمجية المعقدة تبقى عبر الكود.</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+<button class="btn-save" type="button" onclick="savePlatformCustomization()" style="flex:1;min-width:130px;padding:11px;">💾 حفظ التخصيص</button>
+<button class="btn-action btn-view" type="button" onclick="resetPlatformCustomization()" style="flex:1;min-width:130px;padding:11px;">↩️ استعادة الافتراضي</button>
+</div>
+<div id="platformCustomizationMessage" style="margin-top:9px;text-align:center;font-weight:800;"></div>
+<button class="settings-back-btn" type="button" onclick="showSettingsHome()">✖ إغلاق</button>
+</div>
 <div class="settings-section-panel hidden" id="settingsTickerPanel">
 <div class="ls-ticker-fullscreen-head">
   <button type="button" class="ls-ticker-back" onclick="showSettingsHome()">↩️ العودة إلى الإعدادات الرئيسية</button>
@@ -2302,7 +2604,7 @@
     'schoolWhatsappGroups','schoolWhatsappSenderNumber','schoolWhatsappBulkApiEndpoint',
     'schoolWhatsappBulkApiKey','schoolWhatsappMessageMode','schoolWhatsappTemplateName',
     'schoolWhatsappTemplateLanguage','SCHOOL_LEAVE_REQUESTS_V1',
-    'SCHOOL_LEAVE_READ_NOTIFICATIONS_V1','SCHOOL_FIXED_LOCATION_V1','STAFF_ADMIN_SECURITY_CODES_V1','SCHOOL_PUBLISHED_SCHEDULES_V2','SCHOOL_PLATFORM_TICKER_V1'
+    'SCHOOL_LEAVE_READ_NOTIFICATIONS_V1','SCHOOL_FIXED_LOCATION_V1','STAFF_ADMIN_SECURITY_CODES_V1','SCHOOL_PUBLISHED_SCHEDULES_V2','SCHOOL_ATTENDANCE_SHIFT_V1','SCHOOL_ATTENDANCE_SHIFT_ENABLED_V1','SCHOOL_PLATFORM_TICKER_V1','FACE_DAILY_FIXED_ATTENDANCE','SCHOOL_ATTENDANCE_HOLIDAYS_V1','BOOK_HANDOVER_DELIVERY_V1','BOOK_HANDOVER_RETURN_V1','BOOK_HANDOVER_SUBJECTS_V1'
   ]);
   let db=null, ready=false, applyingRemote=false, reloadTimer=null;
   const pendingCloudWrites=new Map();
@@ -2614,6 +2916,9 @@
                 if(typeof window.renderSchoolLocationSettings === 'function') window.renderSchoolLocationSettings();
             } else if(action === 'groups') {
                 switchMainTab('groups');
+            } else if(action === 'bookHandover') {
+                switchMainTab('bookHandover');
+                if(typeof window.initBookHandover==='function') window.initBookHandover();
             } else if(action === 'studentManagement') {
                 /* إصلاح زر «معلومات الطلبة» فقط: استعادة جلسة الكادر المحفوظة إذا كانت الجلسة الحالية غير مهيأة. */
                 if(!currentUser){
@@ -2825,26 +3130,136 @@
             if(mode) mode.addEventListener('change', toggleBulkTemplateSettings);
         });
 
+        const SCHOOL_ATTENDANCE_SHIFT_KEY='SCHOOL_ATTENDANCE_SHIFT_V1';
+        const SCHOOL_ATTENDANCE_SHIFT_ENABLED_KEY='SCHOOL_ATTENDANCE_SHIFT_ENABLED_V1';
+        function isAttendanceShiftEnabled(){
+            return localStorage.getItem(SCHOOL_ATTENDANCE_SHIFT_ENABLED_KEY)!=='disabled';
+        }
+        function getAttendanceShift(){
+            const v=localStorage.getItem(SCHOOL_ATTENDANCE_SHIFT_KEY);
+            return v==='evening'?'evening':'morning';
+        }
+        function getAttendanceShiftInfo(){
+            return getAttendanceShift()==='evening'
+                ? {key:'evening',name:'الدوام المسائي',start:12*60+30,end:16*60+30,label:'من 12:30 ظهرًا إلى 4:30 عصرًا'}
+                : {key:'morning',name:'الدوام الصباحي',start:8*60,end:12*60+30,label:'من 8:00 صباحًا إلى 12:30 ظهرًا'};
+        }
+        function isAttendanceOpenNow(){
+            if(!isAttendanceShiftEnabled()) return true;
+            const x=getAttendanceShiftInfo(), d=new Date(), minutes=d.getHours()*60+d.getMinutes()+d.getSeconds()/60;
+            return minutes>=x.start && minutes<x.end;
+        }
+        function attendanceClosedMessage(){
+            const x=getAttendanceShiftInfo();
+            return `⏰ تسجيل الحضور مغلق الآن. الدوام المعتمد: ${x.name} (${x.label}).`;
+        }
+        function updateAttendanceShiftSettingsUI(){
+            const x=getAttendanceShiftInfo(), sel=document.getElementById('attendanceShiftSelect'), enabled=document.getElementById('attendanceShiftEnabledSelect'), info=document.getElementById('attendanceShiftCurrentInfo');
+            if(sel) sel.value=x.key;
+            if(enabled) enabled.value=isAttendanceShiftEnabled()?'enabled':'disabled';
+            if(info) info.textContent=isAttendanceShiftEnabled()?`الخاصية مفعّلة — ${x.name} — ${x.label}`:'الخاصية متوقفة — تسجيل الحضور متاح في أي وقت';
+        }
+        window.saveAttendanceShiftSettings=function(){
+            const sel=document.getElementById('attendanceShiftSelect'), enabled=document.getElementById('attendanceShiftEnabledSelect'), msg=document.getElementById('attendanceShiftSettingsMessage');
+            const value=sel&&sel.value==='evening'?'evening':'morning';
+            const enabledValue=enabled&&enabled.value==='disabled'?'disabled':'enabled';
+            localStorage.setItem(SCHOOL_ATTENDANCE_SHIFT_KEY,value);
+            localStorage.setItem(SCHOOL_ATTENDANCE_SHIFT_ENABLED_KEY,enabledValue);
+            updateAttendanceShiftSettingsUI();
+            if(msg){msg.style.color='#198754';msg.textContent='✅ تم حفظ نوع الدوام وربطه بتسجيل حضور الطلاب والكادر.';setTimeout(()=>{if(msg)msg.textContent='';},3000);}
+            window.dispatchEvent(new CustomEvent('schoolAttendanceShiftChanged'));
+        };
+        window.isAttendanceOpenNow=isAttendanceOpenNow;
+        window.isAttendanceShiftEnabled=isAttendanceShiftEnabled;
+        window.getAttendanceShiftInfo=getAttendanceShiftInfo;
+        window.attendanceClosedMessage=attendanceClosedMessage;
+        const _openSettingsSection=window.openSettingsSection;
         function showSettingsHome(){
             const settingsModal=document.getElementById('settingsModal');
-            if(settingsModal) settingsModal.classList.remove('ticker-fullscreen');
+            if(settingsModal) { settingsModal.classList.remove('ticker-fullscreen'); settingsModal.classList.remove('attendance-shift-fullscreen'); }
+            const customizePanel=document.getElementById('settingsCustomizePanel'); if(customizePanel) customizePanel.classList.remove('customize-panel-fullscreen');
             const tickerPanel=document.getElementById('settingsTickerPanel'); if(tickerPanel) tickerPanel.classList.remove('ticker-panel-fullscreen');
-            ['settingsHomePanel','settingsSecurityPanel','settingsLocationPanel','settingsPhonePanel','settingsTickerPanel'].forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.add('hidden'); });
+            const attendancePanel=document.getElementById('settingsAttendanceShiftPanel'); if(attendancePanel) attendancePanel.classList.remove('attendance-shift-panel-fullscreen');
+            ['settingsHomePanel','settingsSecurityPanel','settingsLocationPanel','settingsPhonePanel','settingsAttendanceShiftPanel','settingsHolidaysPanel','settingsCustomizePanel','settingsTickerPanel'].forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.add('hidden'); });
             const home=document.getElementById('settingsHomePanel'); if(home) home.classList.remove('hidden');
             ['settingsPlatformSecuritySub','settingsAdminSecuritySub'].forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.add('hidden'); });
             const msg=document.getElementById('adminSecurityMessage'); if(msg) msg.textContent='';
+            updateAttendanceShiftSettingsUI();
         }
         window.showSettingsHome=showSettingsHome;
 
+        const PLATFORM_CUSTOMIZATION_KEY='SCHOOL_PLATFORM_CUSTOMIZATION_V1';
+        const PLATFORM_CUSTOMIZABLE_ITEMS=[
+            {id:'roleStaffBtn',selector:'.role-btn-staff',name:'دخول الكادر',hint:'زر اختيار دخول الكادر في شاشة تسجيل الدخول'},
+            {id:'roleStudentBtn',selector:'.role-btn-student',name:'دخول الطالب',hint:'زر اختيار دخول الطالب في شاشة تسجيل الدخول'},
+            {id:'splashTitle',selector:'.splash-main-title',name:'عنوان شاشة البداية',hint:'النص الكبير عند فتح المنصة'},
+            {id:'splashSubTitle',selector:'.splash-sub-title',name:'اسم المدرسة في شاشة البداية',hint:'النص أسفل عنوان شاشة البداية'},
+            {id:'headerTitle',selector:'.header-title h1',name:'اسم المدرسة في أعلى المنصة',hint:'العنوان الظاهر داخل الصفحة الرئيسية'},
+            {id:'headerYear',selector:'.header-meta',name:'العام الدراسي',hint:'النص الظاهر أسفل اسم المدرسة'},
+            {id:'tabBtnSend',selector:'#tabBtnSend',name:'لوحة إرسال الرسائل',hint:'الأمر الرئيسي للكادر'},
+            {id:'tabBtnArchive',selector:'#tabBtnArchive',name:'أرشيف المدرسة',hint:'الأمر الرئيسي للكادر'},
+            {id:'tabBtnLeaveRequest',selector:'#tabBtnLeaveRequest',name:'طلب إجازة',hint:'أمر طلب إجازة الطلاب'},
+            {id:'tabBtnStudentAttendance',selector:'#tabBtnStudentAttendance',name:'تسجيل حضور الطلاب',hint:'أمر حضور الطلاب'},
+            {id:'tabBtnStaffAttendance',selector:'#tabBtnStaffAttendance',name:'تسجيل حضور الكادر',hint:'أمر حضور الكادر'},
+            {id:'studentHubBooks',selector:".student-hub-btn[onclick*=\"openStudentHub(\'books\')\"]",name:'كتپ وملازم',hint:'أمر الطالب'},
+            {id:'studentHubSchedules',selector:".student-hub-btn[onclick*=\"openStudentHub(\'schedules\')\"]",name:'الجداول',hint:'أمر الطالب'},
+            {id:'studentHubLeave',selector:".student-hub-btn[onclick*=\"openStudentHub(\'leave\')\"]",name:'طلب الإجازة',hint:'أمر الطالب'}
+ ,
+            {id:'topSettings',selector:'#topDropdownMenu .staff-menu-item:nth-child(1)',name:'الإعدادات',hint:'أمر القائمة العلوية'},
+            {id:'topGroups',selector:'#topDropdownMenu .staff-menu-item:nth-child(2)',name:'مجموعات الواتساب',hint:'أمر القائمة العلوية'},
+            {id:'topStudentManagement',selector:'#topDropdownMenu .staff-menu-item:nth-child(3)',name:'معلومات الطلبة',hint:'أمر القائمة العلوية'},
+            {id:'topStudentAttendance',selector:'#topDropdownMenu .staff-menu-item:nth-child(4)',name:'الطلبة الداخلين والخارجين',hint:'أمر القائمة العلوية'},
+            {id:'topStaff',selector:'#topDropdownMenu .staff-menu-item:nth-child(5)',name:'الكادر الداخل والخارج',hint:'أمر القائمة العلوية'},
+            {id:'topStaffActivity',selector:'#topDropdownMenu .staff-menu-item:nth-child(6)',name:'نشاطات الكادر',hint:'أمر القائمة العلوية'},
+            {id:'topStudentActivity',selector:'#topDropdownMenu .staff-menu-item:nth-child(8)',name:'نشاطات الطلبة',hint:'أمر القائمة العلوية'}
+        ];
+        function getPlatformCustomization(){try{return JSON.parse(localStorage.getItem(PLATFORM_CUSTOMIZATION_KEY)||'{}')||{}}catch(e){return {}}}
+        function savePlatformCustomizationData(data){localStorage.setItem(PLATFORM_CUSTOMIZATION_KEY,JSON.stringify(data||{}));}
+        function applyPlatformCustomization(){
+            const c=getPlatformCustomization();
+            if(c.title){document.title=c.title;}
+            const titleCandidates=['#schoolPlatformTitle','#platformTitle','.platform-title'];
+            titleCandidates.forEach(sel=>{const el=document.querySelector(sel);if(el&&c.title)el.textContent=c.title;});
+            const welcomeCandidates=['#schoolWelcomeText','#platformWelcome','.welcome-text'];
+            welcomeCandidates.forEach(sel=>{const el=document.querySelector(sel);if(el&&c.welcome)el.textContent=c.welcome;});
+            PLATFORM_CUSTOMIZABLE_ITEMS.forEach(item=>{const el=document.querySelector(item.selector);if(!el)return;el.dataset.customDefaultText=el.dataset.customDefaultText||el.textContent.trim();const x=c.items?.[item.id]||{};if(x.text)el.textContent=x.text;else if(el.dataset.customDefaultText)el.textContent=el.dataset.customDefaultText;el.style.display=x.hidden?'none':'';});
+            const menu=document.getElementById('topDropdownMenu');
+            if(menu){menu.querySelectorAll('[data-custom-simple-command="1"]').forEach(el=>el.remove());(c.commands||[]).forEach((cmd,i)=>{if(!cmd||!cmd.text)return;const b=document.createElement('button');b.className='staff-menu-item';b.dataset.customSimpleCommand='1';b.textContent=cmd.text;b.title=cmd.url||'';b.onclick=function(){if(cmd.url){let u=cmd.url;if(!/^https?:\/\//i.test(u))u='https://'+u;window.open(u,'_blank','noopener,noreferrer');}};menu.appendChild(b);});}
+        }
+        window.renderPlatformCustomization=function(){
+            const c=getPlatformCustomization(), title=document.getElementById('customPlatformTitle'), welcome=document.getElementById('customPlatformWelcome'), box=document.getElementById('customizeSimpleItems');
+            if(title)title.value=c.title||''; if(welcome)welcome.value=c.welcome||''; if(!box)return;
+            box.innerHTML=PLATFORM_CUSTOMIZABLE_ITEMS.map(item=>{const x=c.items?.[item.id]||{};return `<div class="customize-simple-item"><div class="customize-simple-item-head"><span>${item.name}</span><label><input class="customize-toggle" type="checkbox" data-custom-visible="${item.id}" ${x.hidden?'':'checked'}> إظهار</label></div><small>${item.hint}</small><input type="text" data-custom-text="${item.id}" value="${String(x.text||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}" placeholder="اتركه فارغاً للاسم الافتراضي"></div>`}).join('')
+            const cmdBox=document.getElementById('customPlatformCommandsList');if(cmdBox){cmdBox.innerHTML=(c.commands||[]).map((cmd,i)=>`<div class="custom-command-row"><div><div>${String(cmd.text||'')}</div><div class="custom-command-url">${String(cmd.url||'بدون رابط')}</div></div><button type="button" class="btn-action btn-delete" onclick="removeSimplePlatformCommand(${i})">🗑️ حذف</button></div>`).join('')||'<div style="text-align:center;color:#777;padding:6px;">لا توجد أوامر مضافة.</div>'; }
+        };
+        window.addSimplePlatformCommand=function(){const text=document.getElementById('customNewCommandText')?.value.trim()||'';const url=document.getElementById('customNewCommandUrl')?.value.trim()||'';if(!text){alert('اكتب اسم الأمر أولاً.');return;}const c=getPlatformCustomization();c.commands=Array.isArray(c.commands)?c.commands:[];c.commands.push({text,url});savePlatformCustomizationData(c);document.getElementById('customNewCommandText').value='';document.getElementById('customNewCommandUrl').value='';applyPlatformCustomization();renderPlatformCustomization();};
+        window.removeSimplePlatformCommand=function(i){const c=getPlatformCustomization();if(!Array.isArray(c.commands))return;c.commands.splice(i,1);savePlatformCustomizationData(c);applyPlatformCustomization();renderPlatformCustomization();};
+        window.savePlatformCustomization=function(){
+            const c=getPlatformCustomization(); c.title=document.getElementById('customPlatformTitle')?.value.trim()||''; c.welcome=document.getElementById('customPlatformWelcome')?.value.trim()||''; c.items=c.items||{};
+            PLATFORM_CUSTOMIZABLE_ITEMS.forEach(item=>{const visible=document.querySelector(`[data-custom-visible="${item.id}"]`)?.checked!==false;const text=document.querySelector(`[data-custom-text="${item.id}"]`)?.value.trim()||'';c.items[item.id]={hidden:!visible,text:text};});
+            savePlatformCustomizationData(c);applyPlatformCustomization();const msg=document.getElementById('platformCustomizationMessage');if(msg){msg.style.color='#198754';msg.textContent='✅ تم حفظ التخصيص وتطبيقه فوراً.';setTimeout(()=>{if(msg)msg.textContent='';},3000);}
+            window.dispatchEvent(new CustomEvent('schoolPlatformCustomizationChanged'));
+        };
+        window.resetPlatformCustomization=function(){if(!confirm('هل تريد استعادة أسماء وإظهار الأوامر الافتراضية؟'))return;localStorage.removeItem(PLATFORM_CUSTOMIZATION_KEY);applyPlatformCustomization();renderPlatformCustomization();const msg=document.getElementById('platformCustomizationMessage');if(msg){msg.style.color='#198754';msg.textContent='↩️ تم استعادة الإعدادات الافتراضية.';}};
+        window.addEventListener('storage',e=>{if(e.key===PLATFORM_CUSTOMIZATION_KEY)applyPlatformCustomization();});
+        function initPlatformCustomization(){applyPlatformCustomization();}
+        window.initPlatformCustomization=initPlatformCustomization;
+
         function openSettingsSection(section){
             const settingsModal=document.getElementById('settingsModal');
-            if(settingsModal) settingsModal.classList.toggle('ticker-fullscreen',section==='ticker');
+            if(settingsModal) {
+                settingsModal.classList.toggle('ticker-fullscreen',section==='ticker');
+                settingsModal.classList.toggle('attendance-shift-fullscreen',section==='attendanceShift');
+                settingsModal.classList.toggle('customize-fullscreen',section==='customize');
+            }
             const tickerPanel=document.getElementById('settingsTickerPanel'); if(tickerPanel) tickerPanel.classList.toggle('ticker-panel-fullscreen',section==='ticker');
-            ['settingsHomePanel','settingsSecurityPanel','settingsLocationPanel','settingsPhonePanel','settingsTickerPanel'].forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.add('hidden'); });
+            const attendancePanel=document.getElementById('settingsAttendanceShiftPanel'); if(attendancePanel) attendancePanel.classList.toggle('attendance-shift-panel-fullscreen',section==='attendanceShift');
+            const customizePanel=document.getElementById('settingsCustomizePanel'); if(customizePanel) customizePanel.classList.toggle('customize-panel-fullscreen',section==='customize');
+            ['settingsHomePanel','settingsSecurityPanel','settingsLocationPanel','settingsPhonePanel','settingsAttendanceShiftPanel','settingsHolidaysPanel','settingsCustomizePanel','settingsTickerPanel'].forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.add('hidden'); });
             const target=document.getElementById(
                 section==='security'?'settingsSecurityPanel':
                 section==='location'?'settingsLocationPanel':
-                section==='phone'?'settingsPhonePanel':'settingsTickerPanel'
+                section==='phone'?'settingsPhonePanel':section==='attendanceShift'?'settingsAttendanceShiftPanel':section==='holidays'?'settingsHolidaysPanel':section==='customize'?'settingsCustomizePanel':'settingsTickerPanel'
             );
             if(target) target.classList.remove('hidden');
             // إعادة شريط تمرير نافذة الإعدادات إلى الأعلى عند فتح أي قسم،
@@ -2857,10 +3272,14 @@
                 const status=document.getElementById('tickerSettingsStatus');
                 if(status) status.textContent='';
             }
+            if(section==='attendanceShift') { updateAttendanceShiftSettingsUI(); const attendancePanel=document.getElementById('settingsAttendanceShiftPanel'); if(attendancePanel) attendancePanel.scrollTop=0; }
+            if(section==='holidays' && typeof window.renderSchoolHolidays==='function') window.renderSchoolHolidays();
+            if(section==='customize' && typeof window.renderPlatformCustomization==='function') window.renderPlatformCustomization();
             if(section==='location' && typeof window.renderSchoolLocationSettings==='function') window.renderSchoolLocationSettings();
             if(section==='ticker' && typeof window.renderPlatformTickerSettings==='function') window.renderPlatformTickerSettings();
         }
         window.openSettingsSection=openSettingsSection;
+        updateAttendanceShiftSettingsUI();
 
         function openSettingsSecuritySub(which){
             const platform=document.getElementById('settingsPlatformSecuritySub');
@@ -2900,7 +3319,7 @@
 
         function closeSettingsModal() {
             const modal=document.getElementById('settingsModal');
-            if(modal) modal.classList.remove('ticker-fullscreen');
+            if(modal) { modal.classList.remove('ticker-fullscreen'); modal.classList.remove('attendance-shift-fullscreen'); modal.classList.remove('customize-fullscreen'); }
             if(modal) modal.classList.add('hidden');
         }
 
@@ -3673,8 +4092,10 @@
             // هذا يمنع بقاء محتوى حضور الطلاب ظاهرًا عند الانتقال إلى حضور الكادر.
             const studentAttendanceTab = document.getElementById('tabContentStudentAttendance');
             const staffAttendanceTab = document.getElementById('tabContentStaffAttendance');
+            const bookHandoverTab = document.getElementById('tabContentBookHandover');
             if (studentAttendanceTab) studentAttendanceTab.classList.add('hidden');
             if (staffAttendanceTab) staffAttendanceTab.classList.add('hidden');
+            if (bookHandoverTab) bookHandoverTab.classList.add('hidden');
 
             if (tabName === 'leaveRequest') {
                 const b=document.getElementById('tabBtnLeaveRequest'); if(b) b.classList.add('active');
@@ -3693,13 +4114,18 @@
             } else if (tabName === 'students') {
                 document.getElementById('tabContentStudents').classList.remove('hidden');
                 switchSubTab('list');
+            } else if (tabName === 'bookHandover') {
+                const c=document.getElementById('tabContentBookHandover'); if(c) c.classList.remove('hidden');
+                if(typeof window.initBookHandover==='function') window.initBookHandover();
             } else if (tabName === 'studentAttendance') {
+                if(typeof window.isAttendanceOpenNow==='function' && !window.isAttendanceOpenNow()){ alert(typeof window.attendanceClosedMessage==='function' ? window.attendanceClosedMessage() : '⏰ تسجيل الحضور مغلق الآن.'); return; }
                 document.getElementById('tabBtnStudentAttendance').classList.add('active');
                 document.getElementById('tabContentStudentAttendance').classList.remove('hidden');
                 if (typeof window.__initStudentAttendanceOnOpen === 'function') {
                     window.__initStudentAttendanceOnOpen();
                 }
             } else if (tabName === 'staffAttendance') {
+                if(typeof window.isAttendanceOpenNow==='function' && !window.isAttendanceOpenNow()){ alert(typeof window.attendanceClosedMessage==='function' ? window.attendanceClosedMessage() : '⏰ تسجيل الحضور مغلق الآن.'); return; }
                 document.getElementById('tabBtnStaffAttendance').classList.add('active');
                 document.getElementById('tabContentStaffAttendance').classList.remove('hidden');
                 if (typeof window.__initStaffAttendanceOnOpen === 'function') {
@@ -5067,8 +5493,7 @@
                     }
                     pdf.save(`${fileName}.pdf`);
                 }else if(type==='word'){
-                    const docHtml=`<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${exportCss}</style></head><body>${printWrap.innerHTML}<script>
-</body></html>`;
+                    const docHtml=`<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${exportCss}</style></head><body>${printWrap.innerHTML}</body></html>`;
                     const blob=new Blob(['\ufeff',docHtml],{type:'application/msword'});
                     const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${fileName}.doc`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
                 }else if(type==='image'){
@@ -5105,6 +5530,10 @@ const STUDENTS_KEY =
 
 const ATTENDANCE_KEY =
 "FACE_ATTENDANCE_RECORDS";
+
+const DAILY_FIXED_ATTENDANCE_KEY =
+"FACE_DAILY_FIXED_ATTENDANCE";
+const WEEKLY_FIXED_ATTENDANCE_KEY = "FACE_WEEKLY_FIXED_ATTENDANCE_V1";
 
 const TEACHER_KEY =
 "FACE_ATTENDANCE_TEACHER";
@@ -5198,6 +5627,30 @@ document.getElementById("attendanceSection");
 
 const reportsSection =
 document.getElementById("reportsSection");
+
+const dailyAttendanceSection =
+document.getElementById("dailyAttendanceSection");
+
+const dailyAttendancePreview =
+document.getElementById("dailyAttendancePreview");
+const weeklyAttendanceSection = document.getElementById("weeklyAttendanceSection");
+const weeklyAttendancePreview = document.getElementById("weeklyAttendancePreview");
+
+const fixDailyAttendance =
+document.getElementById("fixDailyAttendance");
+const saveDailyAttendance = document.getElementById("saveDailyAttendance");
+const deleteDailyAttendance = document.getElementById("deleteDailyAttendance");
+const openWeeklyAttendance = document.getElementById("openWeeklyAttendance");
+const saveWeeklyAttendance = document.getElementById("saveWeeklyAttendance");
+const deleteWeeklyAttendance = document.getElementById("deleteWeeklyAttendance");
+const refreshWeeklyAttendance = document.getElementById("refreshWeeklyAttendance");
+const backFromWeeklyAttendance = document.getElementById("backFromWeeklyAttendance");
+
+const refreshDailyAttendance =
+document.getElementById("refreshDailyAttendance");
+
+const backFromDailyAttendance =
+document.getElementById("backFromDailyAttendance");
 
 const studentName =
 document.getElementById("studentName");
@@ -5381,6 +5834,9 @@ function hideAllSections() {
 
     reportsSection.classList.remove("active");
 
+    dailyAttendanceSection.classList.remove("active");
+    if (weeklyAttendanceSection) weeklyAttendanceSection.classList.remove("active");
+
 }
 
 /* =========================================================
@@ -5449,6 +5905,37 @@ attendanceSubMenu.appendChild(
 reportsButton
 );
 
+const dailyAttendanceButton =
+document.createElement("button");
+
+dailyAttendanceButton.type =
+"button";
+
+dailyAttendanceButton.className =
+"btn-primary";
+
+dailyAttendanceButton.textContent =
+"📌 تثبيت الحضور اليومي";
+
+dailyAttendanceButton.addEventListener(
+"click",
+function() {
+
+    hideAllSections();
+
+    dailyAttendanceSection.classList.add("active");
+
+    attendanceSubMenu.style.display =
+    "none";
+
+    renderDailyAttendanceSheet();
+
+});
+
+attendanceSubMenu.appendChild(
+dailyAttendanceButton
+);
+
 /* =========================================================
    رجوع
 ========================================================= */
@@ -5477,6 +5964,20 @@ function() {
 
     hideAllSections();
 
+});
+
+backFromDailyAttendance.addEventListener(
+"click",
+function() {
+
+    hideAllSections();
+
+});
+
+refreshDailyAttendance.addEventListener(
+"click",
+function() {
+    renderDailyAttendanceSheet();
 });
 
 /* =========================================================
@@ -5642,1185 +6143,406 @@ function saveAttendance(records) {
 
 }
 
-function getTeacherName() {
-
-    return (
-        localStorage.getItem(
-            TEACHER_KEY
-        ) || ""
-    );
-
+const SCHOOL_HOLIDAYS_KEY='SCHOOL_ATTENDANCE_HOLIDAYS_V1';
+function getSchoolHolidays(){try{const a=JSON.parse(localStorage.getItem(SCHOOL_HOLIDAYS_KEY)||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
+function saveSchoolHolidays(a){localStorage.setItem(SCHOOL_HOLIDAYS_KEY,JSON.stringify(Array.isArray(a)?a:[]));}
+function getSchoolHoliday(date){const key=String(date||'');return getSchoolHolidays().find(x=>x&&String(x.date)===key)||null;}
+function localIsoDate(d){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+day;}
+function setHolidayToday(){const i=document.getElementById('holidayDateInput');if(i)i.value=localIsoDate(new Date());const r=document.getElementById('holidayReasonInput');if(r&&!r.value)r.value='عطلة محلية';}
+window.saveSchoolHoliday=function(){const di=document.getElementById('holidayDateInput'),ri=document.getElementById('holidayReasonInput'),date=di?.value||'',reason=(ri?.value||'').trim()||'عطلة رسمية';if(!date){alert('يرجى اختيار تاريخ العطلة.');return;}const d=new Date(date+'T00:00:00');if(isNaN(d.getTime())){alert('تاريخ العطلة غير صحيح.');return;}const a=getSchoolHolidays().filter(x=>String(x.date)!==date);a.push({date,reason,savedAt:new Date().toISOString()});a.sort((x,y)=>String(x.date).localeCompare(String(y.date)));saveSchoolHolidays(a);window.renderSchoolHolidays();renderDailyAttendanceSheet();renderWeeklyAttendanceSheet();const msg=document.getElementById('schoolHolidayMessage');if(msg){msg.style.color='#198754';msg.textContent='✅ تم حفظ العطلة وربطها بجداول الحضور.';setTimeout(()=>{msg.textContent=''},3000);}};
+window.deleteSchoolHoliday=function(date){if(!confirm('هل تريد حذف هذه العطلة؟'))return;saveSchoolHolidays(getSchoolHolidays().filter(x=>String(x.date)!==String(date)));window.renderSchoolHolidays();renderDailyAttendanceSheet();renderWeeklyAttendanceSheet();};
+window.renderSchoolHolidays=function(){const box=document.getElementById('schoolHolidaysList');if(!box)return;const a=getSchoolHolidays();if(!a.length){box.innerHTML='<div style="text-align:center;color:#777;padding:8px;">لا توجد عطل مسجلة.</div>';return;}box.innerHTML=a.map(x=>`<div class="school-holiday-row"><div><div class="holiday-date">${escapeHtml(formatArabicDate(x.date))}</div><div class="holiday-reason">${escapeHtml(x.reason||'عطلة')}</div></div><button type="button" class="btn-action btn-delete" onclick="deleteSchoolHoliday('${String(x.date).replace(/'/g,'\\\'')}')">🗑️ حذف</button></div>`).join('');};
+window.getSchoolHoliday=getSchoolHoliday;
+function getDailyFixedAttendance() { try { return JSON.parse(localStorage.getItem(DAILY_FIXED_ATTENDANCE_KEY) || "[]"); } catch(e){ return []; } }
+function saveDailyFixedAttendance(records){ localStorage.setItem(DAILY_FIXED_ATTENDANCE_KEY,JSON.stringify(records||[])); }
+function getWeeklyFixedAttendance(){ try{return JSON.parse(localStorage.getItem(WEEKLY_FIXED_ATTENDANCE_KEY)||"[]");}catch(e){return [];} }
+function saveWeeklyFixedAttendance(records){localStorage.setItem(WEEKLY_FIXED_ATTENDANCE_KEY,JSON.stringify(records||[]));}
+function getSchoolWeekInfo(dateObj=new Date()){
+ const d=new Date(dateObj);d.setHours(0,0,0,0);const dow=d.getDay();const start=new Date(d);start.setDate(d.getDate()-(dow===0?0:dow));
+ const iso=x=>{const y=x.getFullYear(),m=String(x.getMonth()+1).padStart(2,'0'),day=String(x.getDate()).padStart(2,'0');return `${y}-${m}-${day}`;};
+ return {key:iso(start),days:[0,1,2,3,4].map(i=>{const x=new Date(start);x.setDate(start.getDate()+i);return {date:iso(x),name:getArabicDayName(x)};})};
 }
-
-function saveTeacherName(name) {
-
-    localStorage.setItem(
-        TEACHER_KEY,
-        name
-    );
-
+function formatArabicShortDate(key){
+ const m=String(key||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+ if(!m)return formatArabicDate(key);
+ const toAr=v=>String(v).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+ return toAr(m[3])+'/'+toAr(m[2]);
 }
-
-/* =========================================================
-   التاريخ
-========================================================= */
-
-function dateToKey(date) {
-
-    const year =
-    date.getFullYear();
-
-    const month =
-    String(
-        date.getMonth() + 1
-    ).padStart(2,"0");
-
-    const day =
-    String(
-        date.getDate()
-    ).padStart(2,"0");
-
-    return `${year}-${month}-${day}`;
-
+function fixedPaperHeader(className,title,startDate,endDate){
+ const logo=document.querySelector('.header-logo-box svg');
+ const school='إدارة ثانوية الفراجية للبنين';
+ const year='للعام الدراسي ٢٠٢٦-٢٠٢٧';
+ const range = startDate===endDate
+   ? `من تاريخ ${escapeHtml(startDate)} إلى ${escapeHtml(endDate)}`
+   : `من تاريخ ${escapeHtml(startDate)} إلى ${escapeHtml(endDate)}`;
+ return `<div class="fixed-paper-head"><div class="fixed-paper-school">${escapeHtml(school)}<span>منصة إلكترونية</span></div><div class="fixed-paper-logo">${logo?logo.outerHTML:''}</div><div class="fixed-paper-grade">الصف<br>${escapeHtml(className)}</div></div><div class="fixed-paper-title">${escapeHtml(title)} ${range}</div><div class="fixed-paper-year">${year}</div>`;
 }
-
-function getTodayKey() {
-
-    return dateToKey(
-        new Date()
-    );
-
+function fixedPaperFooter(){return `<div class="fixed-paper-footer"><div class="principal">المدير: <span>د. سعدون حزين فرحان</span></div><div class="developer">إعداد وبرمجة: <span>د. أحمد عباس جمعه 2026</span></div></div>`;}
+function dailyStatusForStudent(studentId,attendance,holiday){
+ if(holiday) return {html:'عطلة',cls:'holiday-cell',countable:false};
+ if(!attendance.length) return {html:'',cls:'empty-mark',countable:false};
+ const present=attendance.some(r=>String(r.studentId)===String(studentId));
+ return present ? {html:'✓',cls:'present-mark',countable:true} : {html:'غ',cls:'absent-mark',countable:true};
 }
-
-function keyToDate(key) {
-
-    const parts =
-    key.split("-").map(Number);
-
-    return new Date(
-        parts[0],
-        parts[1] - 1,
-        parts[2]
-    );
-
+function renderDailyAttendanceSheet(){
+ if(!dailyAttendancePreview)return;
+ const allStudents=getStudents().slice();
+ const today=getTodayKey(),dateObj=new Date(),dayName=getArabicDayName(dateObj),dateLabel=formatArabicDate(today),holiday=getSchoolHoliday(today),attendance=getAttendance().filter(r=>r.date===today);
+ let html='';
+ CLASS_NAMES.forEach(className=>{
+   const list=allStudents.filter(s=>String(s.className||'')===className).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'ar'));
+   let p=0,a=0,rows='';
+   for(let i=0;i<30;i++){
+     const st=list[i];
+     let mark='';let cls='empty-mark';
+     if(st){
+       const status=dailyStatusForStudent(st.id,attendance,holiday);mark=status.html;cls=status.cls;
+       if(status.countable){if(mark==='✓')p++;else if(mark==='غ')a++;}
+     }
+     rows+=`<tr><td>${i+1}</td><td class="name-cell">${st?escapeHtml(st.name||''):''}</td><td class="${cls}">${mark}</td></tr>`;
+   }
+   const responsibleName=attendance.map(r=>String(r.teacherName||'').trim()).find(Boolean)||currentAttendanceTeacher||getTeacherName()||''; const responsible=holiday ? `<span class="holiday-mark">${escapeHtml(holiday.reason||'عطلة')}</span>` : (responsibleName ? `<span class="responsible-name">${escapeHtml(responsibleName)}</span>` : '');
+   html+=`<div class="daily-fixed-sheet">${fixedPaperHeader(className,'قائمة بأسماء الحضور والغياب',dateLabel,dateLabel)}<table class="daily-fixed-table"><thead><tr><th>ت</th><th>اسم الطالب</th><th>${escapeHtml(dayName)}<br>${escapeHtml(dateLabel)}</th></tr></thead><tbody>${rows}</tbody></table><div class="fixed-responsibles"><div class="fixed-responsibles-title">${holiday?'حالة اليوم':'مسؤول البصمة اليوم'}</div><div class="fixed-responsible-row single-responsible">${responsible}</div></div><div class="fixed-summary"><span>عدد الحضور: <b style="color:#198754">${p}</b></span><span>عدد الغياب: <b style="color:#dc3545">${a}</b></span></div>${fixedPaperFooter()}</div>`;
+ });
+ dailyAttendancePreview.innerHTML=html;
 }
-
-function formatArabicDate(key) {
-
-    if (!key)
-        return "";
-
-    return keyToDate(key).toLocaleDateString(
-        "ar-IQ",
-        {
-            year:"numeric",
-            month:"2-digit",
-            day:"2-digit"
-        }
-    );
-
+function renderWeeklyAttendanceSheet(){
+ if(!weeklyAttendancePreview)return;
+ const week=getSchoolWeekInfo(),fixed=getWeeklyFixedAttendance().filter(x=>x.weekKey===week.key),allStudents=getStudents().slice();
+ const startLabel=formatArabicDate(week.days[0].date),endLabel=formatArabicDate(week.days[4].date);
+ let html='';
+ CLASS_NAMES.forEach(className=>{
+   const list=allStudents.filter(s=>String(s.className||'')===className).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'ar'));
+   let rows='',p=0,a=0;
+   for(let i=0;i<30;i++){
+     const st=list[i];let cells='';
+     week.days.forEach(day=>{
+       const holiday=getSchoolHoliday(day.date),d=fixed.find(x=>x.date===day.date),r=st ? (d?.students||[]).find(x=>String(x.id)===String(st.id)) : null;
+       if(!st){cells+='<td class="empty-mark"></td>';return;}
+       if(holiday || r?.status==='holiday') cells+='<td class="holiday-cell">عطلة</td>';
+       else if(r?.status==='present'){p++;cells+='<td class="present-mark">✓</td>';}
+       else if(r?.status==='absent'){a++;cells+='<td class="absent-mark">غ</td>';}
+       else cells+='<td class="empty-mark"></td>';
+     });
+     rows+=`<tr><td>${i+1}</td><td class="name-cell">${st?escapeHtml(st.name||''):''}</td>${cells}</tr>`;
+   }
+   const resp=week.days.map(day=>{
+     const holiday=getSchoolHoliday(day.date),d=fixed.find(x=>x.date===day.date),name=d?.teacherName||'';
+     return `<span class="fixed-responsible-item ${holiday?'holiday-mark':''}"><b>${escapeHtml(day.name)}:</b>${name&&!holiday?` <span class="responsible-slot">${escapeHtml(name)}</span>`:(holiday?` <span class="responsible-slot">عطلة — ${escapeHtml(holiday.reason||'')}</span>`:'')}</span>`;
+   }).join('');
+   html+=`<div class="weekly-fixed-sheet">${fixedPaperHeader(className,'قائمة بأسماء الحضور والغياب',startLabel,endLabel)}<table class="weekly-fixed-table"><thead><tr><th>ت</th><th>اسم الطالب</th>${week.days.map(d=>`<th><span class="weekly-day-name">${escapeHtml(d.name)}</span><span class="weekly-day-date">${escapeHtml(formatArabicShortDate(d.date))}</span></th>`).join('')}</tr></thead><tbody>${rows}</tbody></table><div class="fixed-responsibles"><div class="fixed-responsibles-title">مسؤولي البصمة هذا الأسبوع</div><div class="fixed-responsible-row">${resp}</div></div>${fixedPaperFooter()}</div>`;
+ });
+ weeklyAttendancePreview.innerHTML=html;
 }
-
-function getCurrentTime() {
-
-    return new Date().toLocaleTimeString(
-        "ar-IQ",
-        {
-            hour:"2-digit",
-            minute:"2-digit",
-            second:"2-digit"
-        }
-    );
-
+function finalizeDailyAttendance(){
+ const students=getStudents();if(!students.length){alert('لا يوجد طلاب مسجلون.');return false;}const today=getTodayKey(),holiday=getSchoolHoliday(today),attendance=getAttendance().filter(r=>r.date===today),teacher=holiday?'':(attendance.map(r=>String(r.teacherName||'').trim()).find(Boolean)||currentAttendanceTeacher||getTeacherName()||String(teacherName?.value||'').trim());if(!holiday&&!teacher){alert('يرجى تحديد اسم المسؤول عن البصمة أولاً ثم تسجيل الحضور.');return false;}
+ const snapshot=students.map(st=>({id:st.id,name:st.name,className:st.className,status:holiday?'holiday':(attendance.some(r=>String(r.studentId)===String(st.id))?'present':'absent')})),week=getSchoolWeekInfo(),weekly=getWeeklyFixedAttendance().filter(x=>!(x.weekKey===week.key&&x.date===today));weekly.push({weekKey:week.key,date:today,teacherName:teacher,holiday:holiday?{reason:holiday.reason||'عطلة'}:null,fixedAt:new Date().toISOString(),students:snapshot});saveWeeklyFixedAttendance(weekly);saveDailyFixedAttendance(getDailyFixedAttendance().filter(x=>x.date!==today));renderWeeklyAttendanceSheet();renderDailyAttendanceSheet();showToast(holiday?'📅 تم تثبيت العطلة ونقلها إلى الجدول الأسبوعي.':'✅ تم تثبيت حضور اليوم ونقله إلى الجدول الأسبوعي، وأصبح جدول اليوم جاهزًا لليوم التالي.');return true;
 }
-
-/* =========================================================
-   أيام الدوام
-   الجمعة والسبت مستبعدان
-========================================================= */
-
-function isSchoolDay(date) {
-
-    const day =
-    date.getDay();
-
-    return (
-        day !== 5 &&
-        day !== 6
-    );
-
+fixDailyAttendance.addEventListener('click',finalizeDailyAttendance);
+async function saveAttendanceSectionAsImages(sectionId, prefix){
+ const root=document.getElementById(sectionId); if(!root){alert('تعذر العثور على الجدول.');return;}
+ const sheets=Array.from(root.querySelectorAll(sectionId==='dailyAttendanceSection'?'.daily-fixed-sheet':'.weekly-fixed-sheet'));
+ if(!sheets.length){alert('لا يوجد جدول محفوظ حاليًا لحفظه كصورة. اضغط تثبيت الحضور أولاً.');return;}
+ if(typeof html2canvas!=='function'){alert('مكتبة حفظ الصور غير متوفرة. تحقق من اتصال الإنترنت ثم حاول مرة أخرى.');return;}
+ if(document.fonts&&document.fonts.ready) await document.fonts.ready;
+ const safe=v=>String(v||'').replace(/[\/:*?"<>|]/g,'-').replace(/\s+/g,' ').trim();
+ for(let i=0;i<sheets.length;i++){
+   const sheet=sheets[i];
+   const canvas=await html2canvas(sheet,{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#fff',logging:false,scrollX:0,scrollY:0,windowWidth:Math.max(document.documentElement.clientWidth,sheet.scrollWidth||900),windowHeight:Math.max(document.documentElement.clientHeight,sheet.scrollHeight||1200)});
+   const className=sheet.querySelector('.daily-fixed-title span')?.textContent?.replace(/^الصف:\s*/,'') || sheet.querySelector('.weekly-fixed-title')?.textContent?.replace(/^📅 جدول الحضور الأسبوعي —\s*/,'') || ('جدول-'+(i+1));
+   const fileName=safe(prefix+' - '+className+' - '+new Date().toLocaleDateString('ar-IQ').replace(/\//g,'-'))+'.png';
+   canvas.toBlob(function(blob){
+      if(!blob)return;
+      const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=fileName; a.style.display='none'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),3000);
+   },'image/png');
+   await new Promise(r=>setTimeout(r,350));
+ }
+ showToast('🖼️ تم حفظ '+sheets.length+' صورة. ستجدها في مجلد التنزيلات (Downloads) في الهاتف.');
 }
-
-function getArabicDayName(date) {
-
-    const names = [
-
-        "الأحد",
-        "الإثنين",
-        "الثلاثاء",
-        "الأربعاء",
-        "الخميس",
-        "الجمعة",
-        "السبت"
-
-    ];
-
-    return names[
-        date.getDay()
-    ];
-
-}
-
-function getDatesBetween(
-startDate,
-endDate
-) {
-
-    const dates = [];
-
-    const current =
-    new Date(startDate);
-
-    current.setHours(
-        0,0,0,0
-    );
-
-    const end =
-    new Date(endDate);
-
-    end.setHours(
-        0,0,0,0
-    );
-
-    while (
-        current <= end
-    ) {
-
-        if (
-            isSchoolDay(current)
-        ) {
-
-            dates.push(
-                new Date(current)
-            );
-
-        }
-
-        current.setDate(
-            current.getDate() + 1
-        );
-
-    }
-
-    return dates;
-
-}
-
-/* =========================================================
-   الكاميرا
-========================================================= */
-
-function stopStream(stream) {
-
-    if (!stream)
-        return;
-
-    stream.getTracks().forEach(
-        track => {
-
-            try {
-                track.stop();
-            } catch(error) {
-                console.warn(error);
-            }
-
-        }
-    );
-
-}
-
-function stopRegisterCamera() {
-
-    stopStream(
-        registerStream
-    );
-
-    registerStream =
-    null;
-
-    registerVideo.pause();
-
-    registerVideo.srcObject =
-    null;
-
-    registerCameraBox.style.display =
-    "none";
-
-}
-
-/* =========================================================
-   فتح الكاميرا
-========================================================= */
-
-async function openCamera(
-videoElement,
-mode
-) {
-
-    if (
-        !navigator.mediaDevices ||
-        !navigator.mediaDevices.getUserMedia
-    ) {
-
-        throw new Error(
-            "المتصفح لا يدعم تشغيل الكاميرا."
-        );
-
-    }
-
-    if (videoElement.srcObject) {
-
-        stopStream(
-            videoElement.srcObject
-        );
-
-        videoElement.srcObject =
-        null;
-
-    }
-
-    let stream = null;
-
-    try {
-
-        stream =
-        await navigator.mediaDevices.getUserMedia({
-
-            audio:false,
-
-            video:{
-
-                facingMode:{
-                    exact:mode
-                },
-
-                width:{
-                    ideal:1280
-                },
-
-                height:{
-                    ideal:720
-                }
-
-            }
-
-        });
-
-    } catch(error1) {
-
-        console.warn(
-            "Exact camera failed:",
-            error1
-        );
-
-        try {
-
-            stream =
-            await navigator.mediaDevices.getUserMedia({
-
-                audio:false,
-
-                video:{
-
-                    facingMode:{
-                        ideal:mode
-                    },
-
-                    width:{
-                        ideal:1280
-                    },
-
-                    height:{
-                        ideal:720
-                    }
-
-                }
-
-            });
-
-        } catch(error2) {
-
-            console.warn(
-                "Ideal camera failed:",
-                error2
-            );
-
-            stream =
-            await navigator.mediaDevices.getUserMedia({
-
-                audio:false,
-
-                video:true
-
-            });
-
-        }
-
-    }
-
-    videoElement.srcObject =
-    stream;
-
-    await new Promise(
-        resolve => {
-
-            if (
-                videoElement.readyState >= 2 &&
-                videoElement.videoWidth > 0
-            ) {
-
-                resolve();
-
-                return;
-
-            }
-
-            let finished =
-            false;
-
-            const finish =
-            function() {
-
-                if (finished)
-                    return;
-
-                finished =
-                true;
-
-                clearTimeout(
-                    timeout
-                );
-
-                resolve();
-
-            };
-
-            const timeout =
-            setTimeout(
-                finish,
-                4000
-            );
-
-            videoElement.onloadedmetadata =
-            finish;
-
-            videoElement.oncanplay =
-            finish;
-
-        }
-    );
-
-    try {
-
-        await videoElement.play();
-
-    } catch(error) {
-
-        console.warn(
-            "Video play failed:",
-            error
-        );
-
-    }
-
-    return stream;
-
-}
-
-/* =========================================================
-   أسماء الكاميرات
-========================================================= */
-
-function updateRegisterCameraLabel() {
-
-    registerCameraLabel.textContent =
-    registerCameraMode === "user"
-        ? "📷 الكاميرا الأمامية"
-        : "📷 الكاميرا الخلفية";
-
-}
-
-function updateAttendanceCameraLabel() {
-
-    cameraStatus.textContent =
-    attendanceCameraMode === "user"
-        ? "📷 الكاميرا الأمامية"
-        : "📷 الكاميرا الخلفية";
-
-}
-
-/* =========================================================
-   تحميل النماذج
-========================================================= */
-
-async function loadModels() {
-
-    try {
-
-        modelStatus.textContent =
-        "⏳ جارٍ تحميل نماذج التعرف على الوجه...";
-
-        await faceapi.nets.tinyFaceDetector
-        .loadFromUri(MODEL_URL);
-
-        await faceapi.nets.faceLandmark68Net
-        .loadFromUri(MODEL_URL);
-
-        await faceapi.nets.faceRecognitionNet
-        .loadFromUri(MODEL_URL);
-
-        modelsLoaded =
-        true;
-
-        modelStatus.textContent =
-        "✅ تم تحميل نظام التعرف على الوجه بنجاح.";
-
-        modelStatus.className =
-        "status success";
-
-    } catch(error) {
-
-        console.error(error);
-
-        modelsLoaded =
-        false;
-
-        modelStatus.textContent =
-        "❌ تعذر تحميل نماذج التعرف على الوجه. تأكد من اتصال الإنترنت.";
-
-        modelStatus.className =
-        "status error";
-
-    }
-
-}
-
-/* =========================================================
-   تسجيل طالب جديد
-========================================================= */
-
-openRegisterCamera.addEventListener(
-"click",
-async function() {
-
-    if (!modelsLoaded) {
-
-        showMessage(
-            registerMessage,
-            "يرجى الانتظار حتى يكتمل تحميل نظام التعرف على الوجه.",
-            "error"
-        );
-
-        return;
-
-    }
-
-    const name =
-    studentName.value.trim();
-
-    const className =
-    studentClass.value;
-
-    if (!name) {
-
-        showMessage(
-            registerMessage,
-            "يرجى كتابة اسم الطالب كاملًا.",
-            "error"
-        );
-
-        studentName.focus();
-
-        return;
-
-    }
-
-    if (!className) {
-
-        showMessage(
-            registerMessage,
-            "يرجى اختيار الصف.",
-            "error"
-        );
-
-        studentClass.focus();
-
-        return;
-
-    }
-
-    registerCameraMode =
-    "user";
-
-    updateRegisterCameraLabel();
-
-    stopRegisterCamera();
-
-    registerCameraBox.style.display =
-    "block";
-
-    captureFace.disabled =
-    true;
-
-    try {
-
-        registerStream =
-        await openCamera(
-            registerVideo,
-            "user"
-        );
-
-        captureFace.disabled =
-        false;
-
-        showMessage(
-            registerMessage,
-            "📷 الكاميرا الأمامية تعمل الآن. اجعل وجه الطالب واضحًا أمام الكاميرا.",
-            "info"
-        );
-
-        registerStatus.textContent =
-        "تأكد من ظهور الوجه كاملًا وبإضاءة جيدة، ثم اضغط «تسجيل الوجه».";
-
-    } catch(error) {
-
-        console.error(
-            "Front camera:",
-            error
-        );
-
-        registerCameraBox.style.display =
-        "none";
-
-        showMessage(
-            registerMessage,
-            "❌ تعذر تشغيل الكاميرا الأمامية. تأكد من إعطاء المتصفح صلاحية الكاميرا.",
-            "error"
-        );
-
-    }
-
+if(saveDailyAttendance)saveDailyAttendance.addEventListener('click',async function(){
+ if(!getWeeklyFixedAttendance().some(x=>x.date===getTodayKey())){ if(!finalizeDailyAttendance())return; }
+ await saveAttendanceSectionAsImages('weeklyAttendanceSection','حضور الأسبوع');
 });
-
-/* =========================================================
-   تبديل كاميرا التسجيل
-========================================================= */
-
-switchRegisterCamera.addEventListener(
-"click",
-async function() {
-
-    switchRegisterCamera.disabled =
-    true;
-
-    captureFace.disabled =
-    true;
-
-    const oldMode =
-    registerCameraMode;
-
-    const newMode =
-    oldMode === "user"
-        ? "environment"
-        : "user";
-
-    stopStream(
-        registerStream
-    );
-
-    registerStream =
-    null;
-
-    registerVideo.pause();
-
-    registerVideo.srcObject =
-    null;
-
-    registerCameraMode =
-    newMode;
-
-    updateRegisterCameraLabel();
-
-    try {
-
-        registerStream =
-        await openCamera(
-            registerVideo,
-            newMode
-        );
-
-        captureFace.disabled =
-        false;
-
-        showMessage(
-            registerMessage,
-            newMode === "user"
-            ? "📷 تم التحويل إلى الكاميرا الأمامية."
-            : "📷 تم التحويل إلى الكاميرا الخلفية.",
-            "info"
-        );
-
-    } catch(error) {
-
-        console.error(error);
-
-        registerCameraMode =
-        oldMode;
-
-        updateRegisterCameraLabel();
-
-        try {
-
-            registerStream =
-            await openCamera(
-                registerVideo,
-                oldMode
-            );
-
-            captureFace.disabled =
-            false;
-
-            showMessage(
-                registerMessage,
-                "⚠️ تعذر تبديل الكاميرا، تمت إعادة الكاميرا السابقة.",
-                "error"
-            );
-
-        } catch(returnError) {
-
-            console.error(
-                returnError
-            );
-
-            stopRegisterCamera();
-
-            showMessage(
-                registerMessage,
-                "❌ تعذر تشغيل الكاميرا.",
-                "error"
-            );
-
-        }
-
-    }
-
-    switchRegisterCamera.disabled =
-    false;
-
+if(deleteDailyAttendance)deleteDailyAttendance.addEventListener('click',function(){const today=getTodayKey();if(!confirm('هل تريد حذف تثبيت حضور اليوم؟ لن يُحذف سجل البصمات نفسه.'))return;saveDailyFixedAttendance(getDailyFixedAttendance().filter(x=>x.date!==today));const week=getSchoolWeekInfo();saveWeeklyFixedAttendance(getWeeklyFixedAttendance().filter(x=>!(x.weekKey===week.key&&x.date===today)));renderDailyAttendanceSheet();renderWeeklyAttendanceSheet();showToast('🗑️ تم حذف تثبيت اليوم.');});
+if(openWeeklyAttendance)openWeeklyAttendance.addEventListener('click',function(){hideAllSections();weeklyAttendanceSection.classList.add('active');attendanceSubMenu.style.display='none';renderWeeklyAttendanceSheet();});
+if(saveWeeklyAttendance)saveWeeklyAttendance.addEventListener('click',async function(){
+ saveWeeklyFixedAttendance(getWeeklyFixedAttendance());
+ await saveAttendanceSectionAsImages('weeklyAttendanceSection','حضور الأسبوع');
 });
+if(deleteWeeklyAttendance)deleteWeeklyAttendance.addEventListener('click',function(){const week=getSchoolWeekInfo();if(!confirm('هل تريد حذف جميع أيام الأسبوع المثبتة؟'))return;saveWeeklyFixedAttendance(getWeeklyFixedAttendance().filter(x=>x.weekKey!==week.key));renderWeeklyAttendanceSheet();showToast('🗑️ تم حذف أسبوع الحضور.');});
+if(refreshWeeklyAttendance)refreshWeeklyAttendance.addEventListener('click',renderWeeklyAttendanceSheet);
+if(backFromWeeklyAttendance)backFromWeeklyAttendance.addEventListener('click',function(){hideAllSections();});
+
 
 /* =========================================================
-   التقاط بصمة الوجه
+   نظام استلام وتسليم الكتب
 ========================================================= */
-
-captureFace.addEventListener(
-"click",
-async function() {
-
-    if (!modelsLoaded) {
-
-        showMessage(
-            registerMessage,
-            "النظام لم يكتمل تحميله بعد.",
-            "error"
-        );
-
-        return;
-
-    }
-
-    if (
-        !registerStream ||
-        !registerVideo.srcObject
-    ) {
-
-        showMessage(
-            registerMessage,
-            "افتح الكاميرا أولًا.",
-            "error"
-        );
-
-        return;
-
-    }
-
-    const name =
-    studentName.value.trim();
-
-    const className =
-    studentClass.value;
-
-    if (!name || !className) {
-
-        showMessage(
-            registerMessage,
-            "يرجى إدخال اسم الطالب والصف.",
-            "error"
-        );
-
-        return;
-
-    }
-
-    captureFace.disabled =
-    true;
-
-    switchRegisterCamera.disabled =
-    true;
-
-    showMessage(
-        registerMessage,
-        "⏳ جارٍ تحليل بصمة الوجه...",
-        "info"
-    );
-
-    try {
-
-        const detection =
-        await faceapi
-        .detectSingleFace(
-            registerVideo,
-            new faceapi.TinyFaceDetectorOptions({
-
-                inputSize:416,
-
-                scoreThreshold:0.5
-
-            })
-        )
-        .withFaceLandmarks()
-        .withFaceDescriptor();
-
-        if (!detection) {
-
-            showMessage(
-                registerMessage,
-                "❌ لم يتم العثور على وجه واضح. اجعل الوجه أمام الكاميرا مباشرة.",
-                "error"
-            );
-
-            captureFace.disabled =
-            false;
-
-            switchRegisterCamera.disabled =
-            false;
-
-            return;
-
-        }
-
-        const descriptor =
-        Array.from(
-            detection.descriptor
-        );
-
-        const students =
-        getStudents();
-
-        /* إعادة تسجيل بصمة طالب موجود */
-
-        if (editingFaceStudentId) {
-
-            const existing =
-            students.find(
-                student =>
-                student.id ===
-                editingFaceStudentId
-            );
-
-            if (existing) {
-
-                for (
-                    const student of students
-                ) {
-
-                    if (
-                        student.id ===
-                        editingFaceStudentId
-                    )
-                        continue;
-
-                    if (!student.descriptor)
-                        continue;
-
-                    const distance =
-                    faceapi.euclideanDistance(
-                        detection.descriptor,
-                        new Float32Array(
-                            student.descriptor
-                        )
-                    );
-
-                    if (distance < 0.48) {
-
-                        showMessage(
-                            registerMessage,
-                            `⚠️ هذه البصمة مسجلة مسبقًا باسم: ${student.name}`,
-                            "error"
-                        );
-
-                        captureFace.disabled =
-                        false;
-
-                        switchRegisterCamera.disabled =
-                        false;
-
-                        return;
-
-                    }
-
-                }
-
-                existing.name =
-                name;
-
-                existing.className =
-                className;
-
-                existing.schoolStudentId =
-                linkedSchoolStudentId || existing.schoolStudentId || null;
-
-                existing.descriptor =
-                descriptor;
-
-                saveStudents(
-                    students
-                );
-
-                editingFaceStudentId =
-                null;
-                linkedSchoolStudentId = null;
-
-                showMessage(
-                    registerMessage,
-                    "✅ تم تحديث بيانات الطالب وبصمة وجهه بنجاح.",
-                    "success"
-                );
-
-                stopRegisterCamera();
-
-                studentName.value =
-                "";
-
-                studentClass.value =
-                "";
-
-                renderStudents();
-                if (typeof loadStudents === "function") loadStudents();
-
-                showToast(
-                    "✅ تم تحديث بصمة الطالب"
-                );
-
-                captureFace.disabled =
-                false;
-
-                switchRegisterCamera.disabled =
-                false;
-
-                return;
-
-            }
-
-            editingFaceStudentId =
-            null;
-        }
-
-        const duplicateName =
-        students.find(
-            student =>
-            student.name.trim() ===
-            name
-        );
-
-        if (duplicateName) {
-
-            showMessage(
-                registerMessage,
-                "⚠️ هذا الطالب مسجل مسبقًا.",
-                "error"
-            );
-
-            captureFace.disabled =
-            false;
-
-            switchRegisterCamera.disabled =
-            false;
-
-            return;
-
-        }
-
-        for (
-            const student of students
-        ) {
-
-            if (!student.descriptor)
-                continue;
-
-            const distance =
-            faceapi.euclideanDistance(
-                detection.descriptor,
-                new Float32Array(
-                    student.descriptor
-                )
-            );
-
-            if (distance < 0.48) {
-
-                showMessage(
-                    registerMessage,
-                    `⚠️ هذه البصمة مسجلة مسبقًا باسم: ${student.name}`,
-                    "error"
-                );
-
-                captureFace.disabled =
-                false;
-
-                switchRegisterCamera.disabled =
-                false;
-
-                return;
-
-            }
-
-        }
-
-        const newStudent = {
-
-            id:
-            Date.now().toString() +
-            "_" +
-            Math.random()
-            .toString(36)
-            .substring(2,8),
-
-            name:name,
-
-            className:className,
-
-            schoolStudentId: linkedSchoolStudentId || null,
-
-            descriptor:descriptor,
-
-            createdAt:
-            new Date().toISOString()
-
-        };
-
-        students.push(
-            newStudent
-        );
-
-        saveStudents(
-            students
-        );
-
-        if (typeof loadStudents === "function") loadStudents();
-        linkedSchoolStudentId = null;
-
-        showMessage(
-            registerMessage,
-            "✅ تم تسجيل الطالب وبصمة وجهه بنجاح.",
-            "success"
-        );
-
-        registerStatus.textContent =
-        `تم تسجيل الطالب: ${name} — ${className}`;
-
-        stopRegisterCamera();
-
-        studentName.value =
-        "";
-
-        studentClass.value =
-        "";
-
-        renderStudents();
-
-        showToast(
-            "✅ تم حفظ الطالب بنجاح"
-        );
-
-    } catch(error) {
-
-        console.error(
-            "Face registration:",
-            error
-        );
-
-        showMessage(
-            registerMessage,
-            "❌ حدث خطأ أثناء تسجيل بصمة الوجه.",
-            "error"
-        );
-
-    }
-
-    captureFace.disabled =
-    false;
-
-    switchRegisterCamera.disabled =
-    false;
-
-});
-
-/* =========================================================
-   إغلاق كاميرا التسجيل
-========================================================= */
-
-closeRegisterCamera.addEventListener(
-"click",
-function() {
-
-    stopRegisterCamera();
-
-    editingFaceStudentId =
-    null;
-
-    showMessage(
-        registerMessage,
-        "تم إغلاق كاميرا تسجيل الطالب.",
-        "info"
-    );
-
-});
-
-/* =========================================================
-   تعديل طالب
-========================================================= */
-
-function editStudent(id) {
-
-    const students =
-    getStudents();
-
-    const student =
-    students.find(
-        item => item.id === id
-    );
-
-    if (!student)
-        return;
-
-    const newName =
-    prompt(
-        "أدخل اسم الطالب كاملًا:",
-        student.name
-    );
-
-    if (newName === null)
-        return;
-
-    const cleanName =
-    newName.trim();
-
-    if (!cleanName) {
-
-        alert(
-            "اسم الطالب لا يمكن أن يكون فارغًا."
-        );
-
-        return;
-    }
-
-    const newClass =
-    prompt(
-        "أدخل الصف كما هو موجود في القائمة:\n\n" +
-        CLASS_NAMES.join("\n"),
-        student.className
-    );
-
-    if (newClass === null)
-        return;
-
-    const cleanClass =
-    newClass.trim();
-
-    if (
-        !CLASS_NAMES.includes(
-            cleanClass
-        )
-    ) {
-
-        alert(
-            "الصف غير صحيح."
-        );
-
-        return;
-    }
-
-    student.name =
-    cleanName;
-
-    student.className =
-    cleanClass;
-
-    saveStudents(
-        students
-    );
-
-    renderStudents();
-
-    showToast(
-        "✏️ تم تعديل بيانات الطالب"
-    );
-
-}
-
-/* =========================================================
-   إعادة تسجيل بصمة
-========================================================= */
-
-window.openFaceRegistrationForSchoolStudent = function(schoolStudentId) {
-    try {
-        const schoolStudents = JSON.parse(localStorage.getItem('schoolStudentsData') || '[]');
-        const st = schoolStudents.find(x => x.id === schoolStudentId);
-        if (!st) return;
-
-        const faces = getStudents();
-        const existing = faces.find(f => f && f.schoolStudentId === schoolStudentId) ||
-            faces.find(f => f && String(f.name || '').trim() === String(st.name || '').trim() &&
-                              String(f.className || '').trim() === String(st.grade || '').trim());
-
-        linkedSchoolStudentId = schoolStudentId;
-        editingFaceStudentId = existing ? existing.id : null;
-
-        // الانتقال المباشر إلى صفحة تسجيل طالب جديد في نظام البصمة
-        if (typeof showRegisterStudent !== 'undefined' && showRegisterStudent) {
-            showRegisterStudent.click();
-        } else {
-            hideAllSections();
-            registerSection.classList.add('active');
-        }
-
-        // تعبئة بيانات الطالب تلقائيًا بعد فتح الصفحة
-        studentName.value = st.name || '';
-        studentClass.value = st.grade || '';
-        if (typeof attendanceSubMenu !== 'undefined' && attendanceSubMenu) attendanceSubMenu.style.display = 'none';
-
-        if (typeof loadModels === 'function') loadModels();
-        showMessage(
-            registerMessage,
-            existing ? 'البصمة مسجلة بالفعل. يمكنك إعادة تسجيلها إذا أردت.' : 'تم نقل الطالب مباشرة إلى صفحة تسجيل بصمة الوجه. البيانات مملوءة تلقائيًا، افتح الكاميرا لإكمال التسجيل.',
-            'info'
-        );
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    } catch (e) {
-        console.error(e);
-        alert('تعذر فتح صفحة تسجيل بصمة الوجه للطالب.');
-    }
+(function(){
+  const DELIVERY_KEY='BOOK_HANDOVER_DELIVERY_V1';
+  const RETURN_KEY='BOOK_HANDOVER_RETURN_V1';
+  const BOOK_GRADES=['الأول المتوسط','الثاني المتوسط','الثالث المتوسط','الرابع العلمي','الرابع الأدبي','الخامس العلمي','الخامس الأدبي','السادس العلمي','السادس الأدبي'];
+  const SUBJECTS={
+    'الأول المتوسط':['اسلامية','عربي ١','عربي ٢','E كتاب','E نشاط','رياضيات','اجتماعيات','احياء','كيمياء','فيزياء','اخلاقية'],
+    'الثاني المتوسط':['اسلامية','عربي ١','عربي ٢','E كتاب','E نشاط','رياضيات','اجتماعيات','احياء','كيمياء','فيزياء','اخلاقية'],
+    'الثالث المتوسط':['اسلامية','عربي ١','عربي ٢','E كتاب','E كراسة','رياضيات','اجتماعيات','احياء','كيمياء','فيزياء'],
+    'الرابع العلمي':['اسلامية','عربي ١','عربي ٢','E كتاب','E نشاط','رياضيات','احياء','كيمياء','فيزياء'],
+    'الرابع الأدبي':['اسلامية','عربي ١','عربي ٢','E كتاب','E نشاط','رياضيات','تاريخ','جغرافية','اجتماع'],
+    'الخامس العلمي':['اسلامية','عربي ١','عربي ٢','E كتاب','E نشاط','رياضيات','احياء','كيمياء','فيزياء'],
+    'الخامس الأدبي':['اسلامية','عربي ١','عربي ٢','E كتاب','E نشاط','رياضيات','تاريخ','جغرافية','اقتصاد','فلسفة'],
+    'السادس العلمي':['اسلامية','عربي ١','عربي ٢','E كتاب','E نشاط','رياضيات','احياء','كيمياء','فيزياء'],
+    'السادس الأدبي':['اسلامية','عربي ١','عربي ٢','E كتاب','E كراسة','رياضيات','تاريخ','جغرافية','اقتصاد']
 };
+
+
+  const SUBJECTS_KEY='BOOK_HANDOVER_SUBJECTS_V1';
+  let bookMode='delivery';
+  let bookInitialized=false;
+  let bookEventsBound=false;
+  let bookSubjectEventsBound=false;
+  let bookSubjectAction='add';
+  function bookEsc(v){
+    return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  function bookRead(key){
+    try{return JSON.parse(localStorage.getItem(key)||'{}')||{};}catch(e){return {};}
+  }
+  function bookWrite(key,data){
+    localStorage.setItem(key,JSON.stringify(data));
+  }
+  function bookSubjectsStore(){
+    const saved=bookRead(SUBJECTS_KEY);
+    const out={};
+    BOOK_GRADES.forEach(g=>{
+      out[g]=Array.isArray(saved[g])&&saved[g].length?saved[g].map(x=>String(x).trim()).filter(Boolean):(SUBJECTS[g]||[]).slice();
+    });
+    return out;
+  }
+  function bookSubjectsFor(grade){
+    return bookSubjectsStore()[grade]||[];
+  }
+  function bookSaveSubjectsStore(data){ bookWrite(SUBJECTS_KEY,data); }
+  function bookMigrateSubjectData(grade,oldName,newName){
+    [DELIVERY_KEY,RETURN_KEY].forEach(key=>{
+      const data=bookRead(key), g=data.grades?.[grade];
+      if(!g?.students)return;
+      Object.values(g.students).forEach(st=>{
+        if(Object.prototype.hasOwnProperty.call(st,oldName)){
+          if(newName && !Object.prototype.hasOwnProperty.call(st,newName)) st[newName]=st[oldName];
+          delete st[oldName];
+        }
+      });
+      bookWrite(key,data);
+    });
+  }
+  function bookDeleteSubjectData(grade,name){
+    [DELIVERY_KEY,RETURN_KEY].forEach(key=>{
+      const data=bookRead(key), g=data.grades?.[grade];
+      if(!g?.students)return;
+      Object.values(g.students).forEach(st=>delete st[name]);
+      bookWrite(key,data);
+    });
+  }
+  function bookRefreshSubjectSelectors(){
+    const grade=document.getElementById('bookSubjectGrade')?.value||BOOK_GRADES[0];
+    const subjects=bookSubjectsFor(grade);
+    const old=document.getElementById('bookSubjectOld');
+    const del=document.getElementById('bookSubjectDelete');
+    const opts=subjects.map(x=>'<option value="'+bookEsc(x)+'">'+bookEsc(x)+'</option>').join('');
+    if(old)old.innerHTML=opts||'<option value="">لا توجد مواد</option>';
+    if(del)del.innerHTML=opts||'<option value="">لا توجد مواد</option>';
+    const input=document.getElementById('bookSubjectNew');
+    if(input && subjects.length && !input.value)input.value=subjects[0];
+  }
+  function bookShowSubjectAction(action){
+    bookSubjectAction=action;
+    const panel=document.getElementById('bookSubjectPanel');
+    if(!panel)return;
+    panel.classList.remove('hidden');
+    ['add','edit','delete'].forEach(a=>document.getElementById('bookSubjectBtn_'+a)?.classList.toggle('active',a===action));
+    document.getElementById('bookSubjectAddBox')?.classList.toggle('hidden',action!=='add');
+    document.getElementById('bookSubjectEditBox')?.classList.toggle('hidden',action!=='edit');
+    document.getElementById('bookSubjectDeleteBox')?.classList.toggle('hidden',action!=='delete');
+    bookRefreshSubjectSelectors();
+  }
+  function bookManageSubjects(){
+    const action=bookSubjectAction;
+    const grade=document.getElementById('bookSubjectGrade')?.value||BOOK_GRADES[0];
+    const store=bookSubjectsStore();
+    store[grade]=store[grade]||[];
+    if(action==='add'){
+      const name=document.getElementById('bookSubjectNew')?.value.trim()||'';
+      if(!name)return showToast?.('⚠️ اكتب اسم المادة أولاً');
+      if(store[grade].includes(name))return showToast?.('⚠️ المادة موجودة مسبقاً');
+      store[grade].push(name);
+    }else if(action==='edit'){
+      const old=document.getElementById('bookSubjectOld')?.value||'';
+      const name=document.getElementById('bookSubjectEditNew')?.value.trim()||'';
+      if(!old||!name)return showToast?.('⚠️ اختر المادة واكتب الاسم الجديد');
+      if(store[grade].includes(name)&&name!==old)return showToast?.('⚠️ اسم المادة الجديد موجود مسبقاً');
+      const i=store[grade].indexOf(old);
+      if(i<0)return;
+      store[grade][i]=name;
+      bookMigrateSubjectData(grade,old,name);
+    }else{
+      const name=document.getElementById('bookSubjectDelete')?.value||'';
+      if(!name)return showToast?.('⚠️ اختر المادة المراد حذفها');
+      if(!confirm('هل تريد تأكيد حذف مادة «'+name+'» من الصف '+grade+'؟'))return;
+      store[grade]=store[grade].filter(x=>x!==name);
+      bookDeleteSubjectData(grade,name);
+    }
+    bookSaveSubjectsStore(store);
+    bookRefreshSubjectSelectors();
+    renderBookHandoverTables();
+    showToast?.('✅ تم حفظ تعديل مواد الكتب، وأصبحت القائمة محدثة تلقائياً.');
+  }
+  function bookSubjectGradeChanged(){
+    bookRefreshSubjectSelectors();
+    const old=document.getElementById('bookSubjectOld');
+    const input=document.getElementById('bookSubjectEditNew');
+    if(old&&input)input.value=old.value||'';
+  }
+  function bookEnsure(data,grade){
+    if(!data.grades)data.grades={};
+    if(!data.grades[grade])data.grades[grade]={students:{},teacher:''};
+    if(!data.grades[grade].students)data.grades[grade].students={};
+    return data.grades[grade];
+  }
+  function bookStudentList(grade){
+    /* قوائم الكتب تعتمد حصراً على قائمة معلومات الطلبة الأساسية */
+    let list=[];
+    try{
+      list=Array.isArray(window.studentsData)?window.studentsData:[];
+      if(!list.length){
+        const saved=localStorage.getItem('schoolStudentsData');
+        const parsed=saved?JSON.parse(saved):[];
+        if(Array.isArray(parsed)) list=parsed;
+      }
+    }catch(e){ list=[]; }
+    return list.filter(s=>String(s?.grade||s?.className||'')===String(grade))
+      .sort((a,b)=>String(a?.name||'').localeCompare(String(b?.name||''),'ar'));
+  }
+  function bookAllStudents(grade){
+    const list=bookStudentList(grade), out=[];
+    for(let i=0;i<Math.max(30,list.length);i++)out.push(list[i]||null);
+    return out;
+  }
+  function bookTeacherValue(grade){
+    const d=bookRead(bookMode==='delivery'?DELIVERY_KEY:RETURN_KEY);
+    return bookEnsure(d,grade).teacher||'';
+  }
+  function renderOneBookSheet(grade,deliveryData,returnData){
+    const subjects=bookSubjectsFor(grade);
+    const students=bookAllStudents(grade);
+    const g=bookEnsure(bookMode==='delivery'?deliveryData:returnData,grade);
+    const delG=bookEnsure(deliveryData,grade);
+    const teacher=g.teacher||document.getElementById('bookHandoverTeacher')?.value||'';
+    let h='<section class="book-handover-sheet" data-grade="'+bookEsc(grade)+'">';
+    h+='<div class="book-handover-sheet-head"><div class="book-handover-school">إدارة ثانوية الفراجية للبنين<span>منصة إلكترونية</span></div><div class="book-handover-logo">'+(document.querySelector('.header-logo-box svg')?.outerHTML||'')+'</div><div class="book-handover-grade">الصف<br>'+bookEsc(grade)+'</div></div>';
+    h+='<div class="book-handover-sheet-title">'+(bookMode==='delivery'?'قائمة تسليم الكتب':'قائمة استلام الكتب')+'</div><div class="book-handover-sheet-year">للعام الدراسي ٢٠٢٦-٢٠٢٧</div>';
+    h+='<div class="book-handover-table-wrap"><table class="book-handover-table"><thead><tr><th class="no-col">ت</th><th class="name-col">اسم الطالب الثلاثي</th>';
+    subjects.forEach((sub,i)=>{let cls='subject-col';if(sub==='رياضيات'||sub==='اجتماعيات')cls+=' short-subject';h+='<th class="'+cls+'">'+bookEsc(sub)+'</th>';});
+    h+='</tr></thead><tbody>';
+    students.forEach((st,i)=>{
+      h+='<tr><td class="no-col">'+(i+1)+'</td><td class="name-col">'+(st?bookEsc(st.name||''):'')+'</td>';
+      subjects.forEach(sub=>{
+        let content='',cls='book-cell';
+        if(st){
+          const delivered=!!(delG.students?.[st.id]?.[sub]);
+          if(bookMode==='delivery'){
+            content=!!(g.students?.[st.id]?.[sub])?'✓':'';
+            cls+=' delivered-check';
+          }else if(delivered){
+            const returned=!!(g.students?.[st.id]?.[sub]);
+            content=returned?'✕':'✓'; cls+=' '+(returned?'returned-x':'delivered-check');
+          }else cls+=' empty-student';
+        }else cls+=' empty-student';
+        const clickable=st && (bookMode==='delivery'||!!(delG.students?.[st.id]?.[sub]));
+        h+='<td class="'+cls+'"'+(clickable?' data-book-toggle="1" data-grade="'+bookEsc(grade)+'" data-student-id="'+bookEsc(st.id)+'" data-subject="'+bookEsc(sub)+'" role="button" tabindex="0"':'')+'>'+content+'</td>';
+      });
+      h+='</tr>';
+    });
+    h+='</tbody></table></div>';
+    h+='<div class="book-handover-footer"><div><span>المدير</span><span>د. سعدون حزين فرحان</span></div><div><span>'+(bookMode==='delivery'?'المدرس الذي قام بتسليم الكتب':'المدرس الذي قام باستلام الكتب')+'</span><span>'+bookEsc(teacher)+'</span></div><div><span>إعداد وبرمجة</span><span>د. أحمد عباس جمعه 2026</span></div></div></section>';
+    return h;
+  }
+  function renderBookHandoverTables(){
+    const box=document.getElementById('bookHandoverTables'); if(!box)return;
+    const grade=document.getElementById('bookHandoverGrade')?.value||'all';
+    const deliveryData=bookRead(DELIVERY_KEY), returnData=bookRead(RETURN_KEY);
+    const grades=grade==='all'?BOOK_GRADES:[grade];
+    box.innerHTML=grades.map(g=>renderOneBookSheet(g,deliveryData,returnData)).join('');
+    const teacher=document.getElementById('bookHandoverTeacher');
+    if(teacher && grades.length===1)teacher.value=bookTeacherValue(grades[0]);
+    const status=document.getElementById('bookHandoverStatus');
+    if(status)status.textContent=bookMode==='delivery'?'📤 وضع تسليم الكتب — اضغط على الخانة الفارغة لوضع ✓':'📥 وضع استلام الكتب — ✓ يعني تم التسليم، اضغط ✓ لتحويلها إلى ✕';
+  }
+  function showBookHandoverMode(mode){
+    bookMode=mode==='return'?'return':'delivery';
+    document.getElementById('bookDeliveryTabBtn')?.classList.toggle('active',bookMode==='delivery');
+    document.getElementById('bookReturnTabBtn')?.classList.toggle('active',bookMode==='return');
+    const label=document.getElementById('bookHandoverTeacherLabel');
+    if(label)label.textContent='اسم المدرس:';
+    renderBookHandoverTables();
+  }
+  function initBookHandover(){
+    const sel=document.getElementById('bookHandoverGrade');
+    if(sel && !bookInitialized){
+      sel.innerHTML='<option value="all">جميع الصفوف</option>'+BOOK_GRADES.map(g=>'<option value="'+bookEsc(g)+'">'+bookEsc(g)+'</option>').join('');
+      const sg=document.getElementById('bookSubjectGrade');
+      if(sg)sg.innerHTML=BOOK_GRADES.map(g=>'<option value="'+bookEsc(g)+'">'+bookEsc(g)+'</option>').join('');
+      bookInitialized=true;
+      bookSubjectGradeChanged();
+    }
+    if(!bookEventsBound){
+      bookEventsBound=true;
+      document.addEventListener('click',function(e){
+        const cell=e.target?.closest?.('[data-book-toggle="1"]'); if(!cell)return;
+        toggleCell(cell.dataset.grade||'',cell.dataset.studentId||'',cell.dataset.subject||'');
+      });
+      document.addEventListener('keydown',function(e){
+        if((e.key==='Enter'||e.key===' ')&&e.target?.matches?.('[data-book-toggle="1"]')){e.preventDefault();e.target.click();}
+      });
+    }
+    renderBookHandoverTables();
+  }
+  function toggleCell(grade,id,subject){
+    const data=bookRead(bookMode==='delivery'?DELIVERY_KEY:RETURN_KEY), g=bookEnsure(data,grade);
+    if(!g.students[id])g.students[id]={};
+    if(bookMode==='return'){
+      const delivered=bookRead(DELIVERY_KEY),dg=bookEnsure(delivered,grade);
+      if(!dg.students[id]?.[subject])return;
+    }
+    g.students[id][subject]=!g.students[id][subject];
+    bookWrite(bookMode==='delivery'?DELIVERY_KEY:RETURN_KEY,data);
+    renderBookHandoverTables();
+  }
+  function saveBookHandover(){
+    const teacher=document.getElementById('bookHandoverTeacher')?.value.trim()||'';
+    const grade=document.getElementById('bookHandoverGrade')?.value||'all';
+    const key=bookMode==='delivery'?DELIVERY_KEY:RETURN_KEY;
+    const data=bookRead(key);
+    (grade==='all'?BOOK_GRADES:[grade]).forEach(g=>bookEnsure(data,g).teacher=teacher);
+    bookWrite(key,data);
+    renderBookHandoverTables();
+    if(typeof showToast==='function')showToast('💾 تم حفظ بيانات '+(bookMode==='delivery'?'التسليم':'الاستلام')+' بنجاح.');
+  }
+  function deleteBookHandoverCurrent(){
+    const grade=document.getElementById('bookHandoverGrade')?.value||'all';
+    if(!confirm('هل تريد حذف بيانات '+(bookMode==='delivery'?'تسليم':'استلام')+' الكتب المحددة؟'))return;
+    const key=bookMode==='delivery'?DELIVERY_KEY:RETURN_KEY, data=bookRead(key);
+    (grade==='all'?BOOK_GRADES:[grade]).forEach(g=>{data.grades?.[g]&&(data.grades[g].students={});});
+    bookWrite(key,data); renderBookHandoverTables();
+  }
+  window.initBookHandover=initBookHandover;
+  window.showBookHandoverMode=showBookHandoverMode;
+  window.renderBookHandoverTables=renderBookHandoverTables;
+  window.toggleBookHandoverCell=toggleCell;
+  window.saveBookHandover=saveBookHandover;
+  window.deleteBookHandoverCurrent=deleteBookHandoverCurrent;
+  window.showBookSubjectAction=bookShowSubjectAction;
+  window.bookSubjectGradeChanged=bookSubjectGradeChanged;
+  window.manageBookSubjects=bookManageSubjects;
+
 
 function reRegisterFace(id) {
 
@@ -7974,6 +7696,11 @@ if (teacherNameManual) {
 startAttendance.addEventListener(
 "click",
 async function() {
+
+    if (!isAttendanceOpenNow()) {
+        showMessage(attendanceMessage, attendanceClosedMessage(), "error");
+        return;
+    }
 
     if (!modelsLoaded) {
 
@@ -9705,6 +9432,7 @@ window.__initStudentAttendanceOnOpen = function(){
 };
 
 })();
+})();
 </script><style>
 /* نظام حضور الكادر المدمج */
 .staff-attendance-app{font-family:Tahoma,Arial,sans-serif;color:#1f2937;background:#f7faf8;border-radius:16px;padding:16px}
@@ -10053,6 +9781,10 @@ ${cleanName(name)} ؟`)) return;
     $('closeStaffRegisterCameraBtn').addEventListener('click',()=>{stopStream(saRegisterStream);saRegisterStream=null;$('staffRegisterCameraBox').classList.add('hidden');});
 
     $('staffTakeAttendanceBtn').addEventListener('click',async()=>{
+        if(typeof window.isAttendanceOpenNow==='function' && !window.isAttendanceOpenNow()){
+            setMsg(staffAttendanceMessage, typeof window.getAttendanceShiftInfo==='function' ? `⏰ تسجيل الحضور مغلق الآن. الدوام المعتمد: ${window.getAttendanceShiftInfo().name} (${window.getAttendanceShiftInfo().label}).` : '⏰ تسجيل الحضور مغلق الآن.','error');
+            return;
+        }
         $('staffSchoolLocationCard').classList.remove('hidden');
         $('staffRegisterPanel').classList.add('hidden'); $('staffAttendancePanel').classList.remove('hidden'); $('staffDetectedBox').classList.add('hidden');
         const loc=await verifyInsideSchool();
@@ -10421,6 +10153,18 @@ window.addEventListener('popstate',function(){if(isStudentMode){const h=location
 </script>
 <style>.leave-notification-greeting{background:#f6fbf7;border:1px solid #dcefe1;border-radius:10px;padding:10px;margin-bottom:10px;line-height:1.8;font-weight:700}.leave-notification-section{margin:14px 0}.leave-notification-section h4{margin:0 0 8px;padding:10px 12px;border-radius:10px;background:#f3f7f4;color:var(--primary-color);font-weight:900}.leave-reject-box{margin-top:10px;padding:12px;border:1px solid #eee;border-radius:12px;background:#fff}.leave-reject-box textarea{width:100%;min-height:85px;resize:vertical}.leave-archive-meta{font-size:.82rem;color:#666}.leave-notification-head{position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:12px}.leave-notification-head h3{margin:0;color:var(--primary-color)}.leave-notification-close-x{position:absolute;left:0;top:0;width:38px;height:38px;border:0;border-radius:50%;background:#dc3545;color:#fff;font-size:1.2rem;font-weight:900;cursor:pointer}.leave-notification-choices{display:flex;flex-direction:column;gap:12px}.leave-notification-choices button{width:100%;padding:15px 12px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff;font-weight:900;font-size:1rem;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.1)}.leave-notification-hint{text-align:center;color:#777;font-weight:700;margin-top:12px}.leave-notification-section{margin:0}.leave-notification-section h4{margin-top:0}
 .student-login-name-suggestions{position:absolute;left:0;right:0;top:100%;background:#fff;border:1px solid #d5ddd9;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.12);z-index:10000;max-height:220px;overflow-y:auto;margin-top:3px}.student-login-name-suggestions button{display:block;width:100%;border:0;background:#fff;padding:11px 13px;text-align:right;font-size:15px;font-weight:700;cursor:pointer;border-bottom:1px solid #eee}.student-login-name-suggestions button:last-child{border-bottom:0}.student-login-name-suggestions button:hover{background:#f2f7f4}
+
+/* أوامر الإعدادات تظهر كنصوص تنقل مثل «الإعدادات» و«معلومات الطلبة» وليست كأزرار */
+.school-holiday-row{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #d8e1dc;border-radius:10px;padding:10px;margin-top:7px;background:#fafcfb}.school-holiday-row .holiday-date{font-weight:900}.school-holiday-row .holiday-reason{font-size:.86rem;color:#666;margin-top:2px}.holiday-mark{color:#b26a00;font-weight:900;font-size:14px;line-height:1.25}.holiday-cell{background:#fff7df!important;color:#b26a00!important;font-weight:900;font-size:12px!important}.daily-fixed-table .holiday-cell{color:#b26a00!important}.weekly-fixed-table .holiday-cell{color:#b26a00!important}
+.settings-command-list{display:flex;flex-direction:column;gap:0;margin-top:4px}
+.settings-command-item{padding:13px 4px;border-bottom:1px solid rgba(0,0,0,.09);color:var(--primary-color);font-weight:800;font-size:1rem;cursor:pointer;text-align:right;transition:background .15s,transform .15s}
+.settings-command-item:first-child{border-top:1px solid rgba(0,0,0,.09)}
+.settings-command-item:hover{background:rgba(0,0,0,.035);transform:translateX(-2px)}
+.settings-command-item:focus{outline:2px solid rgba(0,123,255,.25);outline-offset:1px;border-radius:5px}
+.settings-command-list-inner{margin-top:2px;margin-bottom:8px}
+.customize-simple-items{display:flex;flex-direction:column;gap:8px;margin-top:10px}.customize-add-command{border:1px solid #d8e1dc;border-radius:10px;padding:10px;background:#f8fbf9;margin-top:12px}.custom-command-row{display:flex;align-items:center;justify-content:space-between;gap:7px;border-bottom:1px solid #e7ece9;padding:8px 0;font-weight:800}.custom-command-row:last-child{border-bottom:0}.custom-command-url{font-size:.78rem;color:#777;direction:ltr;text-align:left;word-break:break-all}.customize-simple-item{border:1px solid #d8e1dc;border-radius:10px;padding:10px;background:#fafcfb}.customize-simple-item-head{display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:800}.customize-simple-item input[type="text"]{margin-top:7px}.customize-simple-item small{display:block;color:#777;margin-top:3px;font-weight:600}.customize-simple-item .customize-toggle{width:44px;height:24px;accent-color:var(--primary-color)}
+
+.settings-command-list-inner .settings-command-item{font-size:.95rem}
 </style>
 <script>
 (function(){
