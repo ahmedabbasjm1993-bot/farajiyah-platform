@@ -88,9 +88,41 @@ html.school-offline #schoolOfflineBanner{display:block}
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>منصة ثانوية الفراجية للبنين</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+/* OFFLINE-FIRST V3: تحميل المكتبات الخارجية من التخزين المحلي بشكل متزامن بعد أول تشغيل متصل.
+   يحافظ على ترتيب المكتبات كما هو، ولا يغيّر بيانات المنصة أو وظائفها. */
+(function(){
+  'use strict';
+  const KEY='ALFARAJIA_OFFLINE_LIB_';
+  function load(url){
+    const k=KEY+btoa(unescape(encodeURIComponent(url))).replace(/[^a-zA-Z0-9]/g,'_').slice(0,120);
+    let code=null;
+    try{ code=localStorage.getItem(k); }catch(e){}
+    if(code){
+      try{ (0,eval)(code+'\n//# sourceURL='+url); return true; }catch(e){ console.warn('Offline library cache error',url,e); }
+    }
+    if(!navigator.onLine){
+      console.warn('Offline library unavailable until it has been cached once:',url);
+      return false;
+    }
+    try{
+      const xhr=new XMLHttpRequest();
+      xhr.open('GET',url,false);
+      xhr.send(null);
+      if(xhr.status>=200 && xhr.status<300 && xhr.responseText){
+        code=xhr.responseText;
+        try{ localStorage.setItem(k,code); }catch(e){ console.warn('Offline library storage full',e); }
+        try{ (0,eval)(code+'\n//# sourceURL='+url); return true; }catch(e){ console.error('Library execution error',url,e); return false; }
+      }
+    }catch(e){ console.warn('Library network load failed',url,e); }
+    return false;
+  }
+  window.__loadSchoolOfflineLibrary=load;
+})();
+</script>
+<script>window.__loadSchoolOfflineLibrary('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');</script>
+<script>window.__loadSchoolOfflineLibrary('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');</script>
+<script>window.__loadSchoolOfflineLibrary('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js');</script>
 <style>
         :root {
             --primary-color: #1b4332;
@@ -521,7 +553,7 @@ html.school-offline #schoolOfflineBanner{display:block}
 @media(max-width:800px){.ls-ticker-columns{grid-template-columns:1fr}.ls-ticker-fullscreen-head{display:block;text-align:center}.ls-ticker-back{width:100%;margin-bottom:10px}.ls-ticker-title{margin-bottom:6px}}
 
 </style>
-<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><style>
+<script>window.__loadSchoolOfflineLibrary('https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js');</script><script>window.__loadSchoolOfflineLibrary('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');</script><style>
 /* نظام حضور الطلاب المدمج — CSS معزول داخل المنصة */
 
 .student-attendance-app *{
@@ -2664,9 +2696,9 @@ html.school-offline #schoolOfflineBanner{display:block}
 </div>
 
 <!-- Firebase collective-cloud bridge: preserves existing platform UI and localStorage behavior -->
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script>window.__loadSchoolOfflineLibrary('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js');</script>
+<script>window.__loadSchoolOfflineLibrary('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js');</script>
+<script>window.__loadSchoolOfflineLibrary('https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js');</script>
 <script>
 (function(){
   'use strict';
