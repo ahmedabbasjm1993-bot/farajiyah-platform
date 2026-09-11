@@ -2,6 +2,89 @@
 
 <html dir="rtl" lang="ar">
 <head>
+<script>
+/* OFFLINE-FIRST V1: تجهيز المنصة للعمل محلياً قدر الإمكان.
+   - يحفظ ملفات نماذج التعرف على الوجه في Cache Storage بعد أول تحميل ناجح.
+   - عند انقطاع الإنترنت يعيد fetch من النسخة المخزنة للنماذج.
+   - لا يتدخل إذا كانت ميزة التخزين غير متاحة (مثل بعض WebView القديمة).
+*/
+(function(){
+  'use strict';
+  const CACHE_NAME='ALFARAJIA_OFFLINE_FACE_MODELS_V1';
+  const MODEL_HOST='cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights/';
+  const oldFetch=window.fetch.bind(window);
+  function isFaceModel(url){
+    try{return String(url||'').includes(MODEL_HOST);}catch(e){return false;}
+  }
+  window.__schoolOfflineCacheName=CACHE_NAME;
+  window.__schoolOfflineFaceModelCache=isFaceModel;
+  window.fetch=function(input,init){
+    const method=(init&&init.method)|| (input&&input.method)||'GET';
+    if(String(method).toUpperCase()!=='GET' || !isFaceModel(typeof input==='string'?input:(input&&input.url))) return oldFetch(input,init);
+    const requestUrl=typeof input==='string'?input:input.url;
+    if(!('caches' in window)) return oldFetch(input,init);
+    return caches.open(CACHE_NAME).then(function(cache){
+      return oldFetch(input,init).then(function(response){
+        if(response && response.ok) cache.put(requestUrl,response.clone()).catch(function(){});
+        return response;
+      }).catch(function(){
+        return cache.match(requestUrl).then(function(cached){
+          if(cached) return cached;
+          throw new Error('OFFLINE_FACE_MODEL_NOT_CACHED');
+        });
+      });
+    }).catch(function(){return oldFetch(input,init);});
+  };
+  window.addEventListener('online',function(){
+    document.documentElement.classList.remove('school-offline');
+    window.__schoolOffline=false;
+  });
+  window.addEventListener('offline',function(){
+    document.documentElement.classList.add('school-offline');
+    window.__schoolOffline=true;
+  });
+  window.__schoolOffline=!navigator.onLine;
+
+  /* OFFLINE-FIRST V2: تخزين المكتبات الخارجية التي تحتاجها المنصة بعد أول تشغيل متصل.
+     هذا لا يغيّر أي خاصية أو بيانات؛ هو مجرد طبقة Cache إضافية. */
+  const ASSET_CACHE='ALFARAJIA_OFFLINE_ASSETS_V2';
+  const ASSETS=[
+    'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',
+    'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+    'https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js',
+    'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js',
+    'https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js',
+    'https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js'
+  ];
+  window.__schoolOfflineAssetCache=ASSET_CACHE;
+  async function warmOfflineAssets(){
+    if(!navigator.onLine || !('caches' in window)) return;
+    try{
+      const cache=await caches.open(ASSET_CACHE);
+      for(const url of ASSETS){
+        try{
+          const hit=await cache.match(url);
+          if(hit) continue;
+          const r=await oldFetch(url,{cache:'no-cache'});
+          if(r && r.ok) await cache.put(url,r.clone());
+        }catch(e){}
+      }
+    }catch(e){}
+  }
+  window.__warmSchoolOfflineAssets=warmOfflineAssets;
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(warmOfflineAssets,2500),{once:true});
+  else setTimeout(warmOfflineAssets,2500);
+  window.addEventListener('online',()=>setTimeout(warmOfflineAssets,1200));
+})();
+</script>
+<style>
+#schoolOfflineBanner{position:fixed;left:10px;right:10px;bottom:10px;z-index:2147483646;display:none;padding:10px 14px;border-radius:12px;background:#6b1d1d;color:#fff;text-align:center;font-size:14px;font-weight:700;box-shadow:0 4px 18px rgba(0,0,0,.22)}
+html.school-offline #schoolOfflineBanner{display:block}
+</style>
+
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>منصة ثانوية الفراجية للبنين</title>
@@ -1182,6 +1265,7 @@
 </style>
 </head>
 <body>
+<div id="schoolOfflineBanner">📴 لا يوجد اتصال بالإنترنت — تعمل المنصة بالبيانات المحفوظة محلياً، وستتم المزامنة عند عودة الاتصال.</div>
 <div id="roleSelectionScreen">
 <div class="role-card">
 <div class="role-logo-box">
@@ -2629,7 +2713,12 @@
         if(text.length>maxCloudSize){console.warn('Cloud sync skipped for large item:',key,text.length);return;}
         await ref.set({value:text,updatedAt:firebase.database.ServerValue.TIMESTAMP});
       }
-    }catch(e){console.error('Realtime Database write failed',key,e);}
+    }catch(e){
+      /* لا نفقد تغييرات المستخدم عند انقطاع الإنترنت: تبقى محلياً وتُعاد محاولتها عند عودة الاتصال. */
+      pendingCloudWrites.set(String(key),String(value));
+      window.schoolCloudStatus='offline-pending';
+      console.warn('Realtime Database write queued for retry',key,e);
+    }
   }
   Storage.prototype.setItem=function(key,value){
     originalSet.call(this,key,value);
@@ -2697,8 +2786,23 @@
   }
   window.schoolCloudApplyTickerOperation=applyTickerOperation;
 
+  window.addEventListener('online',function(){
+    setTimeout(function(){
+      if(!ready) initCloud();
+      else if(pendingCloudWrites.size){
+        const queued=[...pendingCloudWrites.entries()];
+        pendingCloudWrites.clear();
+        queued.reduce((p,item)=>p.then(()=>cloudWrite(item[0],item[1])),Promise.resolve());
+      }
+    },1200);
+  });
   async function initCloud(){
     if(!configured){window.schoolCloudStatus='not-configured';return;}
+    if(typeof navigator!=='undefined' && navigator.onLine===false){
+      window.schoolCloudReady=false;
+      window.schoolCloudStatus='offline';
+      return;
+    }
     try{
       if(!firebase.apps.length)firebase.initializeApp(cfg);
       db=firebase.database();
@@ -10268,6 +10372,7 @@ window.addEventListener('popstate',function(){if(!currentUser||isStudentMode)ret
 
   async function checkForPlatformUpdate(force){
     if(checking || reloading || (!force && document.hidden)) return;
+    if(typeof navigator!=='undefined' && navigator.onLine===false) return;
     checking=true;
     try{
       const fingerprint=await getCurrentPublishedFingerprint();
@@ -10300,6 +10405,7 @@ window.addEventListener('popstate',function(){if(!currentUser||isStudentMode)ret
     if(!document.hidden)checkForPlatformUpdate(true);
   });
   window.addEventListener('focus',function(){checkForPlatformUpdate(true)});
+  window.addEventListener('online',function(){setTimeout(function(){checkForPlatformUpdate(true)},1500)});
 })();
 </script>
 </body>
