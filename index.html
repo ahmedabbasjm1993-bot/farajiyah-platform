@@ -1418,6 +1418,8 @@ html.school-offline #schoolOfflineBanner{display:block}
 #booksDetailView #staffBookAddBox,#booksDetailView #booksTableTitleHeading,#booksDetailView .archive-table,#bookTypeTabs{display:none!important;}
 @media(max-width:520px){.mlazemna-subject-buttons{grid-template-columns:1fr;}}
 </style>
+
+<style id="staff-attendance-settings-extra">#settingsAttendanceShiftPanel input[type="time"],#settingsAttendanceShiftPanel input[type="date"]{box-sizing:border-box;width:100%;padding:11px;border:1px solid #cfd8d3;border-radius:10px;background:#fff;font-size:1rem} @media(max-width:520px){#settingsAttendanceShiftPanel>div[style*="grid-template-columns"]{grid-template-columns:1fr!important}}</style>
 </head>
 <body>
 <div id="schoolOfflineBanner">📴 لا يوجد اتصال بالإنترنت — تعمل المنصة بالبيانات المحفوظة محلياً، وستتم المزامنة عند عودة الاتصال.</div>
@@ -2152,7 +2154,7 @@ html.school-offline #schoolOfflineBanner{display:block}
             <div id="staffDetectedTime"></div>
             <div id="staffDetectedDistance"></div>
             <div class="sa-time-choice" id="staffTimeChoice" style="margin-top:14px;display:none;">
-                <div class="sa-field"><label for="staffShiftSelect">الدوام</label><select id="staffShiftSelect"><option value="morning">الصباحي (7:45 ص - 12:15 م)</option><option value="evening">المسائي (7:00 م - 10:20 م)</option></select></div>
+                <div class="sa-field"><label for="staffShiftSelect">الدوام</label><select id="staffShiftSelect"><option value="morning">الصباحي (7:45 ص - 12:15 م)</option><option value="evening">المسائي (7:00 م - 10:30 م)</option></select></div>
                 <div class="sa-field"><label for="staffRecordTime">حدد الوقت</label><input id="staffRecordTime" type="time" step="60"></div>
                 <div class="sa-panel-actions"><button type="button" class="sa-btn sa-btn-success" id="saveStaffSelectedTime">💾 حفظ الوقت</button></div>
             </div>
@@ -2812,14 +2814,25 @@ html.school-offline #schoolOfflineBanner{display:block}
 </select>
 </div>
 <div class="form-group">
-<label for="attendanceShiftSelect">نوع الدوام:</label>
+<label for="attendanceShiftSelect">نوع الدوام المستخدم حاليًا:</label>
 <select id="attendanceShiftSelect">
-<option value="morning">☀️ الدوام الصباحي — من 8:00 صباحًا إلى 12:30 ظهرًا</option>
-<option value="evening">🌙 الدوام المسائي — من 12:30 ظهرًا إلى 4:30 عصرًا</option>
+<option value="morning">☀️ الدوام الصباحي</option>
+<option value="evening">🌙 الدوام المسائي</option>
 </select>
 </div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+  <div class="form-group"><label for="morningStartTime">☀️ بداية الصباحي:</label><input id="morningStartTime" type="time" value="07:45"></div>
+  <div class="form-group"><label for="morningEndTime">☀️ نهاية الصباحي:</label><input id="morningEndTime" type="time" value="12:15"></div>
+  <div class="form-group"><label for="eveningStartTime">🌙 بداية المسائي:</label><input id="eveningStartTime" type="time" value="19:00"></div>
+  <div class="form-group"><label for="eveningEndTime">🌙 نهاية المسائي:</label><input id="eveningEndTime" type="time" value="22:30"></div>
+</div>
+<div class="form-group" style="background:#eef6ff;border:1px solid #c9dff5;border-radius:10px;padding:10px;">
+<label for="officialSchoolStartDate">📅 أول يوم بالدوام الرسمي:</label>
+<input id="officialSchoolStartDate" type="date">
+<small style="display:block;margin-top:6px;color:#555;line-height:1.7;">أي سجل حضور أو غياب بتاريخ أقدم من هذا التاريخ يُحذف، ولا يتأثر تسجيل وجوه الكادر أو الطلاب.</small>
+</div>
 <div style="background:#fff8e8;border:1px solid #ead7a1;border-radius:10px;padding:11px;font-size:.9rem;line-height:1.8;margin-top:10px;">
-<strong>ملاحظة:</strong> عند إيقاف الخاصية لن يتم تقييد أزرار تسجيل حضور <b>الطلاب والكادر</b> بالوقت، ويمكن استخدامها في أي وقت. عند تشغيلها تصبح الأوقات المعتمدة: الصباحي من <b>8:00</b> إلى <b>12:30</b>، والمسائي من <b>12:30</b> إلى <b>4:30</b>.
+<strong>ملاحظة:</strong> عند إيقاف الخاصية لن يتم تقييد أزرار تسجيل حضور <b>الطلاب والكادر</b> بالوقت. عند تشغيلها تُستخدم أوقات الصباحي والمسائي أعلاه. ولن يُسمح بتسجيل حضور قبل تاريخ بداية الدوام الرسمي.
 </div>
 <button class="btn-save" type="button" onclick="saveAttendanceShiftSettings()" style="width:100%;padding:11px;margin-top:12px;">💾 حفظ الإعدادات</button>
 <div id="attendanceShiftSettingsMessage" style="margin-top:9px;text-align:center;font-weight:800;"></div>
@@ -3499,47 +3512,69 @@ const DEFAULT_SCHOOL_WHATSAPP_NUMBER = '9647891235779';
 
         const SCHOOL_ATTENDANCE_SHIFT_KEY='SCHOOL_ATTENDANCE_SHIFT_V1';
         const SCHOOL_ATTENDANCE_SHIFT_ENABLED_KEY='SCHOOL_ATTENDANCE_SHIFT_ENABLED_V1';
-        function isAttendanceShiftEnabled(){
-            return localStorage.getItem(SCHOOL_ATTENDANCE_SHIFT_ENABLED_KEY)!=='disabled';
+        const SCHOOL_ATTENDANCE_SHIFT_TIMES_KEY='SCHOOL_ATTENDANCE_SHIFT_TIMES_V2';
+        const SCHOOL_OFFICIAL_START_DATE_KEY='SCHOOL_OFFICIAL_START_DATE_V1';
+        const DEFAULT_SHIFT_TIMES={morning:{start:'07:45',end:'12:15'},evening:{start:'19:00',end:'22:30'}};
+        function getAttendanceShiftTimes(){
+            try{const x=JSON.parse(localStorage.getItem(SCHOOL_ATTENDANCE_SHIFT_TIMES_KEY)||'');return {morning:{...DEFAULT_SHIFT_TIMES.morning,...(x?.morning||{})},evening:{...DEFAULT_SHIFT_TIMES.evening,...(x?.evening||{})}};}catch(e){return DEFAULT_SHIFT_TIMES;}
         }
-        function getAttendanceShift(){
-            const v=localStorage.getItem(SCHOOL_ATTENDANCE_SHIFT_KEY);
-            return v==='evening'?'evening':'morning';
-        }
+        function getOfficialSchoolStartDate(){return localStorage.getItem(SCHOOL_OFFICIAL_START_DATE_KEY)||'';}
+        function isAttendanceShiftEnabled(){return localStorage.getItem(SCHOOL_ATTENDANCE_SHIFT_ENABLED_KEY)!=='disabled';}
+        function getAttendanceShift(){const v=localStorage.getItem(SCHOOL_ATTENDANCE_SHIFT_KEY);return v==='evening'?'evening':'morning';}
         function getAttendanceShiftInfo(){
-            return getAttendanceShift()==='evening'
-                ? {key:'evening',name:'الدوام المسائي',start:12*60+30,end:16*60+30,label:'من 12:30 ظهرًا إلى 4:30 عصرًا'}
-                : {key:'morning',name:'الدوام الصباحي',start:8*60,end:12*60+30,label:'من 8:00 صباحًا إلى 12:30 ظهرًا'};
+            const k=getAttendanceShift(), times=getAttendanceShiftTimes(), t=times[k]||DEFAULT_SHIFT_TIMES[k];
+            const label=`من ${t.start} إلى ${t.end}`;
+            return {key:k,name:k==='evening'?'الدوام المسائي':'الدوام الصباحي',start:toMinutes(t.start),end:toMinutes(t.end),startTime:t.start,endTime:t.end,label};
         }
+        function toMinutes(v){const m=String(v||'00:00').split(':').map(Number);return (m[0]||0)*60+(m[1]||0);}
+        function isBeforeOfficialStart(dateValue){const start=getOfficialSchoolStartDate();return !!(start && String(dateValue||'')<start);}
         function isAttendanceOpenNow(){
-            if(!isAttendanceShiftEnabled()) return true;
+            if(!isAttendanceShiftEnabled()) return !isBeforeOfficialStart(new Date().toISOString().slice(0,10));
+            if(isBeforeOfficialStart(new Date().toISOString().slice(0,10))) return false;
             const x=getAttendanceShiftInfo(), d=new Date(), minutes=d.getHours()*60+d.getMinutes()+d.getSeconds()/60;
             return minutes>=x.start && minutes<x.end;
         }
         function attendanceClosedMessage(){
-            const x=getAttendanceShiftInfo();
-            return `⏰ تسجيل الحضور مغلق الآن. الدوام المعتمد: ${x.name} (${x.label}).`;
+            const start=getOfficialSchoolStartDate();
+            if(isBeforeOfficialStart(new Date().toISOString().slice(0,10))) return `📅 لم يبدأ الدوام الرسمي بعد. أول يوم معتمد هو ${start}.`;
+            const x=getAttendanceShiftInfo();return `⏰ تسجيل الحضور مغلق الآن. ${x.name} (${x.label}).`;
+        }
+        function purgeAttendanceBeforeOfficialStart(){
+            const start=getOfficialSchoolStartDate();if(!start)return;
+            const staffKeys=['SCHOOL_STAFF_ATTENDANCE_RECORDS_V1','SCHOOL_STAFF_WEEKLY_ATTENDANCE_V3','SCHOOL_STAFF_MONTHLY_ATTENDANCE_V3','SCHOOL_STAFF_DAILY_ROLLED_V3'];
+            try{const a=JSON.parse(localStorage.getItem(staffKeys[0])||'[]');if(Array.isArray(a))localStorage.setItem(staffKeys[0],JSON.stringify(a.filter(x=>String(x?.date||'')>=start)));}catch(e){}
+            try{const w=JSON.parse(localStorage.getItem(staffKeys[1])||'[]');if(Array.isArray(w))localStorage.setItem(staffKeys[1],JSON.stringify(w.filter(x=>String(x?.date||'')>=start)));}catch(e){}
+            try{const m=JSON.parse(localStorage.getItem(staffKeys[2])||'[]');if(Array.isArray(m))localStorage.setItem(staffKeys[2],JSON.stringify(m.map(x=>({...x,days:Array.isArray(x?.days)?x.days.filter(d=>String(d?.date||'')>=start):x?.days})).filter(x=>Array.isArray(x?.days)?x.days.length>0:String(x?.weekKey||'').slice(0,10)>=start)));}catch(e){}
+            try{const r=JSON.parse(localStorage.getItem(staffKeys[3])||'[]');if(Array.isArray(r))localStorage.setItem(staffKeys[3],JSON.stringify(r.filter(x=>String(x)>=start)));}catch(e){}
+            const studentKeys=['FACE_ATTENDANCE_RECORDS','FACE_DAILY_FIXED_ATTENDANCE','FACE_WEEKLY_FIXED_ATTENDANCE_V1','FACE_MONTHLY_FIXED_ATTENDANCE_V1','FACE_DAILY_ATTENDANCE_CLEARED_V1'];
+            try{const a=JSON.parse(localStorage.getItem(studentKeys[0])||'[]');if(Array.isArray(a))localStorage.setItem(studentKeys[0],JSON.stringify(a.filter(x=>String(x?.date||x?.day||'')>=start)));}catch(e){}
+            try{const d=JSON.parse(localStorage.getItem(studentKeys[1])||'[]');if(Array.isArray(d))localStorage.setItem(studentKeys[1],JSON.stringify(d.filter(x=>String(x?.date||'')>=start)));}catch(e){}
+            try{const w=JSON.parse(localStorage.getItem(studentKeys[2])||'[]');if(Array.isArray(w))localStorage.setItem(studentKeys[2],JSON.stringify(w.filter(x=>String(x?.date||x?.weekStart||'')>=start)));}catch(e){}
+            try{const m=JSON.parse(localStorage.getItem(studentKeys[3])||'[]');if(Array.isArray(m))localStorage.setItem(studentKeys[3],JSON.stringify(m.filter(x=>String(x?.date||x?.weekStart||x?.monthKey||'')>=start)));}catch(e){}
+            try{const c=JSON.parse(localStorage.getItem(studentKeys[4])||'[]');if(Array.isArray(c))localStorage.setItem(studentKeys[4],JSON.stringify(c.filter(x=>String(x)>=start)));}catch(e){}
         }
         function updateAttendanceShiftSettingsUI(){
-            const x=getAttendanceShiftInfo(), sel=document.getElementById('attendanceShiftSelect'), enabled=document.getElementById('attendanceShiftEnabledSelect'), info=document.getElementById('attendanceShiftCurrentInfo');
-            if(sel) sel.value=x.key;
-            if(enabled) enabled.value=isAttendanceShiftEnabled()?'enabled':'disabled';
-            if(info) info.textContent=isAttendanceShiftEnabled()?`الخاصية مفعّلة — ${x.name} — ${x.label}`:'الخاصية متوقفة — تسجيل الحضور متاح في أي وقت';
+            const x=getAttendanceShiftInfo(), times=getAttendanceShiftTimes(), sel=document.getElementById('attendanceShiftSelect'), enabled=document.getElementById('attendanceShiftEnabledSelect'), info=document.getElementById('attendanceShiftCurrentInfo');
+            if(sel) sel.value=x.key;if(enabled) enabled.value=isAttendanceShiftEnabled()?'enabled':'disabled';
+            const ids={morningStartTime:times.morning.start,morningEndTime:times.morning.end,eveningStartTime:times.evening.start,eveningEndTime:times.evening.end,officialSchoolStartDate:getOfficialSchoolStartDate()};
+            Object.entries(ids).forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.value=val||'';});
+            if(info) info.textContent=isAttendanceShiftEnabled()?`الخاصية مفعّلة — الصباحي ${times.morning.start}–${times.morning.end} | المسائي ${times.evening.start}–${times.evening.end}${getOfficialSchoolStartDate()?` | بداية الدوام الرسمي: ${getOfficialSchoolStartDate()}`:''}`:'الخاصية متوقفة — تسجيل الحضور متاح من حيث الوقت، مع احترام تاريخ بداية الدوام الرسمي';
         }
         window.saveAttendanceShiftSettings=function(){
             const sel=document.getElementById('attendanceShiftSelect'), enabled=document.getElementById('attendanceShiftEnabledSelect'), msg=document.getElementById('attendanceShiftSettingsMessage');
-            const value=sel&&sel.value==='evening'?'evening':'morning';
-            const enabledValue=enabled&&enabled.value==='disabled'?'disabled':'enabled';
-            localStorage.setItem(SCHOOL_ATTENDANCE_SHIFT_KEY,value);
-            localStorage.setItem(SCHOOL_ATTENDANCE_SHIFT_ENABLED_KEY,enabledValue);
-            updateAttendanceShiftSettingsUI();
-            if(msg){msg.style.color='#198754';msg.textContent='✅ تم حفظ نوع الدوام وربطه بتسجيل حضور الطلاب والكادر.';setTimeout(()=>{if(msg)msg.textContent='';},3000);}
+            const value=sel&&sel.value==='evening'?'evening':'morning', enabledValue=enabled&&enabled.value==='disabled'?'disabled':'enabled';
+            const times={morning:{start:document.getElementById('morningStartTime')?.value||DEFAULT_SHIFT_TIMES.morning.start,end:document.getElementById('morningEndTime')?.value||DEFAULT_SHIFT_TIMES.morning.end},evening:{start:document.getElementById('eveningStartTime')?.value||DEFAULT_SHIFT_TIMES.evening.start,end:document.getElementById('eveningEndTime')?.value||DEFAULT_SHIFT_TIMES.evening.end}};
+            if(toMinutes(times.morning.start)>=toMinutes(times.morning.end)||toMinutes(times.evening.start)>=toMinutes(times.evening.end)){alert('تأكد أن وقت البداية قبل وقت النهاية في كلا الدوامين.');return;}
+            localStorage.setItem(SCHOOL_ATTENDANCE_SHIFT_KEY,value);localStorage.setItem(SCHOOL_ATTENDANCE_SHIFT_ENABLED_KEY,enabledValue);localStorage.setItem(SCHOOL_ATTENDANCE_SHIFT_TIMES_KEY,JSON.stringify(times));
+            const official=document.getElementById('officialSchoolStartDate')?.value||'';if(official)localStorage.setItem(SCHOOL_OFFICIAL_START_DATE_KEY,official);else localStorage.removeItem(SCHOOL_OFFICIAL_START_DATE_KEY);
+            purgeAttendanceBeforeOfficialStart();updateAttendanceShiftSettingsUI();
+            if(msg){msg.style.color='#198754';msg.textContent='✅ تم حفظ أوقات الدوام وتاريخ بداية الدوام الرسمي، وتنظيف السجلات القديمة عند الحاجة.';setTimeout(()=>{if(msg)msg.textContent='';},3500);}
             window.dispatchEvent(new CustomEvent('schoolAttendanceShiftChanged'));
         };
         window.isAttendanceOpenNow=isAttendanceOpenNow;
         window.isAttendanceShiftEnabled=isAttendanceShiftEnabled;
         window.getAttendanceShiftInfo=getAttendanceShiftInfo;
-        window.attendanceClosedMessage=attendanceClosedMessage;
+        window.attendanceClosedMessage=attendanceClosedMessage;window.getAttendanceShiftTimes=getAttendanceShiftTimes;window.getOfficialSchoolStartDate=getOfficialSchoolStartDate;window.isBeforeOfficialStart=isBeforeOfficialStart;
         const _openSettingsSection=window.openSettingsSection;
         function showSettingsHome(){
             const settingsModal=document.getElementById('settingsModal');
@@ -11459,13 +11494,13 @@ window.addEventListener('popstate',function(){if(!currentUser||isStudentMode)ret
 'use strict';
 const SK='SCHOOL_STAFF_FACE_RECORDS_V1', AK='SCHOOL_STAFF_ATTENDANCE_RECORDS_V1', WK='SCHOOL_STAFF_WEEKLY_ATTENDANCE_V3', MK='SCHOOL_STAFF_MONTHLY_ATTENDANCE_V3', RK='SCHOOL_STAFF_DAILY_ROLLED_V3';
 // تصفير سجلات الحضور للكادر للاختبار الحالي مرة واحدة فقط، مع إبقاء بصمات الوجوه والأسماء والتواقيع محفوظة.
-const STAFF_TEST_RESET_KEY='SCHOOL_STAFF_ATTENDANCE_TEST_RESET_20260912_V2';
-if(localStorage.getItem(STAFF_TEST_RESET_KEY)!=='done'){[AK,WK,MK,RK,'SCHOOL_STAFF_ATTENDANCE_DAILY_V2','SCHOOL_STAFF_WEEKLY_ATTENDANCE_V2','SCHOOL_STAFF_MONTHLY_ATTENDANCE_V2'].forEach(k=>localStorage.removeItem(k));localStorage.setItem(STAFF_TEST_RESET_KEY,'done');}
+const STAFF_TEST_RESET_KEY='SCHOOL_STAFF_ATTENDANCE_OFFICIAL_START_RESET_20260913_V1';
+if(localStorage.getItem(STAFF_TEST_RESET_KEY)!=='done'){[AK,WK,MK,RK,'SCHOOL_STAFF_ATTENDANCE_DAILY_V2','SCHOOL_STAFF_WEEKLY_ATTENDANCE_V2','SCHOOL_STAFF_MONTHLY_ATTENDANCE_V2','FACE_ATTENDANCE_RECORDS','FACE_DAILY_FIXED_ATTENDANCE','FACE_WEEKLY_FIXED_ATTENDANCE_V1','FACE_MONTHLY_FIXED_ATTENDANCE_V1','FACE_DAILY_ATTENDANCE_CLEARED_V1'].forEach(k=>localStorage.removeItem(k));localStorage.setItem(STAFF_TEST_RESET_KEY,'done');}
 const $=id=>document.getElementById(id); const clean=n=>String(n||'').replace(/^\s*(?:د\.|د\s*\.|الاستاذ\s*:\s*|الأستاذ\s*:\s*)/i,'').trim();
 const esc=v=>{const d=document.createElement('div');d.textContent=String(v??'');return d.innerHTML};
 const gj=(k,f)=>{try{const v=JSON.parse(localStorage.getItem(k)||'');return v??f}catch(e){return f}}; const sj=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const names=()=>{const a=[];const sel=$('profNameSelect');if(sel)Array.from(sel.options).forEach(o=>{const n=clean(o.value);if(n&&n!=='MANUAL_OTHER'&&!a.includes(n))a.push(n)});gj('SCHOOL_STAFF_ATTENDANCE_NAMES_V1',[]).forEach(n=>{n=clean(n);if(n&&!a.includes(n))a.push(n)});return a};
-const today=()=>{const d=new Date();return d.toISOString().slice(0,10)}; const dk=d=>{const x=new Date(d);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`};
+const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}; const dk=d=>{const x=new Date(d);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`};
 const ar=v=>String(v).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]); const fmt=d=>typeof window.formatArabicDate==='function'?window.formatArabicDate(d):ar(d);
 const ws=d=>{const x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDate()-x.getDay());return x}; const wk=d=>dk(ws(d));
 const days=d=>{const s=ws(d);return [0,1,2,3,4].map(i=>{const x=new Date(s);x.setDate(s.getDate()+i);return{date:dk(x),name:['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس'][i]}})};
@@ -11475,7 +11510,30 @@ function header(title,start,end){const logoMarkup=document.querySelector('.heade
 function footer(){return typeof window.fixedPaperFooter==='function'?window.fixedPaperFooter():`<div class="fixed-paper-footer"><div>المدير <span>د. سعدون حزين فرحان</span></div><div>إعداد وبرمجة <span>د. أحمد عباس جمعه 2026</span></div></div>`}
 function show(id){['staffFaceManagementPanel','staffRegisterPanel','staffAttendancePanel','staffDailyAttendancePanelV2','staffWeeklyAttendancePanelV2','staffMonthlyAttendancePanelV2','staffLeaveRequestPanel'].forEach(x=>$(x)?.classList.add('hidden'));$(id)?.classList.remove('hidden');$('staffAttendanceChoice')?.classList.add('hidden');$('staffTodayAttendancePanel')?.classList.add('hidden')}
 function back(){['staffFaceManagementPanel','staffRegisterPanel','staffAttendancePanel','staffDailyAttendancePanelV2','staffWeeklyAttendancePanelV2','staffMonthlyAttendancePanelV2','staffLeaveRequestPanel'].forEach(x=>$(x)?.classList.add('hidden'));$('staffAttendanceChoice')?.classList.remove('hidden');$('staffTodayAttendancePanel')?.classList.remove('hidden')}
-function dailyHTML(){const t=today(),d=new Date(),day=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'][d.getDay()],arr=attendance(),faces=faceRecords(),ns=names();let rows='';ns.forEach((n,i)=>{const r=arr.find(x=>x.date===t&&clean(x.name)===clean(n)),f=faces.find(x=>clean(x.name)===clean(n)),sig=r?.signature||f?.signature||'';if(r){rows+=`<tr><td>${ar(i+1)}</td><td class="staff-name-cell">${esc(n)}</td><td>${esc(r.arrivalTime||r.time||'')}</td><td>${sigImg(sig)}</td><td>${esc(r.departureTime||'')}</td><td>${r.departureTime?sigImg(sig):''}</td></tr>`}else rows+=`<tr><td>${ar(i+1)}</td><td class="staff-name-cell">${esc(n)}</td><td></td><td><span class="staff-absent">غ</span></td><td></td><td><span class="staff-absent">غ</span></td></tr>`});return ns.length?`<div class="staff-daily-sheet">${header('قائمة بأسماء حضور وانصراف الكادر',fmt(t),fmt(t))}<div class="staff-daily-date">${day} — ${fmt(t)}</div><table class="staff-daily-table"><thead><tr><th>ت</th><th>اسم المدرس</th><th>وقت الدخول</th><th>التوقيع</th><th>وقت الانصراف</th><th>التوقيع</th></tr></thead><tbody>${rows}</tbody></table>${footer()}</div>`:'<div class="empty">لا توجد أسماء كادر.</div>'}
+function dailyHTML(){
+  const t=today(),d=new Date(),day=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'][d.getDay()],arr=attendance(),faces=faceRecords(),ns=names();
+  const times=typeof getAttendanceShiftTimes==='function'?getAttendanceShiftTimes():{morning:{start:'07:45',end:'12:15'},evening:{start:'19:00',end:'22:30'}};
+  const shiftKey=typeof getAttendanceShift==='function'?getAttendanceShift():'morning';
+  const shift=times[shiftKey]||times.morning;
+  const nowMinutes=d.getHours()*60+d.getMinutes()+d.getSeconds()/60;
+  const endMinutes=toMinutes(shift.end);
+  const loginAbsentFrom=endMinutes-30;
+  const canShowAbsentLogin=nowMinutes>=loginAbsentFrom;
+  let rows='';
+  ns.forEach((n,i)=>{
+    const r=arr.find(x=>x.date===t&&clean(x.name)===clean(n)),f=faces.find(x=>clean(x.name)===clean(n)),sig=r?.signature||f?.signature||'';
+    if(r){
+      const arrival=r.arrivalTime||r.time||'';
+      const departure=r.departureTime||'';
+      const exitSignature=departure?sigImg(sig):'<span class="staff-not-signed">ـ</span>';
+      rows+=`<tr><td>${ar(i+1)}</td><td class="staff-name-cell">${esc(n)}</td><td>${esc(arrival)}</td><td>${arrival?sigImg(sig):''}</td><td>${esc(departure)}</td><td>${exitSignature}</td></tr>`;
+    }else{
+      const loginMark=canShowAbsentLogin?'<span class="staff-absent">غ</span>':'';
+      rows+=`<tr><td>${ar(i+1)}</td><td class="staff-name-cell">${esc(n)}</td><td></td><td>${loginMark}</td><td></td><td></td></tr>`;
+    }
+  });
+  return ns.length?`<div class="staff-daily-sheet">${header('قائمة بأسماء حضور وانصراف الكادر',fmt(t),fmt(t))}<div class="staff-daily-date">${day} — ${fmt(t)}</div><table class="staff-daily-table"><thead><tr><th>ت</th><th>اسم المدرس</th><th>وقت الدخول</th><th>التوقيع</th><th>وقت الانصراف</th><th>التوقيع</th></tr></thead><tbody>${rows}</tbody></table>${footer()}</div>`:'<div class="empty">لا توجد أسماء كادر.</div>'
+}
 function renderDaily(){const b=$('staffDailyAttendancePreviewV2');if(b)b.innerHTML=dailyHTML()}
 function weeklyHTML(){const d=days(new Date()),arr=weekly(),ns=names(),start=fmt(d[0].date),end=fmt(d[4].date);let rows='';ns.forEach((n,i)=>{let cells='';d.forEach(x=>{const day=arr.find(z=>z.weekKey===wk(new Date(x.date))&&z.date===x.date),r=day?.staff?.find(z=>clean(z.name)===clean(n));cells+=`<td>${r?.status==='present'?`دخول: ${esc(r.arrivalTime||'—')}<br>انصراف: ${esc(r.departureTime||'—')}<br>${sigImg(r.signature)}`:'<span class="staff-absent">غ</span>'}</td>`});rows+=`<tr><td>${ar(i+1)}</td><td class="staff-name-cell">${esc(n)}</td>${cells}</tr>`});return `<div class="staff-week-sheet">${header('القائمة الأسبوعية لحضور وانصراف الكادر',start,end)}<table class="staff-week-table"><thead><tr><th>ت</th><th>اسم المدرس</th>${d.map(x=>`<th>${x.name}<br>${fmt(x.date)}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>${footer()}</div>`}
 function renderWeekly(){const b=$('staffWeeklyAttendancePreviewV2');if(b)b.innerHTML=weeklyHTML()}
@@ -11507,8 +11565,10 @@ function renderMonthly(){
   }));
 }
 
-const testStyle=document.createElement('style');testStyle.textContent='.staff-month-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 14px}.staff-month-btn{font-weight:900;padding:10px;border-radius:10px}.staff-month-selected{width:100%}#staffWeeklyAttendanceBtnV2,#staffWeeklyAttendancePanelV2,#staffTransferWeekToMonthV2,#transferWeeklyToMonthly,#transferWeeklyToMonthlyTop{display:none!important}';document.head.appendChild(testStyle);
-function updateWeeklyVisibility(){const has=weekly().length>0;const b=$('staffWeeklyAttendanceBtnV2');if(b)b.style.display=has?'':'none'}
+const testStyle=document.createElement('style');testStyle.textContent='.staff-month-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 14px}.staff-month-btn{font-weight:900;padding:10px;border-radius:10px}.staff-month-selected{width:100%}#staffTransferWeekToMonthV2,#transferWeeklyToMonthly,#transferWeeklyToMonthlyTop{display:none!important}';document.head.appendChild(testStyle);
+const staffMarkStyle=document.createElement('style');staffMarkStyle.textContent='.staff-not-signed{font-size:30px;font-weight:900;line-height:1;color:#333}.staff-absent{font-size:30px;font-weight:900;color:#dc3545}';document.head.appendChild(staffMarkStyle);
+function updateWeeklyVisibility(){const b=$('staffWeeklyAttendanceBtnV2');if(b)b.style.display=''}
+setInterval(()=>{if(!$('staffDailyAttendancePanelV2')?.classList.contains('hidden'))renderDaily()},30000);
 function snapshot(date){const a=attendance(),f=faceRecords(),ns=names();return ns.map(n=>{const r=a.find(x=>x.date===date&&clean(x.name)===clean(n)),ff=f.find(x=>clean(x.name)===clean(n));return{name:clean(n),arrivalTime:r?.arrivalTime||r?.time||'',departureTime:r?.departureTime||'',signature:r?.signature||ff?.signature||'',status:r?'present':'absent'}})}
 function transferDay(date=today(),silent=false){const rolled=gj(RK,[]);if(rolled.includes(date))return false;const w=wk(new Date(date+'T00:00:00')),a=weekly().filter(x=>!(x.weekKey===w&&x.date===date));a.push({weekKey:w,date,staff:snapshot(date),transferredAt:new Date().toISOString()});sj(WK,a);sj(AK,attendance().filter(x=>x.date!==date));rolled.push(date);sj(RK,rolled);if(!silent){alert('تم ترحيل القائمة اليومية إلى القائمة الأسبوعية.');show('staffWeeklyAttendancePanelV2');renderWeekly()}return true}
 function transferWeek(w=wk(new Date()),silent=false){const a=weekly().filter(x=>x.weekKey===w);if(!a.length){if(!silent)alert('لا توجد قائمة أسبوعية لترحيلها.');return false}const m=w.slice(0,7),ma=monthly().filter(x=>x.weekKey!==w);ma.push({weekKey:w,monthKey:m,days:a,transferredAt:new Date().toISOString()});sj(MK,ma);if(!silent)renderMonthly();return true}
@@ -11516,13 +11576,13 @@ function transferWeek(w=wk(new Date()),silent=false){const a=weekly().filter(x=>
 let ctx=null,drawing=false,ink=false;function initSig(){const c=$('staffSignatureCanvasV2');if(!c)return;ctx=c.getContext('2d');ctx.lineWidth=4;ctx.lineCap='round';ctx.lineJoin='round';const pos=e=>{const r=c.getBoundingClientRect(),p=e.touches?e.touches[0]:e;return{x:(p.clientX-r.left)*c.width/r.width,y:(p.clientY-r.top)*c.height/r.height}};const down=e=>{e.preventDefault();drawing=true;ink=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)};const move=e=>{if(!drawing)return;e.preventDefault();const p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke()};const up=()=>drawing=false;c.onpointerdown=down;c.onpointermove=move;c.onpointerup=up;c.onpointercancel=up;c.ontouchstart=down;c.ontouchmove=move;c.ontouchend=up;$('clearStaffSignatureV2').onclick=()=>{ctx.clearRect(0,0,c.width,c.height);ink=false}}
 function clearSig(){const c=$('staffSignatureCanvasV2');if(ctx&&c)ctx.clearRect(0,0,c.width,c.height);ink=false}
 function replaceWithHandler(id,handler){const old=$(id);if(!old)return null;const n=old.cloneNode(true);old.replaceWith(n);n.addEventListener('click',handler);return n}
-async function startAttendance(mode){window.__saV2Mode=mode;if(!window.verifyInsideSchoolForV2)return;const ok=await window.verifyInsideSchoolForV2();if(!ok.ok){alert(ok.reason==='NO_LOCATION'?'لم يتم تثبيت موقع المدرسة.':`أنت خارج المدرسة بمسافة تقريبًا ${Math.round(ok.distance||0)} متر.`);return}const recs=faceRecords();if(!recs.length){alert('لا توجد بصمات كادر محفوظة.');return}show('staffAttendancePanel');const cam=$('staffAttendanceCameraBox'),video=$('staffAttendanceVideo');try{const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'user'},width:{ideal:720},height:{ideal:720}},audio:false});video.srcObject=s;await video.play();window.__saV2Stream=s;cam.classList.remove('hidden');window.__saV2Running=true;recognize()}catch(e){alert('تعذر فتح الكاميرا الأمامية.')}}
+async function startAttendance(mode){window.__saV2Mode=mode;if(typeof isBeforeOfficialStart==='function'&&isBeforeOfficialStart(today())){alert(typeof attendanceClosedMessage==='function'?attendanceClosedMessage():'لم يبدأ الدوام الرسمي بعد.');return}if(typeof isAttendanceOpenNow==='function'&&!isAttendanceOpenNow()){alert(typeof attendanceClosedMessage==='function'?attendanceClosedMessage():'تسجيل الحضور مغلق الآن.');return}if(!window.verifyInsideSchoolForV2)return;const ok=await window.verifyInsideSchoolForV2();if(!ok.ok){alert(ok.reason==='NO_LOCATION'?'لم يتم تثبيت موقع المدرسة.':`أنت خارج المدرسة بمسافة تقريبًا ${Math.round(ok.distance||0)} متر.`);return}const recs=faceRecords();if(!recs.length){alert('لا توجد بصمات كادر محفوظة.');return}show('staffAttendancePanel');const cam=$('staffAttendanceCameraBox'),video=$('staffAttendanceVideo');try{const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'user'},width:{ideal:720},height:{ideal:720}},audio:false});video.srcObject=s;await video.play();window.__saV2Stream=s;cam.classList.remove('hidden');window.__saV2Running=true;recognize()}catch(e){alert('تعذر فتح الكاميرا الأمامية.')}}
 async function recognize(){if(!window.__saV2Running)return;try{const d=await faceapi.detectSingleFace($('staffAttendanceVideo'),new faceapi.TinyFaceDetectorOptions({inputSize:416,scoreThreshold:.5})).withFaceLandmarks().withFaceDescriptor();if(d){let best=null,bd=Infinity;for(const r of faceRecords()){if(!Array.isArray(r.descriptor))continue;const z=faceapi.euclideanDistance(d.descriptor,new Float32Array(r.descriptor));if(z<bd){bd=z;best=r}}if(best&&bd<.5){window.__saV2Running=false;window.__saV2Pending={name:best.name,mode:window.__saV2Mode,face:best};window.__saV2Stream?.getTracks().forEach(t=>t.stop());$('staffAttendanceCameraBox').classList.add('hidden');$('staffDetectedBox').classList.remove('hidden');$('staffDetectedName').textContent=`✅ تم التعرف على: ${best.name}`;$('staffDetectedTime').textContent='حدد الوقت ثم اضغط حفظ.';showTimeChoice();return}}}catch(e){}setTimeout(recognize,900)}
-function showTimeChoice(){const b=$('staffTimeChoice');if(!b)return;b.style.display='block';const s=$('staffShiftSelect'),i=$('staffRecordTime');const set=()=>{const evening=s.value==='evening';i.min=evening?'19:00':'07:45';i.max=evening?'22:30':'12:15';if(!i.value||i.value<i.min||i.value>i.max)i.value=i.min};set();s.onchange=set}
-function saveTime(){const p=window.__saV2Pending;if(!p)return;const i=$('staffRecordTime'),t=i.value,ev=$('staffShiftSelect').value==='evening',min=ev?'12:00':'07:45',max=ev?'16:15':'12:15';if(!t||t<min||t>max){alert(`الوقت يجب أن يكون بين ${min} و ${max}.`);return}const a=attendance(),date=today(),name=clean(p.name);let r=a.find(x=>x.date===date&&clean(x.name)===name);if(!r){r={id:Date.now().toString(),name,date,signature:p.face?.signature||''};a.push(r)}r.signature=p.face?.signature||r.signature||'';if(p.mode==='departure'){if(!r.arrivalTime&&!r.time){alert('لا يمكن تسجيل الانصراف قبل تسجيل الدخول.');return}r.departureTime=t}else{r.arrivalTime=t;r.time=t}r.shift=ev?'evening':'morning';sj(AK,a);const mode=p.mode;window.__saV2Pending=null;$('staffTimeChoice').style.display='none';renderDaily();if(typeof window.renderStaffToday==='function')window.renderStaffToday();alert(mode==='departure'?`تم تسجيل انصراف ${name} عند ${t}`:`تم تسجيل دخول ${name} عند ${t}`)}
+function showTimeChoice(){const b=$('staffTimeChoice');if(!b)return;b.style.display='block';const s=$('staffShiftSelect'),i=$('staffRecordTime');const set=()=>{const times=typeof getAttendanceShiftTimes==='function'?getAttendanceShiftTimes():{morning:{start:'07:45',end:'12:15'},evening:{start:'19:00',end:'22:30'}};const t=times[s.value]||times.morning;i.min=t.start;i.max=t.end;if(!i.value||i.value<i.min||i.value>i.max)i.value=i.min};set();s.onchange=set}
+function saveTime(){const p=window.__saV2Pending;if(!p)return;const i=$('staffRecordTime'),t=i.value,ev=$('staffShiftSelect').value==='evening',times=typeof getAttendanceShiftTimes==='function'?getAttendanceShiftTimes():{morning:{start:'07:45',end:'12:15'},evening:{start:'19:00',end:'22:30'}},bound=times[ev?'evening':'morning'],min=bound.start,max=bound.end,date=today();if(typeof isBeforeOfficialStart==='function'&&isBeforeOfficialStart(date)){alert(typeof attendanceClosedMessage==='function'?attendanceClosedMessage():'لم يبدأ الدوام الرسمي بعد.');return}if(!t||t<min||t>max){alert(`الوقت يجب أن يكون بين ${min} و ${max}.`);return}const a=attendance(),name=clean(p.name);let r=a.find(x=>x.date===date&&clean(x.name)===name);if(!r){r={id:Date.now().toString(),name,date,signature:p.face?.signature||''};a.push(r)}r.signature=p.face?.signature||r.signature||'';if(p.mode==='departure'){if(!r.arrivalTime&&!r.time){alert('لا يمكن تسجيل الانصراف قبل تسجيل الدخول.');return}r.departureTime=t}else{r.arrivalTime=t;r.time=t}r.shift=ev?'evening':'morning';sj(AK,a);const mode=p.mode;window.__saV2Pending=null;$('staffTimeChoice').style.display='none';renderDaily();if(typeof window.renderStaffToday==='function')window.renderStaffToday();alert(mode==='departure'?`تم تسجيل انصراف ${name} عند ${t}`:`تم تسجيل دخول ${name} عند ${t}`)}
 function verifyLocation(){const l=gj('SCHOOL_FIXED_LOCATION_V1',null);if(!l)return Promise.resolve({ok:false,reason:'NO_LOCATION'});return new Promise(resolve=>navigator.geolocation.getCurrentPosition(p=>{const rad=x=>x*Math.PI/180,R=6371000,dl=rad(p.coords.latitude-l.lat),dn=rad(p.coords.longitude-l.lng),q=Math.sin(dl/2)**2+Math.cos(rad(l.lat))*Math.cos(rad(p.coords.latitude))*Math.sin(dn/2)**2;resolve({ok:2*R*Math.asin(Math.sqrt(q))<=150,distance:2*R*Math.asin(Math.sqrt(q))})},()=>resolve({ok:false,reason:'GEO_ERROR'}),{enableHighAccuracy:true,timeout:15000,maximumAge:0}))}
 window.verifyInsideSchoolForV2=verifyLocation;window.renderStaffToday=window.renderStaffToday||function(){};
-function init(){initSig();
+function init(){initSig();if(typeof purgeAttendanceBeforeOfficialStart==='function')purgeAttendanceBeforeOfficialStart();
   // Replace the old attendance/departure handlers so the same face recognition controls both.
   replaceWithHandler('staffTakeAttendanceBtn',()=>startAttendance('arrival'));
   replaceWithHandler('staffDepartureBtn',()=>startAttendance('departure'));
@@ -11540,7 +11600,7 @@ function init(){initSig();
   runAuto();setInterval(runAuto,60000);renderDaily();renderWeekly();renderMonthly();updateWeeklyVisibility();
 }
 async function saveImage(el,name){if(!el||typeof html2canvas!=='function'){alert('ميزة حفظ الصورة غير متاحة حاليًا.');return}const c=await html2canvas(el,{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#fff',windowWidth:Math.max(document.documentElement.clientWidth,el.scrollWidth||1000)});const a=document.createElement('a');a.href=c.toDataURL('image/png');a.download=name+'.png';a.click()}
-function runAuto(){const d=new Date(),dow=d.getDay(),mins=d.getHours()*60+d.getMinutes();if(dow>4)return;if(mins>=22*60+30){const did=transferDay(today(),true);if(dow===4)transferWeek(wk(d),true);if(did){updateWeeklyVisibility();$('staffDailyAttendancePanelV2')?.classList.add('hidden');$('staffAttendanceChoice')?.classList.remove('hidden')}}}
+function runAuto(){const d=new Date(),dow=d.getDay(),mins=d.getHours()*60+d.getMinutes(),date=today();if(dow>4)return;if(typeof isBeforeOfficialStart==='function'&&isBeforeOfficialStart(date))return;const active=typeof getAttendanceShiftInfo==='function'?getAttendanceShiftInfo():{end:22*60+30};const end=active.end||22*60+30;if(mins>=end){const did=transferDay(date,true);if(dow===4)transferWeek(wk(d),true);if(did){updateWeeklyVisibility();$('staffDailyAttendancePanelV2')?.classList.add('hidden');$('staffAttendanceChoice')?.classList.remove('hidden')}}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
