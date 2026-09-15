@@ -16,6 +16,60 @@ jobs:
           unzip -o FarajiaAndroid_Project_v3.zip
           ls -la FarajiaAndroid
 
+      - name: Fix Android project
+        run: |
+          echo "=== Checking project files ==="
+          ls -la FarajiaAndroid/app/src/main
+          echo "=== Checking styles.xml ==="
+          cat FarajiaAndroid/app/src/main/res/values/styles.xml
+          echo "=== Checking app/build.gradle ==="
+          cat FarajiaAndroid/app/build.gradle
+
+          python3 - <<'PY'
+          from pathlib import Path
+
+          styles = Path("FarajiaAndroid/app/src/main/res/values/styles.xml")
+          text = styles.read_text(encoding="utf-8")
+
+          text = text.replace(
+              'parent="android:style/Theme.Material.Light.NoActionBar"',
+              'parent="Theme.AppCompat.Light.NoActionBar"'
+          )
+
+          text = text.replace(
+              'parent="style/Theme.Material.Light.NoActionBar"',
+              'parent="Theme.AppCompat.Light.NoActionBar"'
+          )
+
+          text = text.replace(
+              'parent="Theme.Material.Light.NoActionBar"',
+              'parent="Theme.AppCompat.Light.NoActionBar"'
+          )
+
+          styles.write_text(text, encoding="utf-8")
+
+          gradle = Path("FarajiaAndroid/app/build.gradle")
+          text = gradle.read_text(encoding="utf-8")
+
+          text = text.replace(
+              "versionCode 3",
+              "versionCode 4"
+          )
+
+          text = text.replace(
+              "versionName '1.0.3'",
+              "versionName '1.0.4'"
+          )
+
+          gradle.write_text(text, encoding="utf-8")
+          PY
+
+          echo "=== AFTER FIX: styles.xml ==="
+          cat FarajiaAndroid/app/src/main/res/values/styles.xml
+
+          echo "=== AFTER FIX: app/build.gradle ==="
+          cat FarajiaAndroid/app/build.gradle
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -31,15 +85,33 @@ jobs:
         run: |
           echo "android.useAndroidX=true" > FarajiaAndroid/gradle.properties
           echo "android.enableJetifier=true" >> FarajiaAndroid/gradle.properties
+          echo "org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8" >> FarajiaAndroid/gradle.properties
           cat FarajiaAndroid/gradle.properties
+
+      - name: Verify Android project
+        working-directory: FarajiaAndroid
+        run: |
+          echo "=== Project ==="
+          find . -maxdepth 4 -type f | sort
+
+          echo "=== Android Manifest ==="
+          cat app/src/main/AndroidManifest.xml
+
+          echo "=== MainActivity ==="
+          sed -n '1,260p' app/src/main/java/com/farajia/app/MainActivity.java
 
       - name: Build APK
         working-directory: FarajiaAndroid
         run: |
-          gradle :app:assembleDebug --no-daemon
+          gradle :app:assembleDebug --no-daemon --stacktrace
+
+      - name: Check APK
+        run: |
+          ls -lh FarajiaAndroid/app/build/outputs/apk/debug/
+          file FarajiaAndroid/app/build/outputs/apk/debug/app-debug.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: farajia-debug-apk
+          name: farajia-debug-apk-v4
           path: FarajiaAndroid/app/build/outputs/apk/debug/app-debug.apk
