@@ -26,7 +26,10 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.7'
-
+          
+        - name: Enable AndroidX
+          run: |
+            echo "android.useAndroidX=true" > FarajiaAndroid/gradle.properties
       - name: Build APK
         working-directory: FarajiaAndroid
         run: |
