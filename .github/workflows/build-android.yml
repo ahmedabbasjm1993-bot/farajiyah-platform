@@ -13,7 +13,7 @@ jobs:
 
       - name: Extract Android project
         run: |
-          unzip -o FarajiaAndroid_Project_v1.zip
+          unzip -o FarajiaAndroid_Project_v2.zip
           ls -la FarajiaAndroid
 
       - name: Setup Java
