@@ -27,10 +27,16 @@ jobs:
         with:
           gradle-version: '8.7'
 
+      - name: Enable AndroidX
+        run: |
+          echo "android.useAndroidX=true" > FarajiaAndroid/gradle.properties
+          echo "android.enableJetifier=true" >> FarajiaAndroid/gradle.properties
+          cat FarajiaAndroid/gradle.properties
+
       - name: Build APK
         working-directory: FarajiaAndroid
         run: |
-          gradle -Dandroid.useAndroidX=true :app:assembleDebug --no-daemon
+          gradle :app:assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
