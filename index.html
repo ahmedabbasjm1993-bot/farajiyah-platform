@@ -4427,67 +4427,7 @@
                     }).save();
                 }else if(type==='word'){
                     const docHtml=`<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${exportCss}</style></head><body>${printWrap.innerHTML}
-<!-- Offline + Online Sync Layer for ثانوية الفراجية -->
-<script>
-(function(){
-  'use strict';
-  window.schoolOfflineMode = true;
-  function setOfflineStatus(){
-    window.schoolCloudStatus = navigator.onLine ? (window.schoolCloudStatus || 'connecting') : 'offline';
-    let el=document.getElementById('offlineSyncIndicator');
-    if(!el){
-      el=document.createElement('div'); el.id='offlineSyncIndicator';
-      el.style.cssText='position:fixed;bottom:10px;left:10px;z-index:99999;padding:6px 10px;border-radius:14px;font:700 12px Arial;background:#fff;border:1px solid #ccc;box-shadow:0 2px 8px rgba(0,0,0,.12);direction:rtl;pointer-events:none;';
-      document.body.appendChild(el);
-    }
-    if(!navigator.onLine){el.textContent='📴 يعمل بدون إنترنت';el.style.color='#8a4b00';}
-    else if(window.schoolCloudReady || window.schoolCloudStatus==='connected'){el.textContent='🌐 متصل — المزامنة فعالة';el.style.color='#176b3a';}
-    else {el.textContent='🌐 متصل — جارٍ المزامنة';el.style.color='#174f8a';}
-  }
-  function loadScript(src){return new Promise(function(resolve,reject){
-    if([].slice.call(document.scripts).some(function(x){return x.src===src;})){return resolve();}
-    const s=document.createElement('script'); s.src=src; s.async=true;
-    s.onload=resolve; s.onerror=reject; document.head.appendChild(s);
-  });}
-  async function ensureFirebase(){
-    if(window.firebase && window.firebase.database) return true;
-    if(!navigator.onLine) return false;
-    try{
-      await loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js');
-      await loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js');
-      await loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js');
-      return !!(window.firebase && window.firebase.database);
-    }catch(e){ console.warn('Firebase unavailable; continuing offline.',e); return false; }
-  }
-  async function reconnect(){
-    setOfflineStatus();
-    if(!navigator.onLine) return;
-    const ok=await ensureFirebase();
-    if(ok && typeof window.initSchoolCloud==='function'){
-      try{ await window.initSchoolCloud(); }catch(e){ console.warn(e); }
-    }
-    setTimeout(setOfflineStatus,800);
-  }
-  window.addEventListener('offline',setOfflineStatus);
-  window.addEventListener('online',reconnect);
-  document.addEventListener('DOMContentLoaded',function(){
-    setOfflineStatus();
-    if(navigator.onLine) setTimeout(reconnect,1200);
-  });
-  setInterval(setOfflineStatus,3000);
-})();
-</script>
-<script>
-/* Register a service worker when the platform is hosted on HTTPS (e.g. GitHub Pages).
-   It caches the app shell and external libraries/models after the first online visit. */
-(function(){
-  if(!('serviceWorker' in navigator)) return;
-  if(location.protocol!=='https:') return;
-  window.addEventListener('load',function(){
-    navigator.serviceWorker.register('./service-worker.js',{scope:'./'}).catch(function(e){console.warn('Service Worker registration failed',e);});
-  });
-})();
-</script>
+
 
 </body></html>`;
                     const blob=new Blob(['\ufeff',docHtml],{type:'application/msword'});
@@ -8867,67 +8807,7 @@ function() {
             ${content}
 
         
-<!-- Offline + Online Sync Layer for ثانوية الفراجية -->
-<script>
-(function(){
-  'use strict';
-  window.schoolOfflineMode = true;
-  function setOfflineStatus(){
-    window.schoolCloudStatus = navigator.onLine ? (window.schoolCloudStatus || 'connecting') : 'offline';
-    let el=document.getElementById('offlineSyncIndicator');
-    if(!el){
-      el=document.createElement('div'); el.id='offlineSyncIndicator';
-      el.style.cssText='position:fixed;bottom:10px;left:10px;z-index:99999;padding:6px 10px;border-radius:14px;font:700 12px Arial;background:#fff;border:1px solid #ccc;box-shadow:0 2px 8px rgba(0,0,0,.12);direction:rtl;pointer-events:none;';
-      document.body.appendChild(el);
-    }
-    if(!navigator.onLine){el.textContent='📴 يعمل بدون إنترنت';el.style.color='#8a4b00';}
-    else if(window.schoolCloudReady || window.schoolCloudStatus==='connected'){el.textContent='🌐 متصل — المزامنة فعالة';el.style.color='#176b3a';}
-    else {el.textContent='🌐 متصل — جارٍ المزامنة';el.style.color='#174f8a';}
-  }
-  function loadScript(src){return new Promise(function(resolve,reject){
-    if([].slice.call(document.scripts).some(function(x){return x.src===src;})){return resolve();}
-    const s=document.createElement('script'); s.src=src; s.async=true;
-    s.onload=resolve; s.onerror=reject; document.head.appendChild(s);
-  });}
-  async function ensureFirebase(){
-    if(window.firebase && window.firebase.database) return true;
-    if(!navigator.onLine) return false;
-    try{
-      await loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js');
-      await loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js');
-      await loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js');
-      return !!(window.firebase && window.firebase.database);
-    }catch(e){ console.warn('Firebase unavailable; continuing offline.',e); return false; }
-  }
-  async function reconnect(){
-    setOfflineStatus();
-    if(!navigator.onLine) return;
-    const ok=await ensureFirebase();
-    if(ok && typeof window.initSchoolCloud==='function'){
-      try{ await window.initSchoolCloud(); }catch(e){ console.warn(e); }
-    }
-    setTimeout(setOfflineStatus,800);
-  }
-  window.addEventListener('offline',setOfflineStatus);
-  window.addEventListener('online',reconnect);
-  document.addEventListener('DOMContentLoaded',function(){
-    setOfflineStatus();
-    if(navigator.onLine) setTimeout(reconnect,1200);
-  });
-  setInterval(setOfflineStatus,3000);
-})();
-</script>
-<script>
-/* Register a service worker when the platform is hosted on HTTPS (e.g. GitHub Pages).
-   It caches the app shell and external libraries/models after the first online visit. */
-(function(){
-  if(!('serviceWorker' in navigator)) return;
-  if(location.protocol!=='https:') return;
-  window.addEventListener('load',function(){
-    navigator.serviceWorker.register('./service-worker.js',{scope:'./'}).catch(function(e){console.warn('Service Worker registration failed',e);});
-  });
-})();
-</script>
+
 
 </body>
 
